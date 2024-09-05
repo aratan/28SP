@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>#FreeEurope</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body class="bg-gray-100">
+    <div id="app" class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8">#FreeEurope</h1>
+        
+<!-- Buscador y Paginación -->
+<div class="mb-4 flex justify-between items-center">
+    <input type="text" id="searchBar" placeholder="Buscar por título o mensaje" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+    <div>
+        <button id="prevPage" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l">Anterior</button>
+        <button id="nextPage" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r">Siguiente</button>
+    </div>
+</div>
+
+
+
+        <!-- Formulario para crear tablón -->
+        <div class="mb-8 bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4">Discusión</h2>
+            <form id="createTablonForm" class="space-y-4">
+                <div>
+                    <label for="tablonName" class="block text-sm font-medium text-gray-700">Tema</label>
+                    <input type="text" id="tablonName" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                <div>
+                    <label for="tablonMessage" class="block text-sm font-medium text-gray-700">Descripción</label>
+                    <textarea id="tablonMessage" name="mensaje" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
+                </div>
+                <div>
+                    <label for="tablonGeo" class="block text-sm font-medium text-gray-700">Zona</label>
+                    <input type="text" id="tablonGeo" name="geo" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Crear Hilo
+                </button>
+            </form>
+        </div>
+
+        <!-- Lista de Tablones -->
+        <div id="tablonesList" class="space-y-6">
+            <!-- Los tablones se insertarán aquí dinámicamente -->
+        </div>
+    </div>
+
+    <script src="./app.js"></script>
+</body>
+</html>
