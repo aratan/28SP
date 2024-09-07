@@ -1,3 +1,4 @@
-/api.exe
-/main.exe
-/web.exe
+./api.exe
+./main.exe
+./web.exe
+./app.log
