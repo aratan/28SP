@@ -638,3 +638,923 @@
 2024/09/07 19:11:15 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
 2024/09/07 19:11:15 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
 2024/09/07 19:11:15 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:11:19 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial tcp4 127.0.0.1:49858: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+  * [/ip4/192.168.1.15/tcp/49858] dial tcp4 192.168.1.15:49858: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+2024/09/07 19:11:19 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:11:24 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial tcp4 127.0.0.1:64683: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+  * [/ip4/192.168.1.15/tcp/64683] dial tcp4 192.168.1.15:64683: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+  * [/ip4/213.94.60.157/tcp/22312] dial tcp4 0.0.0.0:55340->213.94.60.157:22312: i/o timeout
+2024/09/07 19:11:24 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:24 Searching for peers...
+2024/09/07 19:11:24 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:11:24 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:11:24 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:11:24 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:11:24 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:24 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:11:24 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:11:24 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:29 Searching for peers...
+2024/09/07 19:11:29 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:11:29 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:11:29 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:11:29 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:11:29 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:29 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:11:29 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:11:30 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:35 Searching for peers...
+2024/09/07 19:11:35 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:11:35 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:11:35 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:11:35 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:11:39 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial tcp4 192.168.1.15:49858: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+2024/09/07 19:11:39 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:11:44 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial tcp4 127.0.0.1:64683: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+  * [/ip4/192.168.1.15/tcp/64683] dial tcp4 192.168.1.15:64683: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+  * [/ip4/213.94.60.157/tcp/22312] dial tcp4 0.0.0.0:55340->213.94.60.157:22312: i/o timeout
+2024/09/07 19:11:44 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial tcp4 127.0.0.1:49858: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:44 Searching for peers...
+2024/09/07 19:11:44 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:11:44 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:11:44 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:11:44 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:11:44 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:11:44 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:44 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:11:44 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:49 Searching for peers...
+2024/09/07 19:11:49 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:11:49 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:11:49 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:11:49 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:11:49 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:49 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:11:49 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:11:49 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:55 Searching for peers...
+2024/09/07 19:11:55 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:11:55 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:11:55 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:11:55 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:11:55 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:55 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:11:55 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:11:55 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:56 Searching for peers...
+2024/09/07 19:11:56 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:11:56 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:11:56 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:11:56 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:11:56 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:56 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:11:56 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:11:56 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:57 Searching for peers...
+2024/09/07 19:11:57 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:11:57 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:11:57 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:11:57 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:11:57 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:11:57 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:57 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:11:57 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:58 Searching for peers...
+2024/09/07 19:11:58 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:11:58 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:11:58 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:11:58 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:11:58 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:58 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:11:58 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:11:58 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:59 Searching for peers...
+2024/09/07 19:11:59 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:11:59 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:11:59 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:11:59 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:11:59 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:11:59 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:11:59 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:11:59 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:00 Searching for peers...
+2024/09/07 19:12:00 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:00 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:00 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:00 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:04 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial tcp4 192.168.1.15:49858: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+2024/09/07 19:12:04 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:08 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/127.0.0.1/tcp/64683] dial tcp4 127.0.0.1:64683: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+  * [/ip4/192.168.1.15/tcp/64683] dial tcp4 192.168.1.15:64683: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+2024/09/07 19:12:08 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:08 Searching for peers...
+2024/09/07 19:12:08 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:08 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:08 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:08 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:08 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:08 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:13 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial tcp4 0.0.0.0:55340->213.94.60.157:22312: i/o timeout
+2024/09/07 19:12:13 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:13 Searching for peers...
+2024/09/07 19:12:14 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:14 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:14 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:14 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:14 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:14 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:14 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:14 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:19 Searching for peers...
+2024/09/07 19:12:19 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:19 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:19 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:19 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:19 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:19 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:19 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial tcp4 127.0.0.1:49858: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:19 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:24 Searching for peers...
+2024/09/07 19:12:24 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:24 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:24 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:24 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:24 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:24 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:24 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:24 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:25 Searching for peers...
+2024/09/07 19:12:25 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:25 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:25 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:25 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:25 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:25 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:25 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:25 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:26 Searching for peers...
+2024/09/07 19:12:26 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:26 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:26 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:26 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:26 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:26 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:26 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:26 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:27 Searching for peers...
+2024/09/07 19:12:27 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:27 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:27 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:27 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:27 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:27 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:27 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:27 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:27 Searching for peers...
+2024/09/07 19:12:28 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:28 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:28 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:28 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:28 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:28 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:28 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:28 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:28 Searching for peers...
+2024/09/07 19:12:28 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:28 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:28 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:28 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:28 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:28 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:28 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:28 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:29 Searching for peers...
+2024/09/07 19:12:29 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:29 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:29 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:29 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:29 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:29 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:29 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:29 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:30 Searching for peers...
+2024/09/07 19:12:30 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:30 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:30 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:30 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:30 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:30 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:30 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:30 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:31 Searching for peers...
+2024/09/07 19:12:31 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:31 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:31 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:31 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:31 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:31 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:31 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:31 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:31 Searching for peers...
+2024/09/07 19:12:32 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:32 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:32 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:32 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:32 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:32 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:32 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:32 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:32 Searching for peers...
+2024/09/07 19:12:32 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:32 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:32 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:32 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:32 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:32 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:32 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:32 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:33 Searching for peers...
+2024/09/07 19:12:33 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:33 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:33 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:33 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:33 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:33 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:33 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:33 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:34 Searching for peers...
+2024/09/07 19:12:34 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:34 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:34 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:34 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:34 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:34 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:34 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:34 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:35 Searching for peers...
+2024/09/07 19:12:35 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:35 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:35 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:35 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:39 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial tcp4 192.168.1.15:49858: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+2024/09/07 19:12:39 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:43 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/127.0.0.1/tcp/64683] dial tcp4 127.0.0.1:64683: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+  * [/ip4/192.168.1.15/tcp/64683] dial tcp4 192.168.1.15:64683: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+2024/09/07 19:12:43 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:43 Searching for peers...
+2024/09/07 19:12:43 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:43 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:43 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:43 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:43 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:43 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:43 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:43 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:45 Searching for peers...
+2024/09/07 19:12:46 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:46 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:46 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:46 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:51 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial tcp4 0.0.0.0:55340->213.94.60.157:22312: i/o timeout
+2024/09/07 19:12:51 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:51 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:51 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:51 Searching for peers...
+2024/09/07 19:12:51 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:51 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:51 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:51 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:51 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:51 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:51 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:51 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:56 Searching for peers...
+2024/09/07 19:12:56 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:12:56 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:12:56 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:12:56 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:12:56 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:12:56 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:12:56 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:12:56 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:01 Searching for peers...
+2024/09/07 19:13:01 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:01 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:01 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:01 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:01 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:01 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial tcp4 127.0.0.1:49858: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:01 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:01 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:03 Searching for peers...
+2024/09/07 19:13:03 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:03 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:03 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:03 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:03 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:03 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:03 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:03 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:04 Searching for peers...
+2024/09/07 19:13:04 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:04 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:04 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:04 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:04 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:04 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:04 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:04 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:04 Searching for peers...
+2024/09/07 19:13:05 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:05 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:05 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:05 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:05 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:05 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:05 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:05 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:05 Searching for peers...
+2024/09/07 19:13:05 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:05 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:05 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:05 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:05 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:05 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:05 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:05 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:06 Searching for peers...
+2024/09/07 19:13:06 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:06 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:06 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:06 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:06 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:06 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:06 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:06 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:07 Searching for peers...
+2024/09/07 19:13:07 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:07 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:07 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:07 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:07 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:07 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:07 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:07 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:08 Searching for peers...
+2024/09/07 19:13:08 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:08 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:08 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:08 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:08 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:08 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:08 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:08 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:09 Searching for peers...
+2024/09/07 19:13:09 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:09 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:09 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:09 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:09 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:09 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:09 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:09 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:12 Searching for peers...
+2024/09/07 19:13:12 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:12 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:12 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:12 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:12 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:12 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:12 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:12 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:12 Searching for peers...
+2024/09/07 19:13:12 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:12 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:12 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:12 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:12 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:12 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:12 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:13 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:14 Searching for peers...
+2024/09/07 19:13:14 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:14 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:14 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:14 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:14 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:14 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:14 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:14 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:15 Searching for peers...
+2024/09/07 19:13:15 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:15 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:15 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:15 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:15 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:15 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:15 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:15 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:16 Searching for peers...
+2024/09/07 19:13:16 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:16 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:16 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:16 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:16 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:16 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:16 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:16 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:17 Searching for peers...
+2024/09/07 19:13:17 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:17 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:17 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:17 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:17 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:17 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:17 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:17 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:17 Searching for peers...
+2024/09/07 19:13:17 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:17 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:17 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:17 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:17 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:17 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:17 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:17 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:18 Searching for peers...
+2024/09/07 19:13:18 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:18 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:18 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:18 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:18 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:18 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:18 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:18 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:19 Searching for peers...
+2024/09/07 19:13:19 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:19 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:19 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:19 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:19 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:19 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:19 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:19 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:20 Searching for peers...
+2024/09/07 19:13:20 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:20 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:20 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:20 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:20 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:20 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:20 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:20 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:25 Searching for peers...
+2024/09/07 19:13:25 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:25 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:25 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:25 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:25 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:29 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial tcp4 192.168.1.15:49858: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+2024/09/07 19:13:33 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/127.0.0.1/tcp/64683] dial tcp4 127.0.0.1:64683: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+  * [/ip4/192.168.1.15/tcp/64683] dial tcp4 192.168.1.15:64683: connectex: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+2024/09/07 19:13:33 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:33 Searching for peers...
+2024/09/07 19:13:33 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:33 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:33 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:33 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:38 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial tcp4 0.0.0.0:55340->213.94.60.157:22312: i/o timeout
+2024/09/07 19:13:38 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:38 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:38 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:38 Searching for peers...
+2024/09/07 19:13:38 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:38 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:38 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:38 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:38 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:38 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:38 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:38 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:44 Searching for peers...
+2024/09/07 19:13:44 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:44 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:44 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:44 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:44 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:44 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:44 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:44 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:49 Searching for peers...
+2024/09/07 19:13:49 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:49 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:49 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:49 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:49 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:49 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:49 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:49 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
+2024/09/07 19:13:54 Searching for peers...
+2024/09/07 19:13:54 Failed connecting to 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3, error: failed to dial: failed to dial 12D3KooWQRFR8WFSYUj5UFuVtNE8vKYJJmvNvMH7MaFHMFfF1cu3: no addresses
+2024/09/07 19:13:54 Failed connecting to 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8, error: failed to dial: failed to dial 12D3KooWC7nK2zfhYytw6a37L5p3gMn5yQ9uzgs4eUNnUqu3svH8: no addresses
+2024/09/07 19:13:54 Failed connecting to 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3, error: failed to dial: failed to dial 12D3KooWBTofgtjEGNnrYAyLRvv2mx1FUf6AdrEkgWcJrPP44Ng3: no addresses
+2024/09/07 19:13:54 Failed connecting to 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK, error: failed to dial: failed to dial 12D3KooWBmxq263BnqGNejaqCDKRx6ALP5PJSFuAegjeTMXX9aeK: no addresses
+2024/09/07 19:13:54 Failed connecting to 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw, error: failed to dial: failed to dial 12D3KooWJ6fMtxhhYsv27cJXztxG41AyFAnaMYtAewNz1Vx6UkXw: no addresses
+2024/09/07 19:13:54 Failed connecting to 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U, error: failed to dial: failed to dial 12D3KooWJU9oUcMussu2csg57yFgpZdzAcNEiemdeA5MMrf5SS3U: all dials failed
+  * [/ip4/127.0.0.1/tcp/64683] dial backoff
+  * [/ip4/213.94.60.157/tcp/22312] dial backoff
+  * [/ip4/192.168.1.15/tcp/64683] dial backoff
+2024/09/07 19:13:54 Failed connecting to 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe, error: failed to dial: failed to dial 12D3KooWJvD1hnsuUZHkoiP88XQMPAoQwiMxPqewD4MHUzeEw4Qe: all dials failed
+  * [/ip4/127.0.0.1/tcp/49858] dial backoff
+  * [/ip4/192.168.1.15/tcp/49858] dial backoff
