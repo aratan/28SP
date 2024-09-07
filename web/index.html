@@ -1,110 +1,205 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MicroBlog</title>
+    <title>ElegantePost</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% {background-position: -200% 0;}
+            100% {background-position: 200% 0;}
+        }
+    </style>
 </head>
+<body class="bg-gray-100 min-h-screen">
+    <nav class="gradient-bg text-white p-4 shadow-lg sticky top-0 z-10">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">ElegantePost</h1>
+            <div class="relative">
+                <input type="text" id="searchInput" placeholder="Buscar..." class="bg-white bg-opacity-20 text-white placeholder-gray-300 px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-white w-64">
+                <button onclick="search()" class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-<body class="bg-gray-100">
-    <div class="container mx-auto p-4 max-w-2xl">
-        <header class="bg-blue-500 text-white p-4 rounded-t-lg">
-            <h1 class="text-2xl font-bold">MicroBlog</h1>
-        </header>
-
-        <div class="bg-white shadow-md rounded-b-lg p-4 mb-4">
-            <input type="text" id="newTablonName" placeholder="¿Qué está pasando?"
-                class="w-full p-2 border rounded mb-2">
-            <button onclick="createTablon()"
-                class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-200">Publicar</button>
+    <div class="container mx-auto p-4 max-w-3xl">
+        <div class="bg-white shadow-md rounded-lg p-6 mb-8 transition-all duration-300 hover:shadow-lg">
+            <textarea id="newTablonName" rows="3" placeholder="¿Qué está pasando?" class="w-full p-2 border rounded mb-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"></textarea>
+            <div class="flex justify-between items-center">
+                <input type="text" id="newTablonVideo" placeholder="URL del video (opcional)" class="w-2/3 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300">
+                <button onclick="createTablon()" class="bg-indigo-500 text-white px-6 py-2 rounded-full hover:bg-indigo-600 transition duration-300 flex items-center">
+                    <i class="fas fa-paper-plane mr-2"></i> Publicar
+                </button>
+            </div>
         </div>
 
-        <div id="tablones" class="space-y-4"></div>
+        <div id="tablones" class="space-y-6"></div>
+
+        <div class="flex justify-center mt-8">
+            <button id="loadMoreBtn" onclick="loadMore()" class="bg-indigo-500 text-white px-6 py-2 rounded-full hover:bg-indigo-600 transition duration-300">
+                Cargar más
+            </button>
+        </div>
     </div>
 
     <script>
         const API_URL = 'http://localhost:8080/api';
+        let currentPage = 1;
+        const itemsPerPage = 5;
+        let searchTerm = '';
 
-        async function fetchTablones() {
-            const response = await fetch(`${API_URL}/readTablon`);
+        async function fetchTablones(page = 1, search = '') {
+            const response = await fetch(`${API_URL}/readTablon?page=${page}&search=${encodeURIComponent(search)}`);
             const tablones = await response.json();
-            displayTablones(tablones);
+            return tablones;
         }
 
-        function displayTablones(tablones) {
+        async function displayTablones(page = 1, search = '') {
+            const tablones = await fetchTablones(page, search);
             const tablonesDiv = document.getElementById('tablones');
-            tablonesDiv.innerHTML = '';
+            
+            if (page === 1) {
+                tablonesDiv.innerHTML = '';
+            }
+
             tablones.forEach((tablon) => {
                 const tablonDiv = document.createElement('div');
-                tablonDiv.className = 'bg-white p-4 rounded-lg shadow-md';
+                tablonDiv.className = 'bg-white p-6 rounded-lg shadow-md card-hover transition-all duration-300';
                 tablonDiv.innerHTML = `
-                    <div class="flex items-center mb-2">
-                        <img src="https://via.placeholder.com/40" alt="User" class="rounded-full mr-2">
-                        <h2 class="font-bold">${tablon.name}</h2>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <img src="https://i.pravatar.cc/40?u=${tablon.id}" alt="User" class="rounded-full mr-3 border-2 border-indigo-500">
+                            <h2 class="font-semibold text-lg text-gray-800">${tablon.name}</h2>
+                        </div>
+                        <button onclick="deleteTablon('${tablon.id}')" class="text-red-500 hover:text-red-700 transition duration-300">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
                     </div>
-                    <div class="mb-2">
+                    <div class="space-y-4">
                         ${tablon.messages.map(msg => `
-                            <div class="mb-3 pb-3 border-b">
-                                <p class="mb-2">${msg.content.message}</p>
+                            <div class="pb-4 border-b border-gray-200 last:border-b-0">
+                                <p class="mb-2 text-gray-800">${msg.content.message}</p>
                                 ${msg.content.videoUrl ? `
-                                    <div class="mb-2">
-                                        <video src="${msg.content.videoUrl}" controls class="w-full h-40 object-cover rounded"></video>
+                                    <div class="mb-2 rounded-lg overflow-hidden shadow-md">
+                                        <video src="${msg.content.videoUrl}" controls class="w-full h-48 object-cover"></video>
                                     </div>
                                 ` : ''}
-                                <div class="flex items-center text-gray-500">
-                                    <button onclick="addLikeToTablon('${tablon.id}')" class="mr-3 hover:text-blue-500">
-                                        <i class="far fa-heart"></i> ${tablon.likes}
+                                <div class="flex items-center text-gray-500 text-sm mt-2">
+                                    <button onclick="addLikeToMessage('${tablon.id}', '${msg.id}')" class="mr-4 hover:text-indigo-500 transition duration-300 flex items-center">
+                                        <i class="far fa-heart mr-1"></i> <span>${msg.content.likes || 0}</span>
                                     </button>
-                                    <button onclick="deleteMessage('${tablon.id}', '${msg.id}')" class="mr-3 hover:text-red-500">
-                                        <i class="far fa-trash-alt"></i>
+                                    <button onclick="deleteMessage('${tablon.id}', '${msg.id}')" class="hover:text-red-500 transition duration-300 flex items-center">
+                                        <i class="far fa-trash-alt mr-1"></i> <span>Eliminar</span>
                                     </button>
                                 </div>
                             </div>
                         `).join('')}
                     </div>
-                    <div class="border-t pt-3">
-                        <input type="text" id="newMessage${tablon.id}" placeholder="Escribe un comentario..." class="w-full p-2 border rounded mb-2">
-                        <input type="text" id="videoUrl${tablon.id}" placeholder="URL del video (opcional)" value="https://archive.org/download/deadpool-and-wolverine-red-band-trailer-x264/Deadpool%20And%20Wolverine%20%282024%29%20RedBand%20Trailer%20HD%20-%20x264.mp4" class="w-full p-2 border rounded mb-2">
-                        <button onclick="addMessage('${tablon.id}')" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-200">Comentar</button>
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="flex items-center">
+                            <input type="text" id="newMessage${tablon.id}" placeholder="Añade un comentario..." class="flex-grow p-2 border rounded-l-full focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300">
+                            <button onclick="addMessage('${tablon.id}')" class="bg-indigo-500 text-white px-4 py-2 rounded-r-full hover:bg-indigo-600 transition duration-300">
+                                <i class="fas fa-reply"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
                 tablonesDiv.appendChild(tablonDiv);
             });
+
+            document.getElementById('loadMoreBtn').style.display = tablones.length < itemsPerPage ? 'none' : 'block';
         }
 
         async function createTablon() {
             const name = document.getElementById('newTablonName').value;
-            await fetch(`${API_URL}/createTablon?name=${encodeURIComponent(name)}`, { method: 'POST' });
-            fetchTablones();
+            const videoUrl = document.getElementById('newTablonVideo').value;
+            await fetch(`${API_URL}/createTablon?name=${encodeURIComponent(name)}&videoUrl=${encodeURIComponent(videoUrl)}`, { method: 'POST' });
+            document.getElementById('newTablonName').value = '';
+            document.getElementById('newTablonVideo').value = '';
+            currentPage = 1;
+            searchTerm = '';
+            document.getElementById('searchInput').value = '';
+            displayTablones(currentPage, searchTerm);
         }
 
-        async function addLikeToTablon(tablonId) {
-            await fetch(`${API_URL}/addLikeToTablon?tablon_id=${tablonId}`, { method: 'POST' });
-            fetchTablones();
-        }
-
-        async function deleteTablon(tablonId) {
-            await fetch(`${API_URL}/deleteTablon?tablon_id=${tablonId}`, { method: 'DELETE' });
-            fetchTablones();
+        async function addLikeToMessage(tablonId, messageId) {
+            await fetch(`${API_URL}/addLikeToMessage?tablon_id=${tablonId}&message_id=${messageId}`, { method: 'POST' });
+            displayTablones(currentPage, searchTerm);
         }
 
         async function addMessage(tablonId) {
             const message = document.getElementById(`newMessage${tablonId}`).value;
-            const videoUrl = document.getElementById(`videoUrl${tablonId}`).value;
-            await fetch(`${API_URL}/addMessage?tablon_id=${tablonId}&message=${encodeURIComponent(message)}&videoUrl=${encodeURIComponent(videoUrl)}`, { method: 'POST' });
-            fetchTablones();
+            await fetch(`${API_URL}/addMessage?tablon_id=${tablonId}&message=${encodeURIComponent(message)}`, { method: 'POST' });
+            document.getElementById(`newMessage${tablonId}`).value = '';
+            displayTablones(currentPage, searchTerm);
         }
 
         async function deleteMessage(tablonId, messageId) {
             await fetch(`${API_URL}/deleteMessageFromTablon?tablon_id=${tablonId}&message_id=${messageId}`, { method: 'DELETE' });
-            fetchTablones();
+            displayTablones(currentPage, searchTerm);
         }
 
-        fetchTablones();
+        async function deleteTablon(tablonId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este tablón?')) {
+                await fetch(`${API_URL}/deleteTablon?tablon_id=${tablonId}`, { method: 'DELETE' });
+                displayTablones(currentPage, searchTerm);
+            }
+        }
+
+        function loadMore() {
+            currentPage++;
+            displayTablones(currentPage, searchTerm);
+        }
+
+        function search() {
+            searchTerm = document.getElementById('searchInput').value;
+            currentPage = 1;
+            displayTablones(currentPage, searchTerm);
+        }
+
+        document.getElementById('searchInput').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                search();
+            }
+        });
+
+        function showLoadingState() {
+            const tablonesDiv = document.getElementById('tablones');
+            tablonesDiv.innerHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-md mb-4 shimmer"></div>
+                <div class="bg-white p-6 rounded-lg shadow-md mb-4 shimmer"></div>
+                <div class="bg-white p-6 rounded-lg shadow-md mb-4 shimmer"></div>
+            `;
+        }
+
+        async function init() {
+            showLoadingState();
+            await displayTablones(currentPage, searchTerm);
+        }
+
+        init();
     </script>
 </body>
-
 </html>
