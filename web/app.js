@@ -1,192 +1,241 @@
-// app.js
+const API_BASE_URL = 'http://localhost:8080/api';
+let token = localStorage.getItem('token');
 
-const API_URL = "http://localhost:8080/api";
+// DOM Elements
+const loginForm = document.getElementById('login-form');
+const loginUsername = document.getElementById('login-username');
+const loginPassword = document.getElementById('login-password');
+const loginBtn = document.getElementById('login-btn');
+const logoutBtn = document.getElementById('logout-btn');
+const content = document.getElementById('content');
+const usernameSpan = document.getElementById('username');
+const createTablonBtn = document.getElementById('create-tablon-btn');
+const tablonName = document.getElementById('tablon-name');
+const tablonMessage = document.getElementById('tablon-message');
+const tablonGeo = document.getElementById('tablon-geo');
+const tablonesList = document.getElementById('tablones-list');
 
-// Función para crear un nuevo tablón
-async function createTablon(event) {
-  event.preventDefault();
-  const form = event.target;
-  const formData = new FormData(form);
+// Event Listeners
+loginBtn.addEventListener('click', login);
+logoutBtn.addEventListener('click', logout);
+createTablonBtn.addEventListener('click', createTablon);
 
-  try {
-    const response = await axios.post(`${API_URL}/createTablon`, null, {
-      params: Object.fromEntries(formData),
-    });
-    console.log("Tablón creado:", response.data);
-    await loadTablones();
-    form.reset();
-    showNotification("Tablón creado con éxito", "success");
-  } catch (error) {
-    console.error("Error al crear el tablón:", error);
-    showNotification("Error al crear el tablón", "error");
-  }
+// Check if user is logged in
+if (token) {
+    showContent();
+} else {
+    showLoginForm();
 }
 
-// Función para cargar los tablones
-async function loadTablones() {
-  try {
-    const response = await axios.get(`${API_URL}/readTablon`);
-    const tablones = response.data;
-    const tablonesList = document.getElementById("tablonesList");
-    tablonesList.innerHTML = "";
+async function login() {
+    const username = loginUsername.value;
+    const password = loginPassword.value;
 
-    tablones.forEach((tablon, index) => {
-      const tablonElement = createTablonElement(tablon, index);
-      tablonesList.appendChild(tablonElement);
-    });
-  } catch (error) {
-    console.error("Error al cargar los tablones:", error);
-    showNotification("Error al cargar los tablones", "error");
-  }
+    try {
+        const response = await fetch(`${API_BASE_URL}/generateToken?username=${encodeURIComponent(username)}`, {
+            method: 'GET',
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            token = data.token;
+            localStorage.setItem('token', token);
+            showContent();
+        } else {
+            alert('Login failed. Please try again.');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        alert('An error occurred. Please try again.');
+    }
 }
 
-// Función para crear el elemento HTML de un tablón
-function createTablonElement(tablon, index) {
-  const tablonDiv = document.createElement("div");
-  tablonDiv.className = "bg-white shadow-md rounded-lg p-6 mb-4";
-  tablonDiv.innerHTML = `
-        <h3 class="text-xl font-semibold mb-2">${tablon.name}</h3>
-        <p class="text-gray-600 mb-4">${
-          tablon.geo ? `Ubicación: ${tablon.geo}` : "Sin ubicación"
-        }</p>
-        <div class="space-y-2 mb-4" id="messages-${tablon.id}">
-            ${tablon.messages
-              .map(
-                (msg, msgIndex) => `
-                <div class="border-t pt-2 flex justify-between items-center">
-                    <div>
-                        <p class="text-sm text-gray-800">${msg.content.message}</p>
-                        <p class="text-xs text-gray-500">Likes: ${msg.content.likes}</p>
-                        
-                        
-            
+function logout() {
+    token = null;
+    localStorage.removeItem('token');
+    showLoginForm();
+}
+
+function showLoginForm() {
+    loginForm.style.display = 'block';
+    content.style.display = 'none';
+    logoutBtn.style.display = 'none';
+    usernameSpan.textContent = '';
+}
+
+function showContent() {
+    loginForm.style.display = 'none';
+    content.style.display = 'block';
+    logoutBtn.style.display = 'inline';
+    usernameSpan.textContent = 'Logged in';
+    fetchTablones();
+}
+
+async function createTablon() {
+    const name = tablonName.value;
+    const message = tablonMessage.value;
+    const geo = tablonGeo.value;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/createTablon?name=${encodeURIComponent(name)}&mensaje=${encodeURIComponent(message)}&geo=${encodeURIComponent(geo)}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (response.ok) {
+            tablonName.value = '';
+            tablonMessage.value = '';
+            tablonGeo.value = '';
+            fetchTablones();
+        } else {
+            alert('Failed to create tablon. Please try again.');
+        }
+    } catch (error) {
+        console.error('Create tablon error:', error);
+        alert('An error occurred. Please try again.');
+    }
+}
+
+async function fetchTablones() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/readTablon`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (response.ok) {
+            const tablones = await response.json();
+            displayTablones(tablones);
+        } else {
+            alert('Failed to fetch tablones. Please try again.');
+        }
+    } catch (error) {
+        console.error('Fetch tablones error:', error);
+        alert('An error occurred. Please try again.');
+    }
+}
+
+function displayTablones(tablones) {
+    tablonesList.innerHTML = '';
+    tablones.forEach((tablon) => {
+        const tablonElement = document.createElement('div');
+        tablonElement.className = 'tablon';
+        tablonElement.innerHTML = `
+            <h3>${tablon.name}</h3>
+            <p>Geo: ${tablon.geo}</p>
+            <button class="delete-btn" onclick="deleteTablon('${tablon.id}')">Delete Tablon</button>
+            <div class="messages">
+                ${tablon.messages.map((message) => `
+                    <div class="message">
+                        <p>${message.content.message}</p>
+                        <div class="message-actions">
+                            <button class="like-btn" onclick="likeMessage('${tablon.id}', '${message.id}')">
+                                Like (${message.content.likes})
+                            </button>
+                            <button class="delete-btn" onclick="deleteMessage('${tablon.id}', '${message.id}')">
+                                Delete Message
+                            </button>
+                        </div>
                     </div>
-                    <button onclick="deleteMessage('${tablon.id}', ${msgIndex})" class="text-red-500 hover:text-red-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                </div>
-            `
-              )
-              .join("")}
-        </div>
-        <div class="flex justify-between items-center mb-4">
-            <button onclick="addLikeToTablon('${
-              tablon.id
-            }')" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-sm">
-                Me gusta (${tablon.likes})
-            </button>
-            <button onclick="deleteTablon(${index})" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-sm">
-                Eliminar Discusión
-            </button>
-        </div>
-        <form onsubmit="addMessageToTablon(event, '${tablon.id}')" class="mt-4">
-            <input type="text" name="message" placeholder="Añadir mensaje" required class="w-full px-3 py-2 border rounded-md">
-            <button type="submit" class="mt-2 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Añadir Mensaje
-            </button>
-        </form>
-    `;
-  return tablonDiv;
-}
-
-// Función para añadir un "me gusta" a un mensaje
-async function addLikeToMessage(messageIndex) {
-  try {
-    await axios.post(`${API_URL}/addLikeToMessage`, null, {
-      params: { messageIndex: tablonId },
+                `).join('')}
+            </div>
+            <div class="new-message-form">
+                <input type="text" id="new-message-${tablon.id}" placeholder="New message">
+                <button onclick="sendMessage('${tablon.id}')">Send</button>
+            </div>
+        `;
+        tablonesList.appendChild(tablonElement);
     });
-    await loadTablones();
-    showNotification("Like añadido al mensage", "success");
-  } catch (error) {
-    console.error("Error al añadir like al mensage:", error);
-    showNotification("Error al añadir like al mensage", "error");
-  }
 }
 
-// Función para añadir un "me gusta" a un tablón
-async function addLikeToTablon(tablonId) {
-  try {
-    await axios.post(`${API_URL}/addLikeToTablon`, null, {
-      params: { tablon_id: tablonId },
-    });
-    await loadTablones();
-    showNotification("Like añadido al tablón", "success");
-  } catch (error) {
-    console.error("Error al añadir like al tablón:", error);
-    showNotification("Error al añadir like al tablón", "error");
-  }
-}
-
-// Función para eliminar un tablón
-async function deleteTablon(index) {
-  if (confirm("¿Estás seguro de que quieres eliminar este tablón?")) {
+async function deleteTablon(tablonId) {
     try {
-      await axios.delete(`${API_URL}/deleteTablonByIndex`, {
-        params: { index },
-      });
-      await loadTablones();
-      showNotification("Tablón eliminado con éxito", "success");
+        const response = await fetch(`${API_BASE_URL}/deleteTablon?id=${tablonId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (response.ok) {
+            fetchTablones();
+        } else {
+            alert('Failed to delete tablon. Please try again.');
+        }
     } catch (error) {
-      console.error("Error al eliminar el tablón:", error);
-      showNotification("Error al eliminar el tablón", "error");
+        console.error('Delete tablon error:', error);
+        alert('An error occurred. Please try again.');
     }
-  }
 }
 
-// Función para añadir un mensaje a un tablón
-async function addMessageToTablon(event, tablonId) {
-  event.preventDefault();
-  const form = event.target;
-  const message = form.message.value;
-
-  try {
-    await axios.post(`${API_URL}/addMessage`, null, {
-      params: { tablon_id: tablonId, message },
-    });
-    await loadTablones();
-    form.reset();
-    showNotification("Mensaje añadido con éxito", "success");
-  } catch (error) {
-    console.error("Error al añadir mensaje al tablón:", error);
-    showNotification("Error al añadir mensaje al tablón", "error");
-  }
-}
-
-// Función para eliminar un mensaje
-async function deleteMessage(tablonId, messageIndex) {
-  if (confirm("¿Estás seguro de que quieres eliminar este mensaje?")) {
+async function deleteMessage(tablonId, messageId) {
     try {
-      await axios.delete(`${API_URL}/deleteMessageByIndex`, {
-        params: { tablon_id: tablonId, index: messageIndex },
-      });
-      await loadTablones();
-      showNotification("Mensaje eliminado con éxito", "success");
+        const response = await fetch(`${API_BASE_URL}/deleteMessage?tablonId=${tablonId}&messageId=${messageId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (response.ok) {
+            fetchTablones();
+        } else {
+            alert('Failed to delete message. Please try again.');
+        }
     } catch (error) {
-      console.error("Error al eliminar el mensaje:", error);
-      showNotification("Error al eliminar el mensaje", "error");
+        console.error('Delete message error:', error);
+        alert('An error occurred. Please try again.');
     }
-  }
 }
 
-// Función para mostrar notificaciones
-function showNotification(message, type) {
-  const notification = document.createElement("div");
-  notification.className = `fixed bottom-4 right-4 p-4 rounded-md text-white ${
-    type === "success" ? "bg-green-500" : "bg-red-500"
-  }`;
-  notification.textContent = message;
-  document.body.appendChild(notification);
-  setTimeout(() => {
-    notification.remove();
-  }, 3000);
+async function likeMessage(tablonId, messageId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/likeMessage?tablonId=${tablonId}&messageId=${messageId}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (response.ok) {
+            fetchTablones();
+        } else {
+            alert('Failed to like message. Please try again.');
+        }
+    } catch (error) {
+        console.error('Like message error:', error);
+        alert('An error occurred. Please try again.');
+    }
 }
 
-// Event listeners
-document
-  .getElementById("createTablonForm")
-  .addEventListener("submit", createTablon);
+async function sendMessage(tablonId) {
+    const messageInput = document.getElementById(`new-message-${tablonId}`);
+    const message = messageInput.value;
 
-// Cargar tablones al iniciar la aplicación
-document.addEventListener("DOMContentLoaded", loadTablones);
+    if (!message) {
+        alert('Please enter a message.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/addMessage?tablon_id=${tablonId}&message=${encodeURIComponent(message)}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (response.ok) {
+            messageInput.value = '';
+            fetchTablones();
+        } else {
+            alert('Failed to send message. Please try again.');
+        }
+    } catch (error) {
+        console.error('Send message error:', error);
+        alert('An error occurred. Please try again.');
+    }
+}

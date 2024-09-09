@@ -1,23 +1,110 @@
-/* styles.css */
-
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.container {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
     max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f0f2f5;
 }
 
-.shadow-hover:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    transition: box-shadow 0.3s ease-in-out;
+header {
+    background-color: #1da1f2;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.fade-in {
-    animation: fadeIn 0.5s;
+h1, h2 {
+    margin-bottom: 1rem;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+input, button {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #1da1f2;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0c85d0;
+}
+
+#content {
+    margin-top: 2rem;
+}
+
+.tablon {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.tablon h3 {
+    margin-top: 0;
+}
+
+.message {
+    border-bottom: 1px solid #eee;
+    padding: 0.5rem 0;
+}
+
+.message:last-child {
+    border-bottom: none;
+}
+
+.message-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+}
+
+.like-btn, .delete-btn {
+    background-color: transparent;
+    color: #1da1f2;
+    border: 1px solid #1da1f2;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.like-btn:hover, .delete-btn:hover {
+    background-color: #1da1f2;
+    color: white;
+}
+
+.delete-btn {
+    color: #e0245e;
+    border-color: #e0245e;
+}
+
+.delete-btn:hover {
+    background-color: #e0245e;
+}
+
+.new-message-form {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.new-message-form input {
+    flex-grow: 1;
+}
+
+.new-message-form button {
+    width: auto;
 }
