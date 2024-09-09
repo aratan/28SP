@@ -46,11 +46,14 @@
 
 Para mejorar el código, se podrían considerar las siguientes modificaciones:
 
-1. Eliminar las funciones no utilizadas como `routeMessage` y `executeSystemCommand`.
+1. Añadir video
 2. Implementar un mejor manejo de errores y recuperación en caso de fallos de red.
 3. Mejorar la gestión de claves, posiblemente implementando un sistema de intercambio de claves.
 4. Agregar más capas de anonimato, como el enrutamiento de cebolla.
 5. Implementar un sistema de reputación para los pares para mejorar la confiabilidad de la red.
+
+   ![image](https://github.com/user-attachments/assets/efd225bd-88ee-4e5a-b963-239e867b2bb8)
+
 
 
 En general, este código proporciona una base sólida para una aplicación de mensajería distribuida y resistente a la censura, con un buen nivel de privacidad y seguridad.
