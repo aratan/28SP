@@ -43,6 +43,12 @@ var (
 	jwtSecretKey  = []byte("your-256-bit-secret")
 )
 
+var (
+	p2pTopic *pubsub.Topic
+	p2pSub   *pubsub.Subscription
+	p2pKeys  [][]byte
+)
+
 const (
 	Red    = "\033[31m"
 	Green  = "\033[32m"
@@ -120,6 +126,7 @@ func readConfig() (*Config, error) {
 	return &config, nil
 }
 
+// Actualiza createTablonHandler para publicar en la red P2P
 func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 	tablonName := r.URL.Query().Get("name")
 	if tablonName == "" {
@@ -129,9 +136,6 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 
 	mensaje := r.URL.Query().Get("mensaje")
 	geo := r.URL.Query().Get("geo")
-	horario := r.URL.Query().Get("horario")
-	iglesia := r.URL.Query().Get("iglesia")
-	dia := r.URL.Query().Get("dia")
 
 	msg := Message{
 		ID:        generateMessageID(),
@@ -139,14 +143,17 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 		To:        "DESTINATION_PEER_ID",
 		Timestamp: time.Now().Format(time.RFC3339),
 		Content: Content{
-			Title:      "Nuevo Mensaje",
+			Title:      tablonName,
 			Message:    mensaje,
-			Subtitle:   "Información de la Iglesia",
+			Subtitle:   "Información del Tablón",
 			Likes:      0,
 			Comments:   []Comment{},
 			Subscribed: false,
 		},
 	}
+
+	// Publicar en la red P2P
+	go publishToP2P(msg)
 
 	tablon := Tablon{
 		ID:       generateMessageID(),
@@ -165,15 +172,26 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 		"name":    tablonName,
 		"mensaje": mensaje,
 		"geo":     geo,
-		"horario": horario,
-		"iglesia": iglesia,
-		"dia":     dia,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
 
+func publishToP2P(msg Message) {
+	serializedMsg, err := serializeMessage(msg, p2pKeys)
+	if err != nil {
+		log.Printf(Red+"Failed to serialize message for P2P: %v"+Reset, err)
+		return
+	}
+
+	err = p2pTopic.Publish(context.Background(), serializedMsg)
+	if err != nil {
+		log.Printf(Red+"Failed to publish message to P2P network: %v"+Reset, err)
+	}
+}
+
+// Actualiza addMessageToTablonHandler para publicar en la red P2P
 func addMessageToTablonHandler(w http.ResponseWriter, r *http.Request) {
 	tablonID := r.URL.Query().Get("tablon_id")
 	if tablonID == "" {
@@ -198,7 +216,7 @@ func addMessageToTablonHandler(w http.ResponseWriter, r *http.Request) {
 				To:        "DESTINATION_PEER_ID",
 				Timestamp: time.Now().Format(time.RFC3339),
 				Content: Content{
-					Title:      "Nuevo Mensaje",
+					Title:      tablon.Name,
 					Message:    messageContent,
 					Subtitle:   "Sistema",
 					Likes:      0,
@@ -208,6 +226,10 @@ func addMessageToTablonHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			tablones[i].Messages = append(tablones[i].Messages, msg)
+
+			// Publicar en la red P2P
+			go publishToP2P(msg)
+
 			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(map[string]string{"status": "message added"})
 			return
@@ -216,6 +238,8 @@ func addMessageToTablonHandler(w http.ResponseWriter, r *http.Request) {
 
 	http.Error(w, "Tablon not found", http.StatusNotFound)
 }
+
+
 
 func readTablonHandler(w http.ResponseWriter, r *http.Request) {
 	tablonesMutex.Lock()
@@ -580,20 +604,6 @@ func main() {
 
 	r := mux.NewRouter()
 
-	///
-
-	// Archivos estáticos
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./web")))
-
-	// Middleware CORS
-	corsMiddleware := handlers.CORS(
-		//handlers.AllowedOrigins([]string{"http://localhost:8080"}),
-		handlers.AllowedOrigins([]string{"*"}), // Permitir todos los orígenes
-		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
-		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
-	)
-
-	///
 	// API routes
 	api := r.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/createTablon", createTablonHandler).Methods("POST")
@@ -606,60 +616,35 @@ func main() {
 	api.HandleFunc("/recibe", receiveMessagesHandler).Methods("GET")
 	api.HandleFunc("/generateToken", generateTokenHandler).Methods("GET")
 
-	// Serve static files
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./web")))
+	// Middleware CORS
+	corsMiddleware := handlers.CORS(
+		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
+		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
+	)
 
-	// Start servers
+	// Aplicar middleware CORS a las rutas de la API
+	http.Handle("/api/", corsMiddleware(api))
+
+	// Servir archivos estáticos
+	fs := http.FileServer(http.Dir("./web"))
+	http.Handle("/", fs)
+
+	// Iniciar servidor HTTP
 	go func() {
-		log.Println("Starting API server on :8080")
-		if err := http.ListenAndServe(":8080", corsMiddleware(api)); err != nil {
-			log.Fatalf("API server error: %v", err)
+		log.Println("Starting HTTP server on :8080")
+		if err := http.ListenAndServe(":8080", nil); err != nil {
+			log.Fatalf("HTTP server error: %v", err)
 		}
 	}()
 
-	log.Println("Starting web server on :8081")
-	if err := http.ListenAndServe(":8081", r); err != nil {
-		log.Fatalf("Web server error: %v", err)
-	}
-
-	if len(config.EncryptionKey) != 16 && len(config.EncryptionKey) != 24 && len(config.EncryptionKey) != 32 {
-		log.Fatalf(Red+"Invalid encryption key length: %d"+Reset, len(config.EncryptionKey))
-	}
-
-	keys := [][]byte{
-		[]byte(config.EncryptionKey),
-	}
-
-	switch strings.ToUpper(config.LogLevel) {
-	case "ERROR":
-		log.SetFlags(log.LstdFlags | log.Lshortfile)
-		log.SetOutput(os.Stderr)
-	case "INFO":
-		log.SetFlags(log.LstdFlags)
-		log.SetOutput(os.Stdout)
-	default:
-		log.SetFlags(0)
-		log.SetOutput(os.Stderr)
-	}
-
-	logFile, err := os.OpenFile(config.LogFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatalf(Red+"Failed to open log file: %v"+Reset, err)
-	}
-	defer logFile.Close()
-	log.SetOutput(logFile)
-
-	var logBuffer bytes.Buffer
-	log.SetOutput(&logBuffer)
-
-	flag.Parse()
+	// Configuración de libp2p y pubsub
 	ctx := context.Background()
 
 	h, err := libp2p.New(
 		libp2p.ListenAddrStrings(config.ListenAddress),
 		libp2p.NATPortMap(),
 	)
-
 	if err != nil {
 		log.Fatalf(Red+"Failed to create host: %v"+Reset, err)
 	}
@@ -670,18 +655,6 @@ func main() {
 		}
 	}
 
-	go func() {
-		for {
-			if logBuffer.Len() > 0 {
-				logOutput := logBuffer.String()
-				logBuffer.Reset()
-				if !strings.Contains(logOutput, "Failed to set multicast interface: setsockopt") {
-					fmt.Print(logOutput)
-				}
-			}
-		}
-	}()
-
 	go discoverPeers(ctx, h, config.TopicName)
 
 	ps, err := pubsub.NewGossipSub(ctx, h, pubsub.WithMaxMessageSize(config.MaxMessageSize))
@@ -689,25 +662,69 @@ func main() {
 		log.Fatalf(Red+"Failed to create pubsub: %v"+Reset, err)
 	}
 
-	//hashedTopic := hashTopic(config.TopicName)
-	//topic, err := ps.Join(hashedTopic)
-	topic, err := ps.Join(hashTopic(config.TopicName))
+	p2pTopic, err = ps.Join(hashTopic(config.TopicName))
 	if err != nil {
 		log.Fatalf(Red+"Failed to join topic: %v"+Reset, err)
 	}
 
-	from := h.ID().String()
-	to := "DESTINATION_PEER_ID"
-
-	go streamConsoleTo(ctx, topic, keys, config.RetryInterval, from, to)
-
-	sub, err := topic.Subscribe()
+	p2pSub, err = p2pTopic.Subscribe()
 	if err != nil {
 		log.Fatalf(Red+"Failed to subscribe to topic: %v"+Reset, err)
 	}
-	go printMessagesFrom(ctx, sub, keys)
+
+	p2pKeys = [][]byte{[]byte(config.EncryptionKey)}
+
+	go handleP2PMessages(ctx)
 
 	select {}
+}
+
+func handleP2PMessages(ctx context.Context) {
+	for {
+		m, err := p2pSub.Next(ctx)
+		if err != nil {
+			log.Printf(Red+"Failed to get next message: %v"+Reset, err)
+			continue
+		}
+		msg, err := deserializeMessage(m.Message.Data, p2pKeys)
+		if err != nil {
+			log.Printf(Red+"Deserialization error: %v"+Reset, err)
+			continue
+		}
+
+		// Procesar el mensaje P2P
+		processP2PMessage(msg)
+	}
+}
+
+func processP2PMessage(msg Message) {
+	tablonesMutex.Lock()
+	defer tablonesMutex.Unlock()
+
+	// Buscar el tablón correspondiente o crear uno nuevo si no existe
+	var targetTablon *Tablon
+	for i, tablon := range tablones {
+		if tablon.Name == msg.Content.Title {
+			targetTablon = &tablones[i]
+			break
+		}
+	}
+
+	if targetTablon == nil {
+		newTablon := Tablon{
+			ID:       generateMessageID(),
+			Name:     msg.Content.Title,
+			Messages: []Message{},
+			Geo:      "", // Puedes ajustar esto según sea necesario
+		}
+		tablones = append(tablones, newTablon)
+		targetTablon = &tablones[len(tablones)-1]
+	}
+
+	// Añadir el mensaje al tablón
+	targetTablon.Messages = append(targetTablon.Messages, msg)
+
+	log.Printf(Blue+"P2P message received: %s"+Reset, msg.Content.Message)
 }
 
 func setupMDNS(ctx context.Context, h host.Host, serviceTag string) error {
