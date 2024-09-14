@@ -6,6 +6,6 @@ maxMessageSize: 10485760
 retryInterval: 2000 
 logFile: "app.log"
 mdns:
-  enabled: true
+  enabled: false
   serviceTag: "my-mdns-service"
 useSSL: false  

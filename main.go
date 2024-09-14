@@ -7,8 +7,11 @@ import (
 	"context"
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/ecdsa"
+	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"flag"
@@ -44,9 +47,16 @@ var (
 )
 
 var (
-	p2pTopic *pubsub.Topic
-	p2pSub   *pubsub.Subscription
-	p2pKeys  [][]byte
+	p2pTopic   *pubsub.Topic
+	p2pSub     *pubsub.Subscription
+	p2pKeys    [][]byte
+	privateKey *ecdsa.PrivateKey
+	publicKey  *ecdsa.PublicKey
+)
+
+const (
+	keyRotationInterval   = 24 * time.Hour
+	messageValidityPeriod = 5 * time.Minute
 )
 
 const (
@@ -78,6 +88,13 @@ type Message struct {
 	To        string   `json:"to"`
 	Timestamp string   `json:"timestamp"`
 	Content   Content  `json:"content"`
+}
+
+type SecureMessage struct {
+	Message
+	Signature string    `json:"signature"`
+	Timestamp time.Time `json:"timestamp"`
+	Nonce     string    `json:"nonce"`
 }
 
 type Tablon struct {
@@ -113,6 +130,15 @@ type Comment struct {
 var receivedMessages []Message
 var messagesMutex sync.Mutex
 
+func init() {
+	var err error
+	privateKey, err = ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	if err != nil {
+		log.Fatalf("Failed to generate ECDSA key pair: %v", err)
+	}
+	publicKey = &privateKey.PublicKey
+}
+
 func readConfig() (*Config, error) {
 	data, err := ioutil.ReadFile("config.yaml")
 	if err != nil {
@@ -126,7 +152,6 @@ func readConfig() (*Config, error) {
 	return &config, nil
 }
 
-// Actualiza createTablonHandler para publicar en la red P2P
 func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 	tablonName := r.URL.Query().Get("name")
 	if tablonName == "" {
@@ -152,8 +177,22 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
+	secureMsg := SecureMessage{
+		Message:   msg,
+		Timestamp: time.Now(),
+		Nonce:     generateNonce(),
+	}
+
+	messageBytes, _ := json.Marshal(secureMsg.Message)
+	signature, err := signMessage(messageBytes)
+	if err != nil {
+		http.Error(w, "Failed to sign message", http.StatusInternalServerError)
+		return
+	}
+	secureMsg.Signature = base64.StdEncoding.EncodeToString(signature)
+
 	// Publicar en la red P2P
-	go publishToP2P(msg)
+	go publishToP2P(secureMsg)
 
 	tablon := Tablon{
 		ID:       generateMessageID(),
@@ -176,22 +215,25 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
+
+	log.Printf("Signing message: %s", string(messageBytes))
+	log.Printf("Signature: %x", signature)
+	log.Printf("Public Key: %x", elliptic.Marshal(publicKey.Curve, publicKey.X, publicKey.Y))
 }
 
-func publishToP2P(msg Message) {
+func publishToP2P(msg SecureMessage) {
 	serializedMsg, err := serializeMessage(msg, p2pKeys)
 	if err != nil {
-		log.Printf(Red+"Failed to serialize message for P2P: %v"+Reset, err)
+		log.Printf("Failed to serialize message for P2P: %v", err)
 		return
 	}
 
 	err = p2pTopic.Publish(context.Background(), serializedMsg)
 	if err != nil {
-		log.Printf(Red+"Failed to publish message to P2P network: %v"+Reset, err)
+		log.Printf("Failed to publish message to P2P network: %v", err)
 	}
 }
 
-// Actualiza addMessageToTablonHandler para publicar en la red P2P
 func addMessageToTablonHandler(w http.ResponseWriter, r *http.Request) {
 	tablonID := r.URL.Query().Get("tablon_id")
 	if tablonID == "" {
@@ -225,21 +267,45 @@ func addMessageToTablonHandler(w http.ResponseWriter, r *http.Request) {
 				},
 			}
 
+			secureMsg := SecureMessage{
+				Message:   msg,
+				Timestamp: time.Now(),
+				Nonce:     generateNonce(),
+			}
+
+			messageBytes, _ := json.Marshal(secureMsg.Message)
+			signature, err := signMessage(messageBytes)
+			if err != nil {
+				http.Error(w, "Failed to sign message", http.StatusInternalServerError)
+				return
+			}
+			secureMsg.Signature = base64.StdEncoding.EncodeToString(signature)
+
 			tablones[i].Messages = append(tablones[i].Messages, msg)
 
 			// Publicar en la red P2P
-			go publishToP2P(msg)
+			go publishToP2P(secureMsg)
 
 			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(map[string]string{"status": "message added"})
+
+			log.Printf("Signing message: %s", string(messageBytes))
+			log.Printf("Signature: %x", signature)
+			log.Printf("Public Key: %x", elliptic.Marshal(publicKey.Curve, publicKey.X, publicKey.Y))
+
 			return
 		}
 	}
 
 	http.Error(w, "Tablon not found", http.StatusNotFound)
+
 }
 
-
+func generateNonce() string {
+	nonce := make([]byte, 12)
+	rand.Read(nonce)
+	return base64.StdEncoding.EncodeToString(nonce)
+}
 
 func readTablonHandler(w http.ResponseWriter, r *http.Request) {
 	tablonesMutex.Lock()
@@ -426,7 +492,7 @@ func decryptMessage(ciphertext, key []byte) ([]byte, error) {
 	return plaintext, nil
 }
 
-func serializeMessage(msg Message, keys [][]byte) ([]byte, error) {
+func serializeMessage(msg SecureMessage, keys [][]byte) ([]byte, error) {
 	msgBytes, err := json.Marshal(msg)
 	if err != nil {
 		return nil, err
@@ -438,20 +504,20 @@ func serializeMessage(msg Message, keys [][]byte) ([]byte, error) {
 	return mixnetEncrypt(compressedData, keys)
 }
 
-func deserializeMessage(data []byte, keys [][]byte) (Message, error) {
+func deserializeMessage(data []byte, keys [][]byte) (SecureMessage, error) {
 	decryptedData, err := mixnetDecrypt(data, keys)
 	if err != nil {
-		return Message{}, err
+		return SecureMessage{}, err
 	}
 	decompressedData, err := decompress(decryptedData)
 	if err != nil {
-		return Message{}, err
+		return SecureMessage{}, err
 	}
 
-	var msg Message
+	var msg SecureMessage
 	err = json.Unmarshal(decompressedData, &msg)
 	if err != nil {
-		return Message{}, err
+		return SecureMessage{}, err
 	}
 	return msg, nil
 }
@@ -638,6 +704,8 @@ func main() {
 		}
 	}()
 
+	go rotateKeys()
+
 	// Configuración de libp2p y pubsub
 	ctx := context.Background()
 
@@ -674,27 +742,85 @@ func main() {
 
 	p2pKeys = [][]byte{[]byte(config.EncryptionKey)}
 
+	//publicKey = &privateKey.PublicKey
 	go handleP2PMessages(ctx)
 
 	select {}
+}
+
+func rotateKeys() {
+	for {
+		time.Sleep(keyRotationInterval)
+		newKey := make([]byte, 32)
+		_, err := rand.Read(newKey)
+		if err != nil {
+			log.Printf("Failed to generate new encryption key: %v", err)
+			continue
+		}
+		p2pKeys = append(p2pKeys, newKey)
+		if len(p2pKeys) > 5 {
+			p2pKeys = p2pKeys[1:]
+		}
+		log.Println("Encryption keys rotated")
+	}
+}
+
+func signMessage(msg []byte) ([]byte, error) {
+	hash := sha256.Sum256(msg)
+	r, s, err := ecdsa.Sign(rand.Reader, privateKey, hash[:])
+	if err != nil {
+		return nil, err
+	}
+	signature := append(r.Bytes(), s.Bytes()...)
+	return signature, nil
+}
+
+func verifySignature(msg, signature []byte, pubKey *ecdsa.PublicKey) bool {
+	hash := sha256.Sum256(msg)
+	r := new(big.Int).SetBytes(signature[:len(signature)/2])
+	s := new(big.Int).SetBytes(signature[len(signature)/2:])
+	return ecdsa.Verify(pubKey, hash[:], r, s)
 }
 
 func handleP2PMessages(ctx context.Context) {
 	for {
 		m, err := p2pSub.Next(ctx)
 		if err != nil {
-			log.Printf(Red+"Failed to get next message: %v"+Reset, err)
+			log.Printf("Failed to get next message: %v", err)
 			continue
 		}
 		msg, err := deserializeMessage(m.Message.Data, p2pKeys)
 		if err != nil {
-			log.Printf(Red+"Deserialization error: %v"+Reset, err)
+			log.Printf("Deserialization error: %v", err)
 			continue
 		}
 
+		// Verificar la firma del mensaje
+		signatureBytes, err := base64.StdEncoding.DecodeString(msg.Signature)
+		if err != nil {
+			log.Printf("Failed to decode signature: %v", err)
+			continue
+		}
+
+		messageBytes, _ := json.Marshal(msg.Message)
+
+		if !verifySignature(messageBytes, signatureBytes, publicKey) {
+			log.Printf("Invalid message signature")
+			continue
+		}
+
+		// Verificar el timestamp del mensaje
+		if time.Since(msg.Timestamp) > messageValidityPeriod {
+			log.Printf("Message expired")
+			continue
+		}
+		log.Printf("Verifying message: %s", string(messageBytes))
+		log.Printf("Signature: %x", signatureBytes)
+		log.Printf("Public Key: %x", elliptic.Marshal(publicKey.Curve, publicKey.X, publicKey.Y))
 		// Procesar el mensaje P2P
-		processP2PMessage(msg)
+		processP2PMessage(msg.Message)
 	}
+	
 }
 
 func processP2PMessage(msg Message) {
@@ -771,7 +897,7 @@ func initDHT(ctx context.Context, h host.Host) *dht.IpfsDHT {
 		log.Fatalf(Red+"Failed to create DHT: %v"+Reset, err)
 	}
 	if err = kademliaDHT.Bootstrap(ctx); err != nil {
-		log.Fatalf(Red+"Failed to bootstrap DHT: %v"+Reset, err)
+		log.Fatalf(Red+"Failed to bootstrap DH T: %v"+Reset, err)
 	}
 	var wg sync.WaitGroup
 	for _, peerAddr := range dht.DefaultBootstrapPeers {
@@ -846,7 +972,7 @@ func streamConsoleTo(ctx context.Context, topic *pubsub.Topic, keys [][]byte, re
 				Subscribed: false,
 			},
 		}
-		serializedMsg, err := serializeMessage(msg, keys)
+		serializedMsg, err := serializeMessage(SecureMessage{Message: msg, Timestamp: time.Now(), Nonce: generateNonce()}, keys)
 		if err != nil {
 			log.Printf(Red+"Failed to serialize message: %v"+Reset, err)
 			continue
@@ -888,7 +1014,7 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 		msg.From.Username = "Administrador"
 
 		messagesMutex.Lock()
-		receivedMessages = append(receivedMessages, msg)
+		receivedMessages = append(receivedMessages, msg.Message)
 		messagesMutex.Unlock()
 
 		log.Println(Blue + fmt.Sprintf("%s", msg.Content.Message) + Reset)
