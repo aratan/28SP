@@ -130,6 +130,7 @@ func readConfig() (*Config, error) {
 
 // Actualiza createTablonHandler para publicar en la red P2P
 func createTablonHandler(w http.ResponseWriter, r *http.Request) {
+	// Obtener parámetros de la consulta
 	tablonName := r.URL.Query().Get("name")
 	if tablonName == "" {
 		http.Error(w, "Missing 'name' query parameter", http.StatusBadRequest)
@@ -139,20 +140,21 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 	mensaje := r.URL.Query().Get("mensaje")
 	geo := r.URL.Query().Get("geo")
 
+	// Crear el mensaje que se publicará
 	msg := Message{
-		ID:        tablon.ID,
+		ID:        generateMessageID(), // Asegúrate de que esta función esté definida para generar un ID único
 		From:      UserInfo{PeerID: "your_peer_id", Username: "your_username", Photo: "your_photo_url"},
 		To:        "BROADCAST",
 		Timestamp: time.Now().Format(time.RFC3339),
 		Content:   Content{Title: tablonName, Message: mensaje, Subtitle: "Información del Tablón", Likes: 0, Comments: []Comment{}, Subscribed: false},
 		Action:    "create",
-		TablonID:  tablon.ID,
-	}
+		TablonID:  generateMessageID(), // Asegúrate de que esta función esté definida o usa un valor adecuado
 	}
 
-	// Publicar en la red P2P
+	// Publicar en la red P2P en una goroutine
 	go publishToP2P(msg)
 
+	// Crear el nuevo Tablón
 	tablon := Tablon{
 		ID:       generateMessageID(),
 		Name:     tablonName,
@@ -160,10 +162,12 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 		Geo:      geo,
 	}
 
+	// Sincronizar acceso a la lista de Tablones
 	tablonesMutex.Lock()
 	tablones = append(tablones, tablon)
 	tablonesMutex.Unlock()
 
+	// Crear la respuesta
 	response := map[string]string{
 		"status":  "tablon created",
 		"id":      tablon.ID,
@@ -172,9 +176,13 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 		"geo":     geo,
 	}
 
+	// Establecer el encabezado de tipo de contenido y codificar la respuesta en JSON
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+	}
 }
+
 
 func publishToP2P(msg Message) {
 	serializedMsg, err := serializeMessage(msg, p2pKeys)
