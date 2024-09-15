@@ -1,241 +1,199 @@
-const API_BASE_URL = 'http://localhost:8080/api';
-let token = localStorage.getItem('token');
+let tablones = [];
+let currentPage = 1;
+const pageSize = 5; // Número de tablones por página
 
-// DOM Elements
-const loginForm = document.getElementById('login-form');
-const loginUsername = document.getElementById('login-username');
-const loginPassword = document.getElementById('login-password');
-const loginBtn = document.getElementById('login-btn');
-const logoutBtn = document.getElementById('logout-btn');
-const content = document.getElementById('content');
-const usernameSpan = document.getElementById('username');
-const createTablonBtn = document.getElementById('create-tablon-btn');
-const tablonName = document.getElementById('tablon-name');
-const tablonMessage = document.getElementById('tablon-message');
-const tablonGeo = document.getElementById('tablon-geo');
-const tablonesList = document.getElementById('tablones-list');
-
-// Event Listeners
-loginBtn.addEventListener('click', login);
-logoutBtn.addEventListener('click', logout);
-createTablonBtn.addEventListener('click', createTablon);
-
-// Check if user is logged in
-if (token) {
-    showContent();
-} else {
-    showLoginForm();
-}
-
-async function login() {
-    const username = loginUsername.value;
-    const password = loginPassword.value;
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/generateToken?username=${encodeURIComponent(username)}`, {
-            method: 'GET',
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            token = data.token;
-            localStorage.setItem('token', token);
-            showContent();
-        } else {
-            alert('Login failed. Please try again.');
-        }
-    } catch (error) {
-        console.error('Login error:', error);
-        alert('An error occurred. Please try again.');
+// Función para crear un tablón
+async function createTablon(name, message, geo) {
+  const response = await fetch(
+    `/api/createTablon?name=${encodeURIComponent(
+      name
+    )}&mensaje=${encodeURIComponent(message)}&geo=${encodeURIComponent(geo)}`,
+    {
+      method: "POST",
     }
+  );
+  return response.json();
 }
 
-function logout() {
-    token = null;
-    localStorage.removeItem('token');
-    showLoginForm();
+// Función para obtener todos los tablones
+async function getTablones() {
+  const response = await fetch("/api/readTablon");
+  return response.json();
 }
 
-function showLoginForm() {
-    loginForm.style.display = 'block';
-    content.style.display = 'none';
-    logoutBtn.style.display = 'none';
-    usernameSpan.textContent = '';
+// Función para eliminar un tablón
+async function deleteTablon(id) {
+  const response = await fetch(`/api/deleteTablon?id=${id}`, {
+    method: "DELETE",
+  });
+  return response.json();
 }
 
-function showContent() {
-    loginForm.style.display = 'none';
-    content.style.display = 'block';
-    logoutBtn.style.display = 'inline';
-    usernameSpan.textContent = 'Logged in';
-    fetchTablones();
-}
-
-async function createTablon() {
-    const name = tablonName.value;
-    const message = tablonMessage.value;
-    const geo = tablonGeo.value;
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/createTablon?name=${encodeURIComponent(name)}&mensaje=${encodeURIComponent(message)}&geo=${encodeURIComponent(geo)}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-
-        if (response.ok) {
-            tablonName.value = '';
-            tablonMessage.value = '';
-            tablonGeo.value = '';
-            fetchTablones();
-        } else {
-            alert('Failed to create tablon. Please try again.');
-        }
-    } catch (error) {
-        console.error('Create tablon error:', error);
-        alert('An error occurred. Please try again.');
+// Función para añadir un mensaje a un tablón
+async function addMessage(tablonId, message) {
+  const response = await fetch(
+    `/api/addMessage?tablon_id=${tablonId}&message=${encodeURIComponent(
+      message
+    )}`,
+    {
+      method: "POST",
     }
+  );
+  return response.json();
 }
 
-async function fetchTablones() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/readTablon`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-
-        if (response.ok) {
-            const tablones = await response.json();
-            displayTablones(tablones);
-        } else {
-            alert('Failed to fetch tablones. Please try again.');
-        }
-    } catch (error) {
-        console.error('Fetch tablones error:', error);
-        alert('An error occurred. Please try again.');
+// Función para eliminar un mensaje
+async function deleteMessage(tablonId, messageId) {
+  const response = await fetch(
+    `/api/deleteMessage?tablonId=${tablonId}&messageId=${messageId}`,
+    {
+      method: "DELETE",
     }
+  );
+  return response.json();
 }
 
-function displayTablones(tablones) {
-    tablonesList.innerHTML = '';
-    tablones.forEach((tablon) => {
-        const tablonElement = document.createElement('div');
-        tablonElement.className = 'tablon';
-        tablonElement.innerHTML = `
-            <h3>${tablon.name}</h3>
-            <p>Geo: ${tablon.geo}</p>
-            <button class="delete-btn" onclick="deleteTablon('${tablon.id}')">Delete Tablon</button>
-            <div class="messages">
-                ${tablon.messages.map((message) => `
-                    <div class="message">
+// Función para dar like a un mensaje
+async function likeMessage(tablonId, messageId) {
+  const response = await fetch(
+    `/api/likeMessage?tablonId=${tablonId}&messageId=${messageId}`,
+    {
+      method: "POST",
+    }
+  );
+  return response.json();
+}
+
+// Función para renderizar los tablones
+function renderTablones(filteredTablones) {
+  const tablonesListElement = document.getElementById("tablonesList");
+  tablonesListElement.innerHTML = "";
+
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedTablones = filteredTablones.slice(startIndex, endIndex);
+
+  paginatedTablones.forEach((tablon) => {
+    const tablonElement = document.createElement("div");
+    tablonElement.className = "tablon";
+    tablonElement.innerHTML = `
+            <h3>${tablon.name} <small class="text-muted">${
+      tablon.geo || ""
+    }</small></h3>
+            <button class="btn btn-sm btn-danger float-end" onclick="handleDeleteTablon('${
+              tablon.id
+            }')">
+                <i class="fas fa-trash"></i> Eliminar Tablón
+            </button>
+            <div class="messages mt-3">
+                ${tablon.messages
+                  .map(
+                    (message) => `
+                    <div class="message ${
+                      message.sender === "yo" ? "sender" : "receiver"
+                    }">
                         <p>${message.content.message}</p>
-                        <div class="message-actions">
-                            <button class="like-btn" onclick="likeMessage('${tablon.id}', '${message.id}')">
-                                Like (${message.content.likes})
+                        <small class="text-muted">${new Date(
+                          message.timestamp
+                        ).toLocaleString()}</small>
+                        <div class="message-buttons">
+                            <button class="btn btn-sm btn-outline-primary" onclick="handleLikeMessage('${
+                              tablon.id
+                            }', '${message.id}')">
+                                <i class="fas fa-thumbs-up"></i> ${
+                                  message.content.likes
+                                }
                             </button>
-                            <button class="delete-btn" onclick="deleteMessage('${tablon.id}', '${message.id}')">
-                                Delete Message
+                            <button class="btn btn-sm btn-outline-danger" onclick="handleDeleteMessage('${
+                              tablon.id
+                            }', '${message.id}')">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </div>
                     </div>
-                `).join('')}
+                `
+                  )
+                  .join("")}
             </div>
-            <div class="new-message-form">
-                <input type="text" id="new-message-${tablon.id}" placeholder="New message">
-                <button onclick="sendMessage('${tablon.id}')">Send</button>
-            </div>
+            <form onsubmit="handleAddMessage(event, '${
+              tablon.id
+            }')" class="mt-3">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Nuevo mensaje" required>
+                    <button class="btn btn-outline-secondary" type="submit">Enviar</button>
+                </div>
+            </form>
         `;
-        tablonesList.appendChild(tablonElement);
-    });
+    tablonesListElement.appendChild(tablonElement);
+  });
+
+  // Actualiza la paginación
+  document
+    .getElementById("prevPage")
+    .classList.toggle("disabled", currentPage === 1);
+  document
+    .getElementById("nextPage")
+    .classList.toggle("disabled", endIndex >= filteredTablones.length);
 }
 
-async function deleteTablon(tablonId) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/deleteTablon?id=${tablonId}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        });
+// Función para manejar la creación de un tablón
+async function handleCreateTablon(event) {
+  event.preventDefault();
+  const name = document.getElementById("tablonName").value;
+  const message = document.getElementById("tablonMessage").value;
+  const geo = document.getElementById("tablonGeo").value;
 
-        if (response.ok) {
-            fetchTablones();
-        } else {
-            alert('Failed to delete tablon. Please try again.');
-        }
-    } catch (error) {
-        console.error('Delete tablon error:', error);
-        alert('An error occurred. Please try again.');
-    }
+  // Primero, crea el tablón
+  const newTablon = await createTablon(name, message, geo);
+
+  // Ahora, añade el mensaje inicial al tablón recién creado
+  if (newTablon && newTablon.id) {
+    await addMessage(newTablon.id, message);
+  }
+
+  // Vuelve a cargar los tablones
+  await loadTablones();
 }
 
-async function deleteMessage(tablonId, messageId) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/deleteMessage?tablonId=${tablonId}&messageId=${messageId}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-
-        if (response.ok) {
-            fetchTablones();
-        } else {
-            alert('Failed to delete message. Please try again.');
-        }
-    } catch (error) {
-        console.error('Delete message error:', error);
-        alert('An error occurred. Please try again.');
-    }
+// Funciones de paginación
+function handleNextPage(event) {
+  event.preventDefault();
+  currentPage++;
+  handleSearch(); // Usamos el buscador para filtrar y paginar
 }
 
-async function likeMessage(tablonId, messageId) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/likeMessage?tablonId=${tablonId}&messageId=${messageId}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-
-        if (response.ok) {
-            fetchTablones();
-        } else {
-            alert('Failed to like message. Please try again.');
-        }
-    } catch (error) {
-        console.error('Like message error:', error);
-        alert('An error occurred. Please try again.');
-    }
+function handlePrevPage(event) {
+  event.preventDefault();
+  if (currentPage > 1) currentPage--;
+  handleSearch();
 }
 
-async function sendMessage(tablonId) {
-    const messageInput = document.getElementById(`new-message-${tablonId}`);
-    const message = messageInput.value;
-
-    if (!message) {
-        alert('Please enter a message.');
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/addMessage?tablon_id=${tablonId}&message=${encodeURIComponent(message)}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-
-        if (response.ok) {
-            messageInput.value = '';
-            fetchTablones();
-        } else {
-            alert('Failed to send message. Please try again.');
-        }
-    } catch (error) {
-        console.error('Send message error:', error);
-        alert('An error occurred. Please try again.');
-    }
+// Función para manejar el filtrado por búsqueda
+function handleSearch() {
+  const searchQuery = document
+    .getElementById("searchInput")
+    .value.toLowerCase();
+  const filteredTablones = tablones.filter(
+    (tablon) =>
+      tablon.name.toLowerCase().includes(searchQuery) ||
+      (tablon.geo && tablon.geo.toLowerCase().includes(searchQuery))
+  );
+  renderTablones(filteredTablones);
 }
+
+function clearSearch() {
+  document.getElementById("searchInput").value = "";
+  handleSearch();
+}
+
+// Función para cargar los tablones desde el servidor
+async function loadTablones() {
+  tablones = await getTablones();
+  handleSearch(); // Renderiza con la búsqueda aplicada
+}
+
+// Inicialización
+document
+  .getElementById("createTablonForm")
+  .addEventListener("submit", handleCreateTablon);
+loadTablones();

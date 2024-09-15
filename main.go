@@ -78,6 +78,8 @@ type Message struct {
 	To        string   `json:"to"`
 	Timestamp string   `json:"timestamp"`
 	Content   Content  `json:"content"`
+	Action    string   `json:"action"` // "create", "delete", "like"
+	TablonID  string   `json:"tablonId"`
 }
 
 type Tablon struct {
@@ -696,15 +698,10 @@ func handleP2PMessages(ctx context.Context) {
 		processP2PMessage(msg)
 	}
 }
-
-func processP2PMessage(msg Message) {
-	tablonesMutex.Lock()
-	defer tablonesMutex.Unlock()
-
-	// Buscar el tablón correspondiente o crear uno nuevo si no existe
+func createOrUpdateMessage(msg Message) {
 	var targetTablon *Tablon
 	for i, tablon := range tablones {
-		if tablon.Name == msg.Content.Title {
+		if tablon.ID == msg.TablonID {
 			targetTablon = &tablones[i]
 			break
 		}
@@ -712,7 +709,7 @@ func processP2PMessage(msg Message) {
 
 	if targetTablon == nil {
 		newTablon := Tablon{
-			ID:       generateMessageID(),
+			ID:       msg.TablonID,
 			Name:     msg.Content.Title,
 			Messages: []Message{},
 			Geo:      "", // Puedes ajustar esto según sea necesario
@@ -721,10 +718,73 @@ func processP2PMessage(msg Message) {
 		targetTablon = &tablones[len(tablones)-1]
 	}
 
-	// Añadir el mensaje al tablón
-	targetTablon.Messages = append(targetTablon.Messages, msg)
+	// Buscar si el mensaje ya existe
+	for i, existingMsg := range targetTablon.Messages {
+		if existingMsg.ID == msg.ID {
+			// Actualizar mensaje existente
+			targetTablon.Messages[i] = msg
+			return
+		}
+	}
 
-	log.Printf(Blue+"P2P message received: %s"+Reset, msg.Content.Message)
+	// Añadir nuevo mensaje
+	targetTablon.Messages = append(targetTablon.Messages, msg)
+}
+
+func deleteTablon(tablonID string) {
+	for i, tablon := range tablones {
+		if tablon.ID == tablonID {
+			tablones = append(tablones[:i], tablones[i+1:]...)
+			break
+		}
+	}
+}
+
+func deleteMessage(tablonID, messageID string) {
+	for i, tablon := range tablones {
+		if tablon.ID == tablonID {
+			for j, message := range tablon.Messages {
+				if message.ID == messageID {
+					tablones[i].Messages = append(tablon.Messages[:j], tablon.Messages[j+1:]...)
+					return
+				}
+			}
+		}
+	}
+}
+
+func updateMessageLikes(tablonID, messageID string, likes int) {
+	for i, tablon := range tablones {
+		if tablon.ID == tablonID {
+			for j, message := range tablon.Messages {
+				if message.ID == messageID {
+					tablones[i].Messages[j].Content.Likes = likes
+					return
+				}
+			}
+		}
+	}
+}
+
+func processP2PMessage(msg Message) {
+	tablonesMutex.Lock()
+	defer tablonesMutex.Unlock()
+
+	switch msg.Action {
+	case "create":
+		// Crear o actualizar mensaje
+		createOrUpdateMessage(msg)
+	case "delete":
+		// Eliminar mensaje o tablón
+		if msg.TablonID == "" {
+			deleteTablon(msg.ID)
+		} else {
+			deleteMessage(msg.TablonID, msg.ID)
+		}
+	case "like":
+		// Actualizar likes
+		updateMessageLikes(msg.TablonID, msg.ID, msg.Content.Likes)
+	}
 }
 
 func setupMDNS(ctx context.Context, h host.Host, serviceTag string) error {
