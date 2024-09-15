@@ -333,25 +333,49 @@ func likeMessageHandler(w http.ResponseWriter, r *http.Request) {
 	tablonesMutex.Lock()
 	defer tablonesMutex.Unlock()
 
+	var updatedLikes int
+	var messageFound bool
+
 	for i, tablon := range tablones {
 		if tablon.ID == tablonID {
 			for j, message := range tablon.Messages {
 				if message.ID == messageID {
 					tablones[i].Messages[j].Content.Likes++
-					w.Header().Set("Content-Type", "application/json")
-					json.NewEncoder(w).Encode(map[string]string{
-						"status": "message liked",
-						"likes":  fmt.Sprintf("%d", tablones[i].Messages[j].Content.Likes),
-					})
-					return
+					updatedLikes = tablones[i].Messages[j].Content.Likes
+					messageFound = true
+					break
 				}
 			}
-			http.Error(w, "Message not found", http.StatusNotFound)
-			return
+			if messageFound {
+				break
+			}
 		}
 	}
 
-	http.Error(w, "Tablon not found", http.StatusNotFound)
+	if !messageFound {
+		http.Error(w, "Message not found", http.StatusNotFound)
+		return
+	}
+
+	// Crear un mensaje P2P para propagar el like
+	likeMsg := Message{
+		ID:        generateMessageID(),
+		From:      UserInfo{PeerID: "your_peer_id", Username: "your_username", Photo: "your_photo_url"},
+		To:        "BROADCAST",
+		Timestamp: time.Now().Format(time.RFC3339),
+		Content:   Content{Likes: updatedLikes},
+		Action:    "like",
+		TablonID:  tablonID,
+	}
+
+	// Publicar en la red P2P
+	go publishToP2P(likeMsg)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"status": "message liked",
+		"likes":  updatedLikes,
+	})
 }
 
 func generateRandomInt(max int) (int, error) {
