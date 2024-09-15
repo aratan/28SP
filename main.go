@@ -140,18 +140,14 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 	geo := r.URL.Query().Get("geo")
 
 	msg := Message{
-		ID:        generateMessageID(),
+		ID:        tablon.ID,
 		From:      UserInfo{PeerID: "your_peer_id", Username: "your_username", Photo: "your_photo_url"},
-		To:        "DESTINATION_PEER_ID",
+		To:        "BROADCAST",
 		Timestamp: time.Now().Format(time.RFC3339),
-		Content: Content{
-			Title:      tablonName,
-			Message:    mensaje,
-			Subtitle:   "Información del Tablón",
-			Likes:      0,
-			Comments:   []Comment{},
-			Subscribed: false,
-		},
+		Content:   Content{Title: tablonName, Message: mensaje, Subtitle: "Información del Tablón", Likes: 0, Comments: []Comment{}, Subscribed: false},
+		Action:    "create",
+		TablonID:  tablon.ID,
+	}
 	}
 
 	// Publicar en la red P2P
@@ -215,16 +211,11 @@ func addMessageToTablonHandler(w http.ResponseWriter, r *http.Request) {
 			msg := Message{
 				ID:        generateMessageID(),
 				From:      UserInfo{PeerID: "your_peer_id", Username: "your_username", Photo: "your_photo_url"},
-				To:        "DESTINATION_PEER_ID",
+				To:        "BROADCAST",
 				Timestamp: time.Now().Format(time.RFC3339),
-				Content: Content{
-					Title:      tablon.Name,
-					Message:    messageContent,
-					Subtitle:   "Sistema",
-					Likes:      0,
-					Comments:   []Comment{},
-					Subscribed: false,
-				},
+				Content:   Content{Title: tablon.Name, Message: messageContent, Subtitle: "Sistema", Likes: 0, Comments: []Comment{}, Subscribed: false},
+				Action:    "create",
+				TablonID:  tablonID,
 			}
 
 			tablones[i].Messages = append(tablones[i].Messages, msg)
@@ -257,7 +248,16 @@ func deleteTablonHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Missing 'id' query parameter", http.StatusBadRequest)
 		return
 	}
-
+	msg := Message{
+		ID:        tablonID,
+		From:      UserInfo{PeerID: "your_peer_id", Username: "your_username", Photo: "your_photo_url"},
+		To:        "BROADCAST",
+		Timestamp: time.Now().Format(time.RFC3339),
+		Action:    "delete",
+	}
+	
+	go publishToP2P(msg)
+	
 	tablonesMutex.Lock()
 	defer tablonesMutex.Unlock()
 
@@ -276,6 +276,16 @@ func deleteTablonHandler(w http.ResponseWriter, r *http.Request) {
 func deleteMessageHandler(w http.ResponseWriter, r *http.Request) {
 	tablonID := r.URL.Query().Get("tablonId")
 	messageID := r.URL.Query().Get("messageId")
+	msg := Message{
+		ID:        messageID,
+		From:      UserInfo{PeerID: "your_peer_id", Username: "your_username", Photo: "your_photo_url"},
+		To:        "BROADCAST",
+		Timestamp: time.Now().Format(time.RFC3339),
+		Action:    "delete",
+		TablonID:  tablonID,
+	}
+	
+	go publishToP2P(msg)
 
 	if tablonID == "" || messageID == "" {
 		http.Error(w, "Missing 'tablonId' or 'messageId' query parameter", http.StatusBadRequest)
