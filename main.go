@@ -30,6 +30,7 @@ import (
 	"github.com/libp2p/go-libp2p"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/peer"
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery/mdns"
@@ -44,9 +45,12 @@ var (
 )
 
 var (
-	p2pTopic *pubsub.Topic
-	p2pSub   *pubsub.Subscription
-	p2pKeys  [][]byte
+	p2pTopic      *pubsub.Topic
+	p2pSub        *pubsub.Subscription
+	p2pKeys       [][]byte
+	torLayers     []OnionLayer
+	zkpChallenges map[string]*big.Int
+	dhtInstance   *dht.IpfsDHT
 )
 
 const (
@@ -69,19 +73,27 @@ type Config struct {
 		Enabled    bool   `yaml:"enabled"`
 		ServiceTag string `yaml:"serviceTag"`
 	} `yaml:"mdns"`
-	UseSSL bool `yaml:"useSSL"`
+	UseSSL        bool   `yaml:"useSSL"`
+	TorNodes      int    `yaml:"torNodes"`
+	ZKPDifficulty int    `yaml:"zkpDifficulty"`
+	DHTBootstrap  string `yaml:"dhtBootstrap"`
 }
 
 type Message struct {
-	ID        string   `json:"id"`
-	From      UserInfo `json:"from"`
-	To        string   `json:"to"`
-	Timestamp string   `json:"timestamp"`
-	Content   Content  `json:"content"`
-	Action    string   `json:"action"` // "create", "delete", "like"
-	TablonID  string   `json:"tablonId"`
+	ID               string   `json:"id"`
+	From             UserInfo `json:"from"`
+	To               string   `json:"to"`
+	Timestamp        string   `json:"timestamp"`
+	Content          Content  `json:"content"`
+	Action           string   `json:"action"` // "create", "delete", "like"
+	TablonID         string   `json:"tablonId"`
+	EncryptedContent []byte   `json:"encryptedContent"`
+	PublicKey        []byte   `json:"publicKey"`
 }
-
+type OnionLayer struct {
+	NextHop      peer.ID
+	EncryptedMsg []byte
+}
 type Tablon struct {
 	ID       string    `json:"id"`
 	Name     string    `json:"name"`
@@ -142,16 +154,23 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Crear el mensaje que se publicará
 	msg := Message{
-		ID:        generateMessageID(), // Asegúrate de que esta función esté definida para generar un ID único
+		ID:        generateMessageID(),
 		From:      UserInfo{PeerID: "your_peer_id", Username: "your_username", Photo: "your_photo_url"},
 		To:        "BROADCAST",
 		Timestamp: time.Now().Format(time.RFC3339),
 		Content:   Content{Title: tablonName, Message: mensaje, Subtitle: "Información del Tablón", Likes: 0, Comments: []Comment{}, Subscribed: false},
 		Action:    "create",
-		TablonID:  generateMessageID(), // Asegúrate de que esta función esté definida o usa un valor adecuado
+		TablonID:  generateMessageID(),
 	}
+	
+	// Encrypt the message content
+	encryptedContent, err := encryptEndToEnd([]byte(mensaje), []byte{}) // Replace []byte{} with actual public key
+	if err != nil {
+		http.Error(w, "Failed to encrypt message", http.StatusInternalServerError)
+		return
+	}
+	msg.EncryptedContent = encryptedContent
 
-	// Publicar en la red P2P en una goroutine
 	go publishToP2P(msg)
 
 	// Crear el nuevo Tablón
@@ -181,8 +200,8 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(response); err != nil {
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
 	}
-}
 
+}
 
 func publishToP2P(msg Message) {
 	serializedMsg, err := serializeMessage(msg, p2pKeys)
@@ -226,6 +245,14 @@ func addMessageToTablonHandler(w http.ResponseWriter, r *http.Request) {
 				TablonID:  tablonID,
 			}
 
+			// Encrypt the message content
+			encryptedContent, err := encryptEndToEnd([]byte(messageContent), []byte{}) // Replace []byte{} with actual public key
+			if err != nil {
+				http.Error(w, "Failed to encrypt message", http.StatusInternalServerError)
+				return
+			}
+			msg.EncryptedContent = encryptedContent
+
 			tablones[i].Messages = append(tablones[i].Messages, msg)
 
 			// Publicar en la red P2P
@@ -235,12 +262,12 @@ func addMessageToTablonHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"status": "message added"})
 			return
 		}
+		
+		
 	}
 
 	http.Error(w, "Tablon not found", http.StatusNotFound)
 }
-
-
 
 func readTablonHandler(w http.ResponseWriter, r *http.Request) {
 	tablonesMutex.Lock()
@@ -263,9 +290,9 @@ func deleteTablonHandler(w http.ResponseWriter, r *http.Request) {
 		Timestamp: time.Now().Format(time.RFC3339),
 		Action:    "delete",
 	}
-	
+
 	go publishToP2P(msg)
-	
+
 	tablonesMutex.Lock()
 	defer tablonesMutex.Unlock()
 
@@ -292,7 +319,7 @@ func deleteMessageHandler(w http.ResponseWriter, r *http.Request) {
 		Action:    "delete",
 		TablonID:  tablonID,
 	}
-	
+
 	go publishToP2P(msg)
 
 	if tablonID == "" || messageID == "" {
@@ -357,7 +384,6 @@ func likeMessageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Crear un mensaje P2P para propagar el like
 	likeMsg := Message{
 		ID:        generateMessageID(),
 		From:      UserInfo{PeerID: "your_peer_id", Username: "your_username", Photo: "your_photo_url"},
@@ -368,7 +394,6 @@ func likeMessageHandler(w http.ResponseWriter, r *http.Request) {
 		TablonID:  tablonID,
 	}
 
-	// Publicar en la red P2P
 	go publishToP2P(likeMsg)
 
 	w.Header().Set("Content-Type", "application/json")
@@ -422,6 +447,119 @@ func decompress(data []byte) ([]byte, error) {
 		return nil, err
 	}
 	return out.Bytes(), nil
+}
+func encryptEndToEnd(message, publicKey []byte) ([]byte, error) {
+	pubKey, err := crypto.UnmarshalPublicKey(publicKey)
+	if err != nil {
+		return nil, err
+	}
+
+	sharedSecret, err := pubKey.Raw()
+	if err != nil {
+		return nil, err
+	}
+
+	block, err := aes.NewCipher(sharedSecret[:32])
+	if err != nil {
+		return nil, err
+	}
+
+	nonce := make([]byte, 12)
+	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+		return nil, err
+	}
+
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+
+	ciphertext := aesgcm.Seal(nonce, nonce, message, nil)
+	return ciphertext, nil
+}
+
+func decryptEndToEnd(ciphertext, privateKey []byte) ([]byte, error) {
+	privKey, err := crypto.UnmarshalPrivateKey(privateKey)
+	if err != nil {
+		return nil, err
+	}
+
+	sharedSecret, err := privKey.Raw()
+	if err != nil {
+		return nil, err
+	}
+
+	block, err := aes.NewCipher(sharedSecret[:32])
+	if err != nil {
+		return nil, err
+	}
+
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(ciphertext) < 12 {
+		return nil, fmt.Errorf("ciphertext too short")
+	}
+
+	nonce := ciphertext[:12]
+	ciphertext = ciphertext[12:]
+
+	plaintext, err := aesgcm.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return plaintext, nil
+}
+
+func createOnionLayers(msg Message, peers []peer.ID) ([]OnionLayer, error) {
+	layers := make([]OnionLayer, len(peers))
+	currentMsg, err := json.Marshal(msg)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := len(peers) - 1; i >= 0; i-- {
+		pubKey, err := peers[i].ExtractPublicKey()
+		if err != nil {
+			return nil, err
+		}
+		pubKeyBytes, err := pubKey.Raw()
+		if err != nil {
+			return nil, err
+		}
+		encryptedMsg, err := encryptEndToEnd(currentMsg, pubKeyBytes)
+		if err != nil {
+			return nil, err
+		}
+		layers[i] = OnionLayer{
+			NextHop:     peers[i],
+			EncryptedMsg: encryptedMsg,
+		}
+		currentMsg, err = json.Marshal(layers[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	
+	return layers, nil
+}
+
+func generateZKPProof(p, g, x *big.Int) *big.Int {
+	return new(big.Int).Exp(g, x, p)
+}
+
+func verifyZKPProof(p, g, y, proof *big.Int) bool {
+	return proof.Cmp(new(big.Int).Exp(g, y, p)) == 0
+	
+}
+
+func generateZKPChallenge() (*big.Int, *big.Int) {
+	p, _ := rand.Prime(rand.Reader, 256)
+	g, _ := rand.Int(rand.Reader, p)
+	return p, g
 }
 
 func encryptMessage(message, key []byte) ([]byte, error) {
@@ -684,11 +822,18 @@ func main() {
 
 	// Configuración de libp2p y pubsub
 	ctx := context.Background()
+	priv, _, err := crypto.GenerateKeyPairWithReader(crypto.Ed25519, 2048, rand.Reader)
+
+	if err != nil {
+		log.Fatalf(Red+"Failed to generate key pair: %v"+Reset, err)
+	}
 
 	h, err := libp2p.New(
 		libp2p.ListenAddrStrings(config.ListenAddress),
+		libp2p.Identity(priv),
 		libp2p.NATPortMap(),
 	)
+
 	if err != nil {
 		log.Fatalf(Red+"Failed to create host: %v"+Reset, err)
 	}
@@ -697,6 +842,15 @@ func main() {
 		if err := setupMDNS(ctx, h, config.Mdns.ServiceTag); err != nil {
 			log.Fatalf(Red+"Failed to setup mDNS: %v"+Reset, err)
 		}
+	}
+
+	dhtInstance, err = dht.New(ctx, h)
+	if err != nil {
+		log.Fatalf(Red+"Failed to create DHT: %v"+Reset, err)
+	}
+
+	if err := dhtInstance.Bootstrap(ctx); err != nil {
+		log.Fatalf(Red+"Failed to bootstrap DHT: %v"+Reset, err)
 	}
 
 	go discoverPeers(ctx, h, config.TopicName)
@@ -736,10 +890,19 @@ func handleP2PMessages(ctx context.Context) {
 			continue
 		}
 
-		// Procesar el mensaje P2P
+		// Decrypt the message content
+		decryptedContent, err := decryptEndToEnd(msg.EncryptedContent, p2pKeys[0])
+		if err != nil {
+			log.Printf(Red+"Decryption error: %v"+Reset, err)
+			continue
+		}
+		msg.Content.Message = string(decryptedContent)
+
+		// Process the message
 		processP2PMessage(msg)
 	}
 }
+
 func createOrUpdateMessage(msg Message) {
 	var targetTablon *Tablon
 	for i, tablon := range tablones {
@@ -892,33 +1055,35 @@ func initDHT(ctx context.Context, h host.Host) *dht.IpfsDHT {
 }
 
 func discoverPeers(ctx context.Context, h host.Host, topicName string) {
-	kademliaDHT := initDHT(ctx, h)
-	routingDiscovery := drouting.NewRoutingDiscovery(kademliaDHT)
+	routingDiscovery := drouting.NewRoutingDiscovery(dhtInstance)
 	dutil.Advertise(ctx, routingDiscovery, topicName)
 
-	anyConnected := false
-	for !anyConnected {
-		log.Println(Blue + "Searching for peers..." + Reset)
-		peerChan, err := routingDiscovery.FindPeers(ctx, topicName)
-		if err != nil {
-			log.Fatalf(Red+"Failed to find peers: %v"+Reset, err)
-		}
-		for peer := range peerChan {
-			if peer.ID == h.ID() {
+	ticker := time.NewTicker(time.Minute)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			peers, err := routingDiscovery.FindPeers(ctx, topicName)
+			if err != nil {
+				log.Printf(Red+"Failed to find peers: %v"+Reset, err)
 				continue
 			}
-			if err := h.Connect(ctx, peer); err != nil {
-				//log.Printf(Yellow+"Failed connecting to %s, error: %s\n"+Reset, peer.ID, err)
-			} else {
-				log.SetOutput(os.Stdout)
-				log.SetFlags(0)
 
-				log.Println(Green+"Connected to: "+Reset, peer.ID)
-				anyConnected = true
+			for peer := range peers {
+				if peer.ID == h.ID() {
+					continue
+				}
+				if err := h.Connect(ctx, peer); err != nil {
+					log.Printf(Yellow+"Failed connecting to %s: %v"+Reset, peer.ID, err)
+				} else {
+					log.Printf(Green+"Connected to: %s"+Reset, peer.ID)
+				}
 			}
 		}
 	}
-	log.Println(Green + "Peer discovery complete" + Reset)
 }
 
 func streamConsoleTo(ctx context.Context, topic *pubsub.Topic, keys [][]byte, retryInterval int, from string, to string) {
