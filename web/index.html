@@ -12,7 +12,7 @@
 
 <body>
     <div class="container mt-5">
-        <h1 class="text-center mb-4">app resistenci(DMA)</h1>
+        <h1 class="text-center mb-4">Mensajes</h1>
 
         <!-- Buscador -->
         <div class="mb-4">
@@ -22,7 +22,7 @@
         <!-- Crear Tablón -->
         <div class="card mb-4">
             <div class="card-body">
-                <h5 class="card-title">Crear Nuevo Tablón</h5>
+                <h5 class="card-title">Crear Nuevo Grupo</h5>
                 <form id="createTablonForm">
                     <div class="mb-3">
                         <input type="text" class="form-control" id="tablonName" placeholder="Nombre del Tablón"
@@ -35,7 +35,7 @@
                     <div class="mb-3">
                         <input type="text" class="form-control" id="tablonGeo" placeholder="Ubicación (opcional)">
                     </div>
-                    <button type="submit" class="btn btn-primary">Crear Tablón</button>
+                    <button type="submit" class="btn btn-primary">Crear Grupo</button>
                 </form>
             </div>
         </div>
@@ -131,7 +131,7 @@
                                 <p>${message.content.message}</p>
                                 <small class="text-muted">${new Date(message.timestamp).toLocaleString()}</small>
                                 <button class="btn btn-sm btn-outline-primary" onclick="handleLikeMessage('${tablon.id}', '${message.id}')">
-                                    <i class="fas fa-thumbs-up"></i> ${message.content.likes}
+                                    <i class="fas fa-eye"></i> ${message.content.likes}
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger" onclick="handleDeleteMessage('${tablon.id}', '${message.id}')">
                                     <i class="fas fa-trash"></i>
