@@ -638,87 +638,99 @@ func receiveMessagesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	config, err := readConfig()
-	if err != nil {
-		log.Fatalf(Red+"Failed to read config: %v"+Reset, err)
-	}
+    config, err := readConfig()
+    if err != nil {
+        log.Fatalf(Red+"Failed to read config: %v"+Reset, err)
+    }
 
-	r := mux.NewRouter()
+    r := mux.NewRouter()
 
-	// API routes
-	api := r.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/createTablon", createTablonHandler).Methods("POST")
-	api.HandleFunc("/readTablon", readTablonHandler).Methods("GET")
-	api.HandleFunc("/deleteTablon", deleteTablonHandler).Methods("DELETE")
-	api.HandleFunc("/addMessage", addMessageToTablonHandler).Methods("POST")
-	api.HandleFunc("/deleteMessage", deleteMessageHandler).Methods("DELETE")
-	api.HandleFunc("/likeMessage", likeMessageHandler).Methods("POST")
-	api.HandleFunc("/send", sendMessageHandler).Methods("POST")
-	api.HandleFunc("/recibe", receiveMessagesHandler).Methods("GET")
-	api.HandleFunc("/generateToken", generateTokenHandler).Methods("GET")
+    // API routes
+    api := r.PathPrefix("/api").Subrouter()
+    api.HandleFunc("/createTablon", createTablonHandler).Methods("POST")
+    api.HandleFunc("/readTablon", readTablonHandler).Methods("GET")
+    api.HandleFunc("/deleteTablon", deleteTablonHandler).Methods("DELETE")
+    api.HandleFunc("/addMessage", addMessageToTablonHandler).Methods("POST")
+    api.HandleFunc("/deleteMessage", deleteMessageHandler).Methods("DELETE")
+    api.HandleFunc("/likeMessage", likeMessageHandler).Methods("POST")
+    api.HandleFunc("/send", sendMessageHandler).Methods("POST")
+    api.HandleFunc("/recibe", receiveMessagesHandler).Methods("GET")
+    api.HandleFunc("/generateToken", generateTokenHandler).Methods("GET")
+    //http://localhost:8080/api/generateToken?username=victor/
 
-	// Middleware CORS
-	corsMiddleware := handlers.CORS(
-		handlers.AllowedOrigins([]string{"*"}),
-		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
-		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
-	)
+    // Middleware CORS
+    corsMiddleware := handlers.CORS(
+        handlers.AllowedOrigins([]string{"*"}),
+        handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
+        handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
+    )
 
-	// Aplicar middleware CORS a las rutas de la API
-	http.Handle("/api/", corsMiddleware(api))
+    // Middleware para añadir cabeceras de seguridad
+    securityMiddleware := func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            w.Header().Set("X-XSS-Protection", "1; mode=block")
+            w.Header().Set("X-Content-Type-Options", "nosniff")
+            next.ServeHTTP(w, r)
+        })
+    }
 
-	// Servir archivos estáticos
-	fs := http.FileServer(http.Dir("./web"))
-	http.Handle("/", fs)
+    // Aplicar middleware CORS y de seguridad a todas las rutas
+    r.Use(corsMiddleware)
+    r.Use(securityMiddleware)
 
-	// Iniciar servidor HTTP
-	go func() {
-		log.Println("Starting HTTP server on :8080")
-		if err := http.ListenAndServe(":8080", nil); err != nil {
-			log.Fatalf("HTTP server error: %v", err)
-		}
-	}()
+    // Servir archivos estáticos
+    fs := http.FileServer(http.Dir("./web"))
+    r.PathPrefix("/").Handler(fs)
 
-	// Configuración de libp2p y pubsub
-	ctx := context.Background()
+    // Iniciar servidor HTTP
+    go func() {
+        log.Println("Starting HTTP server on :8080")
+        if err := http.ListenAndServe(":8080", r); err != nil {
+            log.Fatalf("HTTP server error: %v", err)
+        }
+    }()
 
-	h, err := libp2p.New(
-		libp2p.ListenAddrStrings(config.ListenAddress),
-		libp2p.NATPortMap(),
-	)
-	if err != nil {
-		log.Fatalf(Red+"Failed to create host: %v"+Reset, err)
-	}
+    // Configuración de libp2p y pubsub
+    ctx := context.Background()
 
-	if config.Mdns.Enabled {
-		if err := setupMDNS(ctx, h, config.Mdns.ServiceTag); err != nil {
-			log.Fatalf(Red+"Failed to setup mDNS: %v"+Reset, err)
-		}
-	}
+    h, err := libp2p.New(
+        libp2p.ListenAddrStrings(config.ListenAddress),
+        libp2p.NATPortMap(),
+    )
+    if err != nil {
+        log.Fatalf(Red+"Failed to create host: %v"+Reset, err)
+    }
 
-	go discoverPeers(ctx, h, config.TopicName)
+    if config.Mdns.Enabled {
+        if err := setupMDNS(ctx, h, config.Mdns.ServiceTag); err != nil {
+            log.Fatalf(Red+"Failed to setup mDNS: %v"+Reset, err)
+        }
+    }
 
-	ps, err := pubsub.NewGossipSub(ctx, h, pubsub.WithMaxMessageSize(config.MaxMessageSize))
-	if err != nil {
-		log.Fatalf(Red+"Failed to create pubsub: %v"+Reset, err)
-	}
+    go discoverPeers(ctx, h, config.TopicName)
 
-	p2pTopic, err = ps.Join(hashTopic(config.TopicName))
-	if err != nil {
-		log.Fatalf(Red+"Failed to join topic: %v"+Reset, err)
-	}
+    ps, err := pubsub.NewGossipSub(ctx, h, pubsub.WithMaxMessageSize(config.MaxMessageSize))
+    if err != nil {
+        log.Fatalf(Red+"Failed to create pubsub: %v"+Reset, err)
+    }
 
-	p2pSub, err = p2pTopic.Subscribe()
-	if err != nil {
-		log.Fatalf(Red+"Failed to subscribe to topic: %v"+Reset, err)
-	}
+    p2pTopic, err = ps.Join(hashTopic(config.TopicName))
+    if err != nil {
+        log.Fatalf(Red+"Failed to join topic: %v"+Reset, err)
+    }
 
-	p2pKeys = [][]byte{[]byte(config.EncryptionKey)}
+    p2pSub, err = p2pTopic.Subscribe()
+    if err != nil {
+        log.Fatalf(Red+"Failed to subscribe to topic: %v"+Reset, err)
+    }
 
-	go handleP2PMessages(ctx)
+    p2pKeys = [][]byte{[]byte(config.EncryptionKey)}
 
-	select {}
+    go handleP2PMessages(ctx)
+
+    select {}
 }
+
 
 func handleP2PMessages(ctx context.Context) {
 	for {

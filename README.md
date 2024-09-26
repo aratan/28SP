@@ -54,6 +54,54 @@ Para mejorar el código, se podrían considerar las siguientes modificaciones:
 
    ![image](https://github.com/user-attachments/assets/efd225bd-88ee-4e5a-b963-239e867b2bb8)
 
+Cifrado de mensajes:
+
+- La función `encryptMessage` utiliza AES-GCM para cifrar los mensajes.
+- La función `mixnetEncrypt` aplica múltiples capas de cifrado utilizando diferentes claves.
+
+
+
+Descifrado de mensajes:
+
+- La función `decryptMessage` descifra los mensajes cifrados con AES-GCM.
+- La función `mixnetDecrypt` aplica múltiples capas de descifrado en orden inverso.
+
+
+
+Serialización y deserialización segura:
+
+- `serializeMessage` comprime, cifra y serializa los mensajes antes de enviarlos.
+- `deserializeMessage` deserializa, descifra y descomprime los mensajes recibidos.
+
+
+
+Uso de libp2p para comunicación P2P:
+
+- Implementa una red P2P utilizando libp2p, lo que dificulta el rastreo de los mensajes.
+
+
+
+Enrutamiento de mensajes:
+
+- La función `routeMessage` añade un retraso aleatorio, lo que puede ayudar a prevenir ataques de análisis de tráfico.
+
+
+
+Anonimato de usuarios:
+
+- Los mensajes utilizan una estructura `UserInfo` que no requiere información personal identificable.
+
+
+
+Compresión de datos:
+
+- Las funciones `compress` y `decompress` añaden una capa adicional de ofuscación a los datos.
+
+
+
+Autenticación con JWT:
+
+- Implementa autenticación basada en tokens JWT, lo que permite el acceso seguro sin exponer credenciales.
 
 
 En general, este código proporciona una base sólida para una aplicación de mensajería distribuida y resistente a la censura, con un buen nivel de privacidad y seguridad.
