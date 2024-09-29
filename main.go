@@ -130,6 +130,11 @@ func readConfig() (*Config, error) {
 
 // Actualiza createTablonHandler para publicar en la red P2P
 func createTablonHandler(w http.ResponseWriter, r *http.Request) {
+	// Verificar el token JWT
+	if !verifyJWT(r) {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
 	// Obtener parámetros de la consulta
 	tablonName := r.URL.Query().Get("name")
 	if tablonName == "" {
@@ -140,10 +145,17 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 	mensaje := r.URL.Query().Get("mensaje")
 	geo := r.URL.Query().Get("geo")
 
+	// Obtener información del usuario del token JWT
+	claims := getClaimsFromToken(r)
+	userInfo := UserInfo{
+		PeerID:   claims["peerId"].(string),
+		Username: claims["username"].(string),
+		Photo:    claims["photo"].(string),
+	}
 	// Crear el mensaje que se publicará
 	msg := Message{
 		ID:        generateMessageID(), // Asegúrate de que esta función esté definida para generar un ID único
-		From:      UserInfo{PeerID: "your_peer_id", Username: "your_username", Photo: "your_photo_url"},
+		From:      userInfo,
 		To:        "BROADCAST",
 		Timestamp: time.Now().Format(time.RFC3339),
 		Content:   Content{Title: tablonName, Message: mensaje, Subtitle: "Información del Tablón", Likes: 0, Comments: []Comment{}, Subscribed: false},
@@ -246,16 +258,42 @@ func readTablonHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(tablones)
 }
+func getClaimsFromToken(r *http.Request) jwt.MapClaims {
+    tokenString := r.Header.Get("Authorization")
+    token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+        return jwtSecretKey, nil
+    })
 
+    if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+        return claims
+    }
+
+    return nil
+}
 func deleteTablonHandler(w http.ResponseWriter, r *http.Request) {
+	// Verificar el token JWT
+	if !verifyJWT(r) {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
 	tablonID := r.URL.Query().Get("id")
 	if tablonID == "" {
 		http.Error(w, "Missing 'id' query parameter", http.StatusBadRequest)
 		return
 	}
+
+	// Obtener información del usuario del token JWT
+	claims := getClaimsFromToken(r)
+	userInfo := UserInfo{
+		PeerID:   claims["peerId"].(string),
+		Username: claims["username"].(string),
+		Photo:    claims["photo"].(string),
+	}
+
 	msg := Message{
 		ID:        tablonID,
-		From:      UserInfo{PeerID: "your_peer_id", Username: "your_username", Photo: "your_photo_url"},
+		From:      userInfo,
 		To:        "BROADCAST",
 		Timestamp: time.Now().Format(time.RFC3339),
 		Action:    "delete",
@@ -277,8 +315,32 @@ func deleteTablonHandler(w http.ResponseWriter, r *http.Request) {
 
 	http.Error(w, "Tablon not found", http.StatusNotFound)
 }
+func verifyJWT(r *http.Request) bool {
+    tokenString := r.Header.Get("Authorization")
+    if tokenString == "" {
+        return false
+    }
 
+    token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+        if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+            return nil, fmt.Errorf("Unexpected signing method")
+        }
+        return jwtSecretKey, nil
+    })
+
+    if err != nil {
+        return false
+    }
+
+    return token.Valid
+}
 func deleteMessageHandler(w http.ResponseWriter, r *http.Request) {
+	// Verificar el token JWT
+	if !verifyJWT(r) {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	
 	tablonID := r.URL.Query().Get("tablonId")
 	messageID := r.URL.Query().Get("messageId")
 	msg := Message{
@@ -553,29 +615,34 @@ func authenticate(next http.Handler) http.Handler {
 }
 
 func generateTokenHandler(w http.ResponseWriter, r *http.Request) {
-	username := r.URL.Query().Get("username")
-	if username == "" {
-		http.Error(w, "Missing 'username' query parameter", http.StatusBadRequest)
-		return
-	}
+    username := r.URL.Query().Get("username")
+    peerId := r.URL.Query().Get("peerId")
+    photo := r.URL.Query().Get("photo")
 
-	claims := jwt.MapClaims{
-		"authorized": true,
-		"user":       username,
-		"exp":        time.Now().Add(time.Hour * 1).Unix(),
-	}
+    if username == "" || peerId == "" {
+        http.Error(w, "Missing 'username' or 'peerId' query parameter", http.StatusBadRequest)
+        return
+    }
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtSecretKey)
-	if err != nil {
-		http.Error(w, "Error al generar el token", http.StatusInternalServerError)
-		return
-	}
+    claims := jwt.MapClaims{
+        "authorized": true,
+        "username":   username,
+        "peerId":     peerId,
+        "photo":      photo,
+        "exp":        time.Now().Add(time.Hour * 24).Unix(),
+    }
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{
-		"token": tokenString,
-	})
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+    tokenString, err := token.SignedString(jwtSecretKey)
+    if err != nil {
+        http.Error(w, "Error al generar el token", http.StatusInternalServerError)
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(map[string]string{
+        "token": tokenString,
+    })
 }
 
 func sendMessageHandler(w http.ResponseWriter, r *http.Request) {
@@ -638,99 +705,98 @@ func receiveMessagesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    config, err := readConfig()
-    if err != nil {
-        log.Fatalf(Red+"Failed to read config: %v"+Reset, err)
-    }
+	config, err := readConfig()
+	if err != nil {
+		log.Fatalf(Red+"Failed to read config: %v"+Reset, err)
+	}
 
-    r := mux.NewRouter()
+	r := mux.NewRouter()
 
-    // API routes
-    api := r.PathPrefix("/api").Subrouter()
-    api.HandleFunc("/createTablon", createTablonHandler).Methods("POST")
-    api.HandleFunc("/readTablon", readTablonHandler).Methods("GET")
-    api.HandleFunc("/deleteTablon", deleteTablonHandler).Methods("DELETE")
-    api.HandleFunc("/addMessage", addMessageToTablonHandler).Methods("POST")
-    api.HandleFunc("/deleteMessage", deleteMessageHandler).Methods("DELETE")
-    api.HandleFunc("/likeMessage", likeMessageHandler).Methods("POST")
-    api.HandleFunc("/send", sendMessageHandler).Methods("POST")
-    api.HandleFunc("/recibe", receiveMessagesHandler).Methods("GET")
-    api.HandleFunc("/generateToken", generateTokenHandler).Methods("GET")
-    //http://localhost:8080/api/generateToken?username=victor/
+	// API routes
+	api := r.PathPrefix("/api").Subrouter()
+	api.HandleFunc("/createTablon", createTablonHandler).Methods("POST")
+	api.HandleFunc("/readTablon", readTablonHandler).Methods("GET")
+	api.HandleFunc("/deleteTablon", deleteTablonHandler).Methods("DELETE")
+	api.HandleFunc("/addMessage", addMessageToTablonHandler).Methods("POST")
+	api.HandleFunc("/deleteMessage", deleteMessageHandler).Methods("DELETE")
+	api.HandleFunc("/likeMessage", likeMessageHandler).Methods("POST")
+	api.HandleFunc("/send", sendMessageHandler).Methods("POST")
+	api.HandleFunc("/recibe", receiveMessagesHandler).Methods("GET")
+	api.HandleFunc("/generateToken", generateTokenHandler).Methods("GET")
+	//http://localhost:8080/api/generateToken?username=victor/
 
-    // Middleware CORS
-    corsMiddleware := handlers.CORS(
-        handlers.AllowedOrigins([]string{"*"}),
-        handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
-        handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
-    )
+	// Middleware CORS
+	corsMiddleware := handlers.CORS(
+		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
+		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
+	)
 
-    // Middleware para añadir cabeceras de seguridad
-    securityMiddleware := func(next http.Handler) http.Handler {
-        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-            w.Header().Set("X-XSS-Protection", "1; mode=block")
-            w.Header().Set("X-Content-Type-Options", "nosniff")
-            next.ServeHTTP(w, r)
-        })
-    }
+	// Middleware para añadir cabeceras de seguridad
+	securityMiddleware := func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("X-XSS-Protection", "1; mode=block")
+			w.Header().Set("X-Content-Type-Options", "nosniff")
+			next.ServeHTTP(w, r)
+		})
+	}
 
-    // Aplicar middleware CORS y de seguridad a todas las rutas
-    r.Use(corsMiddleware)
-    r.Use(securityMiddleware)
+	// Aplicar middleware CORS y de seguridad a todas las rutas
+	r.Use(corsMiddleware)
+	r.Use(securityMiddleware)
 
-    // Servir archivos estáticos
-    fs := http.FileServer(http.Dir("./web"))
-    r.PathPrefix("/").Handler(fs)
+	// Servir archivos estáticos
+	fs := http.FileServer(http.Dir("./web"))
+	r.PathPrefix("/").Handler(fs)
 
-    // Iniciar servidor HTTP
-    go func() {
-        log.Println("Starting HTTP server on :8080")
-        if err := http.ListenAndServe(":8080", r); err != nil {
-            log.Fatalf("HTTP server error: %v", err)
-        }
-    }()
+	// Iniciar servidor HTTP
+	go func() {
+		log.Println("Starting HTTP server on :8080")
+		if err := http.ListenAndServe(":8080", r); err != nil {
+			log.Fatalf("HTTP server error: %v", err)
+		}
+	}()
 
-    // Configuración de libp2p y pubsub
-    ctx := context.Background()
+	// Configuración de libp2p y pubsub
+	ctx := context.Background()
 
-    h, err := libp2p.New(
-        libp2p.ListenAddrStrings(config.ListenAddress),
-        libp2p.NATPortMap(),
-    )
-    if err != nil {
-        log.Fatalf(Red+"Failed to create host: %v"+Reset, err)
-    }
+	h, err := libp2p.New(
+		libp2p.ListenAddrStrings(config.ListenAddress),
+		libp2p.NATPortMap(),
+	)
+	if err != nil {
+		log.Fatalf(Red+"Failed to create host: %v"+Reset, err)
+	}
 
-    if config.Mdns.Enabled {
-        if err := setupMDNS(ctx, h, config.Mdns.ServiceTag); err != nil {
-            log.Fatalf(Red+"Failed to setup mDNS: %v"+Reset, err)
-        }
-    }
+	if config.Mdns.Enabled {
+		if err := setupMDNS(ctx, h, config.Mdns.ServiceTag); err != nil {
+			log.Fatalf(Red+"Failed to setup mDNS: %v"+Reset, err)
+		}
+	}
 
-    go discoverPeers(ctx, h, config.TopicName)
+	go discoverPeers(ctx, h, config.TopicName)
 
-    ps, err := pubsub.NewGossipSub(ctx, h, pubsub.WithMaxMessageSize(config.MaxMessageSize))
-    if err != nil {
-        log.Fatalf(Red+"Failed to create pubsub: %v"+Reset, err)
-    }
+	ps, err := pubsub.NewGossipSub(ctx, h, pubsub.WithMaxMessageSize(config.MaxMessageSize))
+	if err != nil {
+		log.Fatalf(Red+"Failed to create pubsub: %v"+Reset, err)
+	}
 
-    p2pTopic, err = ps.Join(hashTopic(config.TopicName))
-    if err != nil {
-        log.Fatalf(Red+"Failed to join topic: %v"+Reset, err)
-    }
+	p2pTopic, err = ps.Join(hashTopic(config.TopicName))
+	if err != nil {
+		log.Fatalf(Red+"Failed to join topic: %v"+Reset, err)
+	}
 
-    p2pSub, err = p2pTopic.Subscribe()
-    if err != nil {
-        log.Fatalf(Red+"Failed to subscribe to topic: %v"+Reset, err)
-    }
+	p2pSub, err = p2pTopic.Subscribe()
+	if err != nil {
+		log.Fatalf(Red+"Failed to subscribe to topic: %v"+Reset, err)
+	}
 
-    p2pKeys = [][]byte{[]byte(config.EncryptionKey)}
+	p2pKeys = [][]byte{[]byte(config.EncryptionKey)}
 
-    go handleP2PMessages(ctx)
+	go handleP2PMessages(ctx)
 
-    select {}
+	select {}
 }
-
 
 func handleP2PMessages(ctx context.Context) {
 	for {

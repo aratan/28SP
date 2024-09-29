@@ -15,7 +15,25 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Mensajes</h1>
-
+        <!-- formulario login-->
+        <!-- Formulario de inicio de sesión -->
+        <div id="loginForm" class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Iniciar sesión</h5>
+                <form id="loginFormElement">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="username" placeholder="Nombre de usuario" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="peerId" placeholder="ID de peer" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="photo" placeholder="URL de la foto (opcional)">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                </form>
+            </div>
+        </div>
         <!-- Buscador -->
         <div class="mb-4">
             <input type="text" class="form-control" id="searchInput" placeholder="Buscar tablón por nombre...">
@@ -25,6 +43,11 @@
         <div class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title">Crear Nuevo Grupo</h5>
+                <video id="videoPlayer" width="260" height="260" controls preload="auto">
+                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                    Tu navegador no soporta la reproducción de video.
+                </video>
+
                 <form id="createTablonForm">
                     <div class="mb-3">
                         <input type="text" class="form-control" id="tablonName" placeholder="Nombre del Tablón"
@@ -53,14 +76,29 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        let token = localStorage.getItem('token');
         let filteredTablones = [];
         let currentPage = 1;
         const itemsPerPage = 5;
 
+        // Función para iniciar sesión
+        async function login(username, peerId, photo) {
+            const response = await fetch(`/api/generateToken?username=${encodeURIComponent(username)}&peerId=${encodeURIComponent(peerId)}&photo=${encodeURIComponent(photo)}`);
+            const data = await response.json();
+            token = data.token;
+            localStorage.setItem('token', token);
+            document.getElementById('loginForm').style.display = 'none';
+            refreshTablones();
+        }
+
         // Función para crear un tablón
+        // Modificar las funciones existentes para incluir el token en las peticiones
         async function createTablon(name, message, geo) {
             const response = await fetch(`/api/createTablon?name=${encodeURIComponent(name)}&mensaje=${encodeURIComponent(message)}&geo=${encodeURIComponent(geo)}`, {
-                method: 'POST'
+                method: 'POST',
+                headers: {
+                    'Authorization': token
+                }
             });
             return response.json();
         }
@@ -75,7 +113,10 @@
         // Función para eliminar un tablón
         async function deleteTablon(id) {
             const response = await fetch(`/api/deleteTablon?id=${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Authorization': token
+                }
             });
             return response.json();
         }
@@ -91,7 +132,10 @@
         // Función para eliminar un mensaje
         async function deleteMessage(tablonId, messageId) {
             const response = await fetch(`/api/deleteMessage?tablonId=${tablonId}&messageId=${messageId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Authorization': token
+                }
             });
             return response.json();
         }
@@ -220,6 +264,20 @@
         }
 
         // Inicialización
+        // Manejador de evento para el formulario de inicio de sesión
+        document.getElementById('loginFormElement').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const peerId = document.getElementById('peerId').value;
+            const photo = document.getElementById('photo').value;
+            await login(username, peerId, photo);
+        });
+
+        // Verificar si hay un token almacenado al cargar la página
+        if (token) {
+            document.getElementById('loginForm').style.display = 'none';
+            refreshTablones();
+        }
         document.getElementById('createTablonForm').addEventListener('submit', handleCreateTablon);
         document.getElementById('searchInput').addEventListener('input', refreshTablones);
         refreshTablones(); // Inicializar la lista de tablones al cargar la página
