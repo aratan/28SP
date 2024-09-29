@@ -3,22 +3,18 @@ package main
 import (
 	"bufio"
 	"bytes"
-	
 	"compress/gzip"
 	"context"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
-	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
-
 	"log"
 	"math/big"
 	"net/http"
@@ -39,7 +35,6 @@ import (
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery/mdns"
 	drouting "github.com/libp2p/go-libp2p/p2p/discovery/routing"
 	dutil "github.com/libp2p/go-libp2p/p2p/discovery/util"
-	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/yaml.v2"
 )
 
@@ -61,23 +56,6 @@ const (
 	Blue   = "\033[34m"
 	Reset  = "\033[0m"
 )
-type Node struct {
-	Hash        string `json:"hash"`
-	IsConnected bool   `json:"isConnected"`
-}
-
-type NodeInfo struct {
-	NodeHash       string `json:"nodeHash"`
-	ConnectedNodes []Node `json:"connectedNodes"`
-}
-type RefreshToken struct {
-	Token     string
-	Username  string
-	ExpiresAt time.Time
-}
-
-// Mapa para almacenar refresh tokens (en producción, usar una base de datos)
-var refreshTokens = make(map[string]RefreshToken)
 
 type Config struct {
 	TopicName      string `yaml:"topicName"`
@@ -92,30 +70,6 @@ type Config struct {
 		ServiceTag string `yaml:"serviceTag"`
 	} `yaml:"mdns"`
 	UseSSL bool `yaml:"useSSL"`
-}
-type User struct {
-	Username     string
-	PasswordHash string
-	PeerID       string
-	Photo        string
-}
-
-// Mapa para almacenar usuarios (en producción, usar una base de datos)
-var users = map[string]User{
-	"admin": {
-		Username:     "admin",
-		PasswordHash: "$2a$12$WBE8A/IK66orAJLfpTncPuGGq90KkiLfQq3SHGPYvt.SGpxfC/feW",
-		// Hash de "123456" https://bcrypt-generator.com/
-		PeerID: "admin_peer_id",
-		Photo:  "https://example.com/admin.jpg",
-	},
-	"editor": {
-		Username:     "user1",
-		PasswordHash: "$2a$12$rG0VJ8fIC7mjavKfp6YYuuuUuvTf5fhRjlPZQve0K1gv1zPMgWQai", // Hash de "password"
-		PeerID:       "user1_peer_id",
-		Photo:        "https://example.com/user1.jpg",
-	},
-	// Añade más usuarios según sea necesario
 }
 
 type Message struct {
@@ -172,268 +126,6 @@ func readConfig() (*Config, error) {
 		return nil, err
 	}
 	return &config, nil
-}
-func getPeerID() (string, error) {
-    h, err := libp2p.New()
-    if err != nil {
-        return "", err
-    }
-    return h.ID().String(), nil
-}
-
-func nodeInfoHandler(w http.ResponseWriter, r *http.Request) {
-    // Verificar el token JWT
-
-    peerID, err := getPeerID()
-    if err != nil {
-        http.Error(w, "Error obteniendo el PeerID", http.StatusInternalServerError)
-        return
-    }
-
-    // Aquí deberías obtener la información real del nodo y los nodos conectados
-    nodeInfo := struct {
-        NodeHash       string `json:"nodeHash"`
-        ConnectedNodes []struct {
-            Hash        string `json:"hash"`
-            IsConnected bool   `json:"isConnected"`
-        } `json:"connectedNodes"`
-    }{
-        NodeHash: peerID,
-        ConnectedNodes: []struct {
-            Hash        string `json:"hash"`
-            IsConnected bool   `json:"isConnected"`
-        }{
-            {Hash: "0x" + peerID, IsConnected: true},
-           
-        },
-    }
-
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(nodeInfo)
-}
-
-func generateRandomHash(length int) string {
-	const charset = "abcdef0123456789"
-	b := make([]byte, length)
-	for i := range b {
-		num, _ := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
-		b[i] = charset[num.Int64()]
-	}
-	return string(b)
-}
-
-func registerHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	var user User
-	err := json.NewDecoder(r.Body).Decode(&user)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	if _, exists := users[user.Username]; exists {
-		http.Error(w, "Username already exists", http.StatusConflict)
-		return
-	}
-
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.PasswordHash), bcrypt.DefaultCost)
-	fmt.Println(hashedPassword)
-	if err != nil {
-		http.Error(w, "Error hashing password", http.StatusInternalServerError)
-		return
-	}
-
-	user.PasswordHash = string(hashedPassword)
-	users[user.Username] = user
-
-	w.WriteHeader(http.StatusCreated)
-}
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	var loginData struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-	if err := json.NewDecoder(r.Body).Decode(&loginData); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
-		return
-	}
-
-	user, exists := users[loginData.Username]
-	if !exists {
-		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-		return
-	}
-
-	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(loginData.Password)); err != nil {
-		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-		return
-	}
-
-	// Generar token JWT
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": user.Username,
-		"peerId":   user.PeerID,
-		"exp":      time.Now().Add(time.Minute * 15).Unix(),
-	})
-
-	tokenString, err := token.SignedString(jwtSecretKey)
-	if err != nil {
-		http.Error(w, "Error generating token", http.StatusInternalServerError)
-		return
-	}
-
-	// Generar refresh token
-	refreshToken, err := generateRefreshToken()
-	if err != nil {
-		http.Error(w, "Error generating refresh token", http.StatusInternalServerError)
-		return
-	}
-
-	// Almacenar refresh token
-	refreshTokens[refreshToken] = RefreshToken{
-		Token:     refreshToken,
-		Username:  user.Username,
-		ExpiresAt: time.Now().Add(time.Hour * 24 * 7), // El refresh token expira en 7 días
-	}
-
-	// Enviar respuesta
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{
-		"token":        tokenString,
-		"refreshToken": refreshToken,
-	})
-}
-
-func refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	var requestBody struct {
-		RefreshToken string `json:"refreshToken"`
-	}
-	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
-		return
-	}
-
-	refreshTokenInfo, exists := refreshTokens[requestBody.RefreshToken]
-	if !exists || time.Now().After(refreshTokenInfo.ExpiresAt) {
-		http.Error(w, "Invalid or expired refresh token", http.StatusUnauthorized)
-		return
-	}
-
-	user, exists := users[refreshTokenInfo.Username]
-	if !exists {
-		http.Error(w, "User not found", http.StatusUnauthorized)
-		return
-	}
-
-	// Generar nuevo token JWT
-	newToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": user.Username,
-		"peerId":   user.PeerID,
-		"exp":      time.Now().Add(time.Minute * 15).Unix(),
-	})
-
-	newTokenString, err := newToken.SignedString(jwtSecretKey)
-	if err != nil {
-		http.Error(w, "Error generating new access token", http.StatusInternalServerError)
-		return
-	}
-
-	// Generar nuevo refresh token
-	newRefreshToken, err := generateRefreshToken()
-	if err != nil {
-		http.Error(w, "Error generating new refresh token", http.StatusInternalServerError)
-		return
-	}
-
-	// Actualizar el mapa de refresh tokens
-	delete(refreshTokens, requestBody.RefreshToken)
-	refreshTokens[newRefreshToken] = RefreshToken{
-		Token:     newRefreshToken,
-		Username:  user.Username,
-		ExpiresAt: time.Now().Add(time.Hour * 24 * 7),
-	}
-
-	// Enviar respuesta
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{
-		"token":        newTokenString,
-		"refreshToken": newRefreshToken,
-	})
-}
-func generateRefreshToken() (string, error) {
-	b := make([]byte, 32)
-	_, err := rand.Read(b)
-	if err != nil {
-		return "", err
-	}
-	return base64.URLEncoding.EncodeToString(b), nil
-}
-func verifyToken(tokenString string) (*jwt.Token, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New("unexpected signing method")
-		}
-		return jwtSecretKey, nil
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	if !token.Valid {
-		return nil, errors.New("invalid token")
-	}
-
-	return token, nil
-}
-
-func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		tokenString := r.Header.Get("Authorization")
-		if tokenString == "" {
-			http.Error(w, "Missing authorization token", http.StatusUnauthorized)
-			return
-		}
-
-		token, err := verifyToken(tokenString)
-		if err != nil {
-			http.Error(w, "Invalid token", http.StatusUnauthorized)
-			return
-		}
-
-		claims, ok := token.Claims.(jwt.MapClaims)
-		if !ok {
-			http.Error(w, "Invalid token claims", http.StatusUnauthorized)
-			return
-		}
-
-		username, ok := claims["username"].(string)
-		if !ok {
-			http.Error(w, "Invalid username claim", http.StatusUnauthorized)
-			return
-		}
-
-		if _, exists := users[username]; !exists {
-			http.Error(w, "User not found", http.StatusUnauthorized)
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	}
 }
 
 // Actualiza createTablonHandler para publicar en la red P2P
@@ -567,16 +259,16 @@ func readTablonHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(tablones)
 }
 func getClaimsFromToken(r *http.Request) jwt.MapClaims {
-	tokenString := r.Header.Get("Authorization")
-	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return jwtSecretKey, nil
-	})
+    tokenString := r.Header.Get("Authorization")
+    token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+        return jwtSecretKey, nil
+    })
 
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return claims
-	}
+    if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+        return claims
+    }
 
-	return nil
+    return nil
 }
 func deleteTablonHandler(w http.ResponseWriter, r *http.Request) {
 	// Verificar el token JWT
@@ -624,23 +316,23 @@ func deleteTablonHandler(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Tablon not found", http.StatusNotFound)
 }
 func verifyJWT(r *http.Request) bool {
-	tokenString := r.Header.Get("Authorization")
-	if tokenString == "" {
-		return false
-	}
+    tokenString := r.Header.Get("Authorization")
+    if tokenString == "" {
+        return false
+    }
 
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method")
-		}
-		return jwtSecretKey, nil
-	})
+    token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+        if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+            return nil, fmt.Errorf("Unexpected signing method")
+        }
+        return jwtSecretKey, nil
+    })
 
-	if err != nil {
-		return false
-	}
+    if err != nil {
+        return false
+    }
 
-	return token.Valid
+    return token.Valid
 }
 func deleteMessageHandler(w http.ResponseWriter, r *http.Request) {
 	// Verificar el token JWT
@@ -648,7 +340,7 @@ func deleteMessageHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-
+	
 	tablonID := r.URL.Query().Get("tablonId")
 	messageID := r.URL.Query().Get("messageId")
 	msg := Message{
@@ -923,34 +615,34 @@ func authenticate(next http.Handler) http.Handler {
 }
 
 func generateTokenHandler(w http.ResponseWriter, r *http.Request) {
-	username := r.URL.Query().Get("username")
-	peerId := r.URL.Query().Get("peerId")
-	photo := r.URL.Query().Get("photo")
+    username := r.URL.Query().Get("username")
+    peerId := r.URL.Query().Get("peerId")
+    photo := r.URL.Query().Get("photo")
 
-	if username == "" || peerId == "" {
-		http.Error(w, "Missing 'username' or 'peerId' query parameter", http.StatusBadRequest)
-		return
-	}
+    if username == "" || peerId == "" {
+        http.Error(w, "Missing 'username' or 'peerId' query parameter", http.StatusBadRequest)
+        return
+    }
 
-	claims := jwt.MapClaims{
-		"authorized": true,
-		"username":   username,
-		"peerId":     peerId,
-		"photo":      photo,
-		"exp":        time.Now().Add(time.Hour * 24).Unix(),
-	}
+    claims := jwt.MapClaims{
+        "authorized": true,
+        "username":   username,
+        "peerId":     peerId,
+        "photo":      photo,
+        "exp":        time.Now().Add(time.Hour * 24).Unix(),
+    }
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtSecretKey)
-	if err != nil {
-		http.Error(w, "Error al generar el token", http.StatusInternalServerError)
-		return
-	}
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+    tokenString, err := token.SignedString(jwtSecretKey)
+    if err != nil {
+        http.Error(w, "Error al generar el token", http.StatusInternalServerError)
+        return
+    }
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{
-		"token": tokenString,
-	})
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(map[string]string{
+        "token": tokenString,
+    })
 }
 
 func sendMessageHandler(w http.ResponseWriter, r *http.Request) {
@@ -1022,7 +714,6 @@ func main() {
 
 	// API routes
 	api := r.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/nodeInfo", nodeInfoHandler).Methods("GET")
 	api.HandleFunc("/createTablon", createTablonHandler).Methods("POST")
 	api.HandleFunc("/readTablon", readTablonHandler).Methods("GET")
 	api.HandleFunc("/deleteTablon", deleteTablonHandler).Methods("DELETE")
@@ -1032,9 +723,6 @@ func main() {
 	api.HandleFunc("/send", sendMessageHandler).Methods("POST")
 	api.HandleFunc("/recibe", receiveMessagesHandler).Methods("GET")
 	api.HandleFunc("/generateToken", generateTokenHandler).Methods("GET")
-	api.HandleFunc("/login", loginHandler)
-	api.HandleFunc("/refresh", refreshTokenHandler)
-	api.HandleFunc("/protected", authMiddleware(protectedHandler))
 	//http://localhost:8080/api/generateToken?username=victor/
 
 	// Middleware CORS
@@ -1109,10 +797,7 @@ func main() {
 
 	select {}
 }
-func protectedHandler(w http.ResponseWriter, r *http.Request) {
-	// Este es un ejemplo de un manejador protegido que requiere autenticación
-	w.Write([]byte("This is a protected resource"))
-}
+
 func handleP2PMessages(ctx context.Context) {
 	for {
 		m, err := p2pSub.Next(ctx)
