@@ -17,6 +17,7 @@
         <h1 class="text-center mb-4">Mensajes</h1>
         <!-- formulario login-->
         <!-- Formulario de inicio de sesión -->
+        <!-- Formulario de inicio de sesión -->
         <div id="loginForm" class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title">Iniciar sesión</h5>
@@ -25,18 +26,27 @@
                         <input type="text" class="form-control" id="username" placeholder="Nombre de usuario" required>
                     </div>
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="peerId" placeholder="ID de peer" required>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="photo" placeholder="URL de la foto (opcional)">
+                        <input type="password" class="form-control" id="password" placeholder="Contraseña" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Iniciar sesión</button>
                 </form>
+                <div id="loginError" class="text-danger mt-2" style="display: none;"></div>
             </div>
         </div>
         <!-- Buscador -->
         <div class="mb-4">
             <input type="text" class="form-control" id="searchInput" placeholder="Buscar tablón por nombre...">
+        </div>
+        <!-- Información del nodo -->
+        <div id="nodeInfo" class="card mb-4" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Información del Nodo</h5>
+                <p id="nodeHash">Hash del nodo: </p>
+                <h6>Nodos conectados:</h6>
+                <ul id="connectedNodes" class="list-group">
+                    <!-- Los nodos conectados se añadirán aquí dinámicamente -->
+                </ul>
+            </div>
         </div>
 
         <!-- Crear Tablón -->
@@ -82,22 +92,72 @@
         const itemsPerPage = 5;
 
         // Función para iniciar sesión
-        async function login(username, peerId, photo) {
-            const response = await fetch(`/api/generateToken?username=${encodeURIComponent(username)}&peerId=${encodeURIComponent(peerId)}&photo=${encodeURIComponent(photo)}`);
-            const data = await response.json();
-            token = data.token;
-            localStorage.setItem('token', token);
-            document.getElementById('loginForm').style.display = 'none';
-            refreshTablones();
+        async function login(username, password) {
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+                if (!response.ok) {
+                    throw new Error('Login failed');
+                }
+                const data = await response.json();
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('refreshToken', data.refreshToken);
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('nodeInfo').style.display = 'block';
+                fetchNodeInfo();
+                refreshTablones();
+            } catch (error) {
+                document.getElementById('loginError').textContent = 'Usuario o contraseña incorrectos';
+                document.getElementById('loginError').style.display = 'block';
+            }
         }
-
+// Función para obtener información del nodo
+async function fetchNodeInfo() {
+            try {
+                const response = await fetch('/api/nodeInfo', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch node info');
+                }
+                const data = await response.json();
+                document.getElementById('nodeHash').textContent = `Hash del nodo: ${data.nodeHash}`;
+                renderConnectedNodes(data.connectedNodes);
+            } catch (error) {
+                console.error('Error fetching node info:', error);
+            }
+        }
+        // Función para renderizar nodos conectados
+        function renderConnectedNodes(nodes) {
+            const nodesList = document.getElementById('connectedNodes');
+            nodesList.innerHTML = '';
+            nodes.forEach(node => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                li.innerHTML = `
+                    ${node.hash}
+                    <span class="badge bg-${node.isConnected ? 'success' : 'danger'} rounded-pill">
+                        ${node.isConnected ? 'Conectado' : 'Desconectado'}
+                    </span>
+                `;
+                nodesList.appendChild(li);
+            });
+        }
         // Función para crear un tablón
+        // Modificar las funciones existentes para incluir el token en las peticiones
         // Modificar las funciones existentes para incluir el token en las peticiones
         async function createTablon(name, message, geo) {
             const response = await fetch(`/api/createTablon?name=${encodeURIComponent(name)}&mensaje=${encodeURIComponent(message)}&geo=${encodeURIComponent(geo)}`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             return response.json();
@@ -276,6 +336,72 @@
         // Verificar si hay un token almacenado al cargar la página
         if (token) {
             document.getElementById('loginForm').style.display = 'none';
+            refreshTablones();
+        }
+        // Función para renovar el token cuando expire
+        async function refreshToken() {
+            const refreshToken = localStorage.getItem('refreshToken');
+            const response = await fetch('/api/refresh', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ refreshToken }),
+            });
+            if (!response.ok) {
+                throw new Error('Token refresh failed');
+            }
+            const data = await response.json();
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('refreshToken', data.refreshToken);
+        }
+        async function fetchProtectedResource() {
+            const token = localStorage.getItem('token');
+            const response = await fetch('/api/protected', {
+                headers: {
+                    'Authorization': token,
+                },
+            });
+            if (response.status === 401) {
+                // Token expirado, intentar refrescar
+                await refreshToken();
+                return fetchProtectedResource();
+            }
+            if (!response.ok) {
+                throw new Error('Failed to fetch protected resource');
+            }
+            return response.text();
+        }
+        // Usar esta función antes de cada petición que requiera autenticación
+        async function getValidToken() {
+            let token = localStorage.getItem('token');
+            if (isTokenExpired(token)) {
+                await refreshToken();
+                token = localStorage.getItem('token');
+            }
+            return token;
+        }
+
+        function isTokenExpired(token) {
+            if (!token) return true;
+            const payloadBase64 = token.split('.')[1];
+            const decodedJson = atob(payloadBase64);
+            const payload = JSON.parse(decodedJson);
+            const exp = payload.exp;
+            const now = Math.floor(Date.now() / 1000);
+            return now >= exp;
+        }
+        document.getElementById('loginFormElement').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            await login(username, password);
+        });
+        // Verificar si hay un token almacenado al cargar la página
+        if (token) {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('nodeInfo').style.display = 'block';
+            fetchNodeInfo();
             refreshTablones();
         }
         document.getElementById('createTablonForm').addEventListener('submit', handleCreateTablon);
