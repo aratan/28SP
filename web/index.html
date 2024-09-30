@@ -27,7 +27,7 @@
                     <div class="mb-3">
                         <input type="text" class="form-control" id="peerId" placeholder="ID de peer" required>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3" style="display: none;">
                         <input type="text" class="form-control" id="photo" placeholder="URL de la foto (opcional)">
                     </div>
                     <button type="submit" class="btn btn-primary">Iniciar sesión</button>
@@ -47,7 +47,7 @@
 
         <!-- Selector de intervalo de actualización -->
         <div class="mb-4">
-            <label for="refreshInterval" class="form-label">Intervalo de actualización (segundos):</label>
+
             <select class="form-select" id="refreshInterval">
                 <option value="15">15 segundos</option>
                 <option value="30" selected>30 segundos</option>
@@ -60,10 +60,13 @@
         <div class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title">Crear Nuevo Grupo</h5>
-                <video id="videoPlayer" width="260" height="260" controls preload="auto">
-                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                    Tu navegador no soporta la reproducción de video.
-                </video>
+
+                <div style="display: flex; justify-content: center; align-items: center;">
+                    <video id="videoPlayer" width="260" height="260" controls preload="auto">
+                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                        Tu navegador no soporta la reproducción de video.
+                    </video>
+                </div>
 
                 <form id="createTablonForm">
                     <div class="mb-3">
@@ -176,7 +179,7 @@
             tablonesListElement.innerHTML = '';
 
             if (!Array.isArray(tablones) || tablones.length === 0) {
-                tablonesListElement.innerHTML = '<p>No hay tablones disponibles.</p>';
+                tablonesListElement.innerHTML = '<p>Buscando nodos y tablones disponibles.</p>';
                 return;
             }
 
@@ -185,9 +188,7 @@
                 tablonElement.className = 'tablon';
                 tablonElement.innerHTML = `
                     <h3>${tablon.name} <small class="text-muted">${tablon.geo || ''}</small></h3>
-                    <button class="btn btn-sm btn-danger float-end" onclick="handleDeleteTablon('${tablon.id}')">
-                        <i class="fas fa-trash"></i> Eliminar Tablón
-                    </button>
+                    
                     <div class="messages mt-3">
                         ${tablon.messages.map(message => `
                             <div class="message">
@@ -202,6 +203,9 @@
                             </div>
                         `).join('')}
                     </div>
+                    <button class="btn btn-sm btn-danger float-end" onclick="handleDeleteTablon('${tablon.id}')">
+                        <i class="fas fa-trash"></i> Eliminar Tablón
+                    </button><br>
                     <form onsubmit="handleAddMessage(event, '${tablon.id}')" class="mt-3">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Nuevo mensaje" required>
@@ -248,60 +252,60 @@
         // Función para refrescar la lista de tablones con paginación
         // Añadir una variable para controlar si ya se está actualizando
         let isRefreshing = false;
-    let autoRefreshEnabled = true;
-    let refreshIntervalId;
-    let currentRefreshInterval = 30000; // Intervalo por defecto de 30 segundos
+        let autoRefreshEnabled = true;
+        let refreshIntervalId;
+        let currentRefreshInterval = 30000; // Intervalo por defecto de 30 segundos
 
-    // Función para refrescar la lista de tablones con paginación
-    async function refreshTablones() {
-        if (isRefreshing || !autoRefreshEnabled) return; // Evita ejecutar si ya está refrescando o si está desactivado
-        isRefreshing = true;
-        const searchQuery = document.getElementById('searchInput').value;
-        const allTablones = await getTablones();
-        filteredTablones = searchQuery ? filterTablonesByName(searchQuery) : allTablones;
-        const paginatedTablones = paginate(filteredTablones, currentPage, itemsPerPage);
-        renderTablones(paginatedTablones);
-        renderPagination(filteredTablones.length);
-        isRefreshing = false;
-    }
-
-    // Función para iniciar la actualización automática
-    function startAutoRefresh() {
-        refreshIntervalId = setInterval(refreshTablones, currentRefreshInterval);
-    }
-
-    // Función para detener la actualización automática
-    function stopAutoRefresh() {
-        clearInterval(refreshIntervalId);
-    }
-
-    // Manejador para el toggle de auto actualización
-    document.getElementById('autoRefreshToggle').addEventListener('change', function (event) {
-        autoRefreshEnabled = event.target.checked;
-        if (autoRefreshEnabled) {
-            startAutoRefresh();
-        } else {
-            stopAutoRefresh();
+        // Función para refrescar la lista de tablones con paginación
+        async function refreshTablones() {
+            if (isRefreshing || !autoRefreshEnabled) return; // Evita ejecutar si ya está refrescando o si está desactivado
+            isRefreshing = true;
+            const searchQuery = document.getElementById('searchInput').value;
+            const allTablones = await getTablones();
+            filteredTablones = searchQuery ? filterTablonesByName(searchQuery) : allTablones;
+            const paginatedTablones = paginate(filteredTablones, currentPage, itemsPerPage);
+            renderTablones(paginatedTablones);
+            renderPagination(filteredTablones.length);
+            isRefreshing = false;
         }
-    });
 
-    // Manejador para el cambio de intervalo
-    document.getElementById('refreshInterval').addEventListener('change', function (event) {
-        currentRefreshInterval = parseInt(event.target.value) * 1000; // Convertir a milisegundos
-        if (autoRefreshEnabled) {
-            stopAutoRefresh();  // Detener la anterior
-            startAutoRefresh(); // Iniciar con el nuevo intervalo
+        // Función para iniciar la actualización automática
+        function startAutoRefresh() {
+            refreshIntervalId = setInterval(refreshTablones, currentRefreshInterval);
         }
-    });
 
-    // Inicialización
-    if (token) {
-        document.getElementById('loginForm').style.display = 'none';
-        refreshTablones();
-    }
+        // Función para detener la actualización automática
+        function stopAutoRefresh() {
+            clearInterval(refreshIntervalId);
+        }
 
-    // Iniciar actualización automática por defecto
-    startAutoRefresh();
+        // Manejador para el toggle de auto actualización
+        document.getElementById('autoRefreshToggle').addEventListener('change', function (event) {
+            autoRefreshEnabled = event.target.checked;
+            if (autoRefreshEnabled) {
+                startAutoRefresh();
+            } else {
+                stopAutoRefresh();
+            }
+        });
+
+        // Manejador para el cambio de intervalo
+        document.getElementById('refreshInterval').addEventListener('change', function (event) {
+            currentRefreshInterval = parseInt(event.target.value) * 1000; // Convertir a milisegundos
+            if (autoRefreshEnabled) {
+                stopAutoRefresh();  // Detener la anterior
+                startAutoRefresh(); // Iniciar con el nuevo intervalo
+            }
+        });
+
+        // Inicialización
+        if (token) {
+            document.getElementById('loginForm').style.display = 'none';
+            refreshTablones();
+        }
+
+        // Iniciar actualización automática por defecto
+        startAutoRefresh();
 
         // Inicialización
         if (token) {
