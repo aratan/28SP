@@ -229,13 +229,29 @@
         }
 
         // Función para refrescar la lista de tablones con paginación
+        // Añadir una variable para controlar si ya se está actualizando
+        let isRefreshing = false;
+
+        // Función para refrescar la lista de tablones con paginación
         async function refreshTablones() {
+            if (isRefreshing) return; // Evita que se ejecute otra vez si ya está en proceso
+            isRefreshing = true;
             const searchQuery = document.getElementById('searchInput').value;
             const allTablones = await getTablones();
             filteredTablones = searchQuery ? filterTablonesByName(searchQuery) : allTablones;
             const paginatedTablones = paginate(filteredTablones, currentPage, itemsPerPage);
             renderTablones(paginatedTablones);
             renderPagination(filteredTablones.length);
+            isRefreshing = false; // Finaliza el proceso de actualización
+        }
+
+        // Llamada periódica para refrescar los tablones automáticamente cada 30 segundos (30000 ms)
+        setInterval(refreshTablones, 30000); // 30 segundos
+
+        // Inicialización
+        if (token) {
+            document.getElementById('loginForm').style.display = 'none';
+            refreshTablones();
         }
 
         // Función para paginar los tablones
