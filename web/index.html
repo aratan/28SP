@@ -39,6 +39,23 @@
             <input type="text" class="form-control" id="searchInput" placeholder="Buscar tablón por nombre...">
         </div>
 
+        <!-- Control de actualización automática -->
+        <div class="form-check form-switch mb-4">
+            <input class="form-check-input" type="checkbox" id="autoRefreshToggle" checked>
+            <label class="form-check-label" for="autoRefreshToggle">Actualización automática</label>
+        </div>
+
+        <!-- Selector de intervalo de actualización -->
+        <div class="mb-4">
+            <label for="refreshInterval" class="form-label">Intervalo de actualización (segundos):</label>
+            <select class="form-select" id="refreshInterval">
+                <option value="15">15 segundos</option>
+                <option value="30" selected>30 segundos</option>
+                <option value="60">1 minuto</option>
+                <option value="120">2 minutos</option>
+            </select>
+        </div>
+
         <!-- Crear Tablón -->
         <div class="card mb-4">
             <div class="card-body">
@@ -231,22 +248,60 @@
         // Función para refrescar la lista de tablones con paginación
         // Añadir una variable para controlar si ya se está actualizando
         let isRefreshing = false;
+    let autoRefreshEnabled = true;
+    let refreshIntervalId;
+    let currentRefreshInterval = 30000; // Intervalo por defecto de 30 segundos
 
-        // Función para refrescar la lista de tablones con paginación
-        async function refreshTablones() {
-            if (isRefreshing) return; // Evita que se ejecute otra vez si ya está en proceso
-            isRefreshing = true;
-            const searchQuery = document.getElementById('searchInput').value;
-            const allTablones = await getTablones();
-            filteredTablones = searchQuery ? filterTablonesByName(searchQuery) : allTablones;
-            const paginatedTablones = paginate(filteredTablones, currentPage, itemsPerPage);
-            renderTablones(paginatedTablones);
-            renderPagination(filteredTablones.length);
-            isRefreshing = false; // Finaliza el proceso de actualización
+    // Función para refrescar la lista de tablones con paginación
+    async function refreshTablones() {
+        if (isRefreshing || !autoRefreshEnabled) return; // Evita ejecutar si ya está refrescando o si está desactivado
+        isRefreshing = true;
+        const searchQuery = document.getElementById('searchInput').value;
+        const allTablones = await getTablones();
+        filteredTablones = searchQuery ? filterTablonesByName(searchQuery) : allTablones;
+        const paginatedTablones = paginate(filteredTablones, currentPage, itemsPerPage);
+        renderTablones(paginatedTablones);
+        renderPagination(filteredTablones.length);
+        isRefreshing = false;
+    }
+
+    // Función para iniciar la actualización automática
+    function startAutoRefresh() {
+        refreshIntervalId = setInterval(refreshTablones, currentRefreshInterval);
+    }
+
+    // Función para detener la actualización automática
+    function stopAutoRefresh() {
+        clearInterval(refreshIntervalId);
+    }
+
+    // Manejador para el toggle de auto actualización
+    document.getElementById('autoRefreshToggle').addEventListener('change', function (event) {
+        autoRefreshEnabled = event.target.checked;
+        if (autoRefreshEnabled) {
+            startAutoRefresh();
+        } else {
+            stopAutoRefresh();
         }
+    });
 
-        // Llamada periódica para refrescar los tablones automáticamente cada 30 segundos (30000 ms)
-        setInterval(refreshTablones, 30000); // 30 segundos
+    // Manejador para el cambio de intervalo
+    document.getElementById('refreshInterval').addEventListener('change', function (event) {
+        currentRefreshInterval = parseInt(event.target.value) * 1000; // Convertir a milisegundos
+        if (autoRefreshEnabled) {
+            stopAutoRefresh();  // Detener la anterior
+            startAutoRefresh(); // Iniciar con el nuevo intervalo
+        }
+    });
+
+    // Inicialización
+    if (token) {
+        document.getElementById('loginForm').style.display = 'none';
+        refreshTablones();
+    }
+
+    // Iniciar actualización automática por defecto
+    startAutoRefresh();
 
         // Inicialización
         if (token) {
