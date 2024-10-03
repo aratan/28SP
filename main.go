@@ -258,6 +258,11 @@ func readTablonHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(tablones)
 }
+func validateCredentials(username, password string) bool {
+    // Aquí puedes implementar la lógica de validación
+    // Por ahora, usaremos credenciales hardcodeadas
+    return (username == "admin" && password == "123") || (username == "user" && password == "123")
+}
 func getClaimsFromToken(r *http.Request) jwt.MapClaims {
     tokenString := r.Header.Get("Authorization")
     token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -615,20 +620,34 @@ func authenticate(next http.Handler) http.Handler {
 }
 
 func generateTokenHandler(w http.ResponseWriter, r *http.Request) {
-    username := r.URL.Query().Get("username")
-    peerId := r.URL.Query().Get("peerId")
-    photo := r.URL.Query().Get("photo")
+    if r.Method != "POST" {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
 
-    if username == "" || peerId == "" {
-        http.Error(w, "Missing 'username' or 'peerId' query parameter", http.StatusBadRequest)
+    var credentials struct {
+        Username string `json:"username"`
+        Password string `json:"password"`
+        PeerId   string `json:"peerId"`
+        Photo    string `json:"photo"`
+    }
+
+    err := json.NewDecoder(r.Body).Decode(&credentials)
+    if err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+
+    if !validateCredentials(credentials.Username, credentials.Password) {
+        http.Error(w, "Invalid credentials", http.StatusUnauthorized)
         return
     }
 
     claims := jwt.MapClaims{
         "authorized": true,
-        "username":   username,
-        "peerId":     peerId,
-        "photo":      photo,
+        "username":   credentials.Username,
+        "peerId":     credentials.PeerId,
+        "photo":      credentials.Photo,
         "exp":        time.Now().Add(time.Hour * 24).Unix(),
     }
 
@@ -723,6 +742,7 @@ func main() {
 	api.HandleFunc("/send", sendMessageHandler).Methods("POST")
 	api.HandleFunc("/recibe", receiveMessagesHandler).Methods("GET")
 	api.HandleFunc("/generateToken", generateTokenHandler).Methods("GET")
+	api.HandleFunc("/login", generateTokenHandler).Methods("POST")
 	//http://localhost:8080/api/generateToken?username=victor/
 
 	// Middleware CORS

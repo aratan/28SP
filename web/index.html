@@ -16,13 +16,15 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4">Mensajes</h1>
         <!-- formulario login-->
-        <!-- Formulario de inicio de sesión -->
         <div id="loginForm" class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title">Iniciar sesión</h5>
                 <form id="loginFormElement">
                     <div class="mb-3">
                         <input type="text" class="form-control" id="username" placeholder="Nombre de usuario" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" id="password" placeholder="Contraseña" required>
                     </div>
                     <div class="mb-3">
                         <input type="text" class="form-control" id="peerId" placeholder="ID de peer" required>
@@ -34,6 +36,7 @@
                 </form>
             </div>
         </div>
+
         <!-- Buscador -->
         <div class="mb-4">
             <input type="text" class="form-control" id="searchInput" placeholder="Buscar tablón por nombre...">
@@ -102,13 +105,24 @@
         const itemsPerPage = 5;
 
         // Función para iniciar sesión
-        async function login(username, peerId, photo) {
-            const response = await fetch(`/api/generateToken?username=${encodeURIComponent(username)}&peerId=${encodeURIComponent(peerId)}&photo=${encodeURIComponent(photo)}`);
-            const data = await response.json();
-            token = data.token;
-            localStorage.setItem('token', token);
-            document.getElementById('loginForm').style.display = 'none';
-            refreshTablones();
+        async function login(username, password, peerId, photo) {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password, peerId, photo })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                token = data.token;
+                localStorage.setItem('token', token);
+                document.getElementById('loginForm').style.display = 'none';
+                refreshTablones();
+            } else {
+                alert('Credenciales inválidas');
+            }
         }
 
         // Función para crear un tablón
@@ -343,9 +357,10 @@
         document.getElementById('loginFormElement').addEventListener('submit', async function (event) {
             event.preventDefault();
             const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
             const peerId = document.getElementById('peerId').value;
             const photo = document.getElementById('photo').value;
-            await login(username, peerId, photo);
+            await login(username, password, peerId, photo);
         });
 
         // Verificar si hay un token almacenado al cargar la página
