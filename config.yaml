@@ -12,3 +12,8 @@ useSSL: true
 torNodes: 3
 zkpDifficulty: 10
 dhtBootstrap: "/ip4/0.0.0.0/tcp/0"
+users:
+  - username: admin
+    password: "123"
+  - username: user
+    password: "123"

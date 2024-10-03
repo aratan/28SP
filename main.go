@@ -58,18 +58,22 @@ const (
 )
 
 type Config struct {
-	TopicName      string `yaml:"topicName"`
-	EncryptionKey  string `yaml:"encryptionKey"`
-	LogLevel       string `yaml:"logLevel"`
-	ListenAddress  string `yaml:"listenAddress"`
-	MaxMessageSize int    `yaml:"maxMessageSize"`
-	LogFile        string `yaml:"logFile"`
-	RetryInterval  int    `yaml:"retryInterval"`
-	Mdns           struct {
-		Enabled    bool   `yaml:"enabled"`
-		ServiceTag string `yaml:"serviceTag"`
-	} `yaml:"mdns"`
-	UseSSL bool `yaml:"useSSL"`
+    TopicName      string `yaml:"topicName"`
+    EncryptionKey  string `yaml:"encryptionKey"`
+    LogLevel       string `yaml:"logLevel"`
+    ListenAddress  string `yaml:"listenAddress"`
+    MaxMessageSize int    `yaml:"maxMessageSize"`
+    LogFile        string `yaml:"logFile"`
+    RetryInterval  int    `yaml:"retryInterval"`
+    Mdns           struct {
+        Enabled    bool   `yaml:"enabled"`
+        ServiceTag string `yaml:"serviceTag"`
+    } `yaml:"mdns"`
+    UseSSL bool `yaml:"useSSL"`
+    Users  []struct {
+        Username string `yaml:"username"`
+        Password string `yaml:"password"`
+    } `yaml:"users"`
 }
 
 type Message struct {
@@ -259,9 +263,18 @@ func readTablonHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(tablones)
 }
 func validateCredentials(username, password string) bool {
-    // Aquí puedes implementar la lógica de validación
-    // Por ahora, usaremos credenciales hardcodeadas
-    return (username == "admin" && password == "123") || (username == "user" && password == "123")
+	config, err := readConfig()
+	if err != nil {
+		log.Printf(Red+"Failed to read config: %v"+Reset, err)
+		return false
+	}
+
+	for _, user := range config.Users {
+		if user.Username == username && user.Password == password {
+			return true
+		}
+	}
+	return false
 }
 func getClaimsFromToken(r *http.Request) jwt.MapClaims {
     tokenString := r.Header.Get("Authorization")
