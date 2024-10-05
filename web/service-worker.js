@@ -35,10 +35,16 @@ self.addEventListener('activate', (event) => {
 
 // Interceptar las solicitudes de red y servir los archivos desde la caché
 self.addEventListener('fetch', (event) => {
+  console.log('Fetch request:', event.request);
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
-        return response || fetch(event.request);
+        if (response) {
+          console.log('Devolviendo respuesta de la caché:', response);
+          return response;
+        }
+        console.log('Haciendo fetch a la red:', event.request);
+        return fetch(event.request);
       })
   );
 });
