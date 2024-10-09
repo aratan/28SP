@@ -595,6 +595,11 @@
         document.getElementById('createTablonForm').addEventListener('submit', handleCreateTablon);
         document.getElementById('searchInput').addEventListener('input', refreshTablones);
         refreshTablones(); // Inicializar la lista de tablones al cargar la página
+         // Función para borrar el token cada 1 hora
+         setInterval(() => {
+            localStorage.removeItem('token');
+            console.log('Token eliminado de localStorage');
+        }, 3600000); // 3600000 ms = 1 hora
     </script>
 </body>
 
