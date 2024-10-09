@@ -275,7 +275,7 @@
                 <h5 class="card-title">Crear Nuevo Grupo</h5>
 
                 <div class="video-container">
-                    <video id="videoPlayer" class="video-player" controls preload="auto" >
+                    <video id="videoPlayer" class="video-player" controls preload="auto">
                         <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
                         Tu navegador no soporta la reproducción de video.
                     </video>
@@ -305,11 +305,15 @@
         <div id="tablonesList"></div>
         <p id="qr-content">
             <button onclick="pagos('0x61B9453987d7c40a2B7f10908e382C715e224577', '0.00012','Donativo')"
-                class="btn btn-danger btn-block">Pagar</button>
+                class="btn btn-sm btn-primary">
+                <i class="fas fa-credit-card"></i>
+                Pagar
+            </button>
+
 
         </p>
         <div id="mispagos"></div>
-        
+
         <!-- Paginación -->
         <nav>
             <ul class="pagination justify-content-center" id="pagination"></ul>
@@ -602,8 +606,8 @@
         document.getElementById('createTablonForm').addEventListener('submit', handleCreateTablon);
         document.getElementById('searchInput').addEventListener('input', refreshTablones);
         refreshTablones(); // Inicializar la lista de tablones al cargar la página
-         // Función para borrar el token cada 1 hora
-         setInterval(() => {
+        // Función para borrar el token cada 1 hora
+        setInterval(() => {
             localStorage.removeItem('token');
             console.log('Token eliminado de localStorage');
         }, 3600000); // 3600000 ms = 1 hora
