@@ -1,11 +1,11 @@
 
 window.ultimaTransaccion = "";
 
-function pagos(direccion, dinero, concepto) {
+function pagos(direccion,red, dinero, concepto) {
   // A quién vas a enviar, cuánto y en qué red '0xc17a1EA090987F355312F24c28DFfa370f2f9cDc'
   const yourAddress = direccion; //'0xc17a1EA090987F355312F24c28DFfa370f2f9cDc'
   const value = dinero; //'0x5873500000000' // un ether tiene 18 decimales, aquí en hex. 0x5873500000000
-  const desiredNetwork = '80001'; // '1' es el ID de la red principal de Ethereum.
+  const desiredNetwork = red || '80001'; // '80001' es el ID de la red de prueba de Polygon (Mumbai). // '1' es el ID de la red principal de Ethereum.
 
 
   // Detectar si el navegador actual es compatible con Ethereum
