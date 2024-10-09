@@ -1,0 +1,20 @@
+funding_models:
+  github: 
+    # Reemplaza con hasta 4 nombres de usuario habilitados para GitHub Sponsors
+    - aratan
+    - seed42
+    
+  patreon: user_patreon  # Reemplaza con un único nombre de usuario de Patreon
+  open_collective: user_open_collective  # Reemplaza con un único nombre de usuario de Open Collective
+  ko_fi: user_ko_fi  # Reemplaza con un único nombre de usuario de Ko-fi
+  tidelift: npm/babel  # Reemplaza con un nombre de paquete de Tidelift (ejemplo: npm/babel)
+  community_bridge: project_name  # Reemplaza con un único nombre de proyecto de Community Bridge (ejemplo: cloud-foundry)
+  liberapay: user_liberapay  # Reemplaza con un único nombre de usuario de Liberapay
+  issuehunt: user_issuehunt  # Reemplaza con un único nombre de usuario de IssueHunt
+  lfx_crowdfunding: project_name  # Reemplaza con un único nombre de proyecto de LFX Crowdfunding (ejemplo: cloud-foundry)
+  polar: user_polar  # Reemplaza con un único nombre de usuario de Polar
+  buy_me_a_coffee: user_buy_me_a_coffee  # Reemplaza con un único nombre de usuario de Buy Me a Coffee
+  thanks_dev: user_thanks_dev  # Reemplaza con un único nombre de usuario de thanks.dev
+  custom: 
+    - 'link1'  # Reemplaza con hasta 4 enlaces de patrocinio personalizados
+    - 'link2'
