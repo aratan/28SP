@@ -303,7 +303,13 @@
 
         <!-- Lista de Tablones -->
         <div id="tablonesList"></div>
+        <p id="qr-content">
+            <button onclick="pagos('0x61B9453987d7c40a2B7f10908e382C715e224577', '0.00012','Donativo')"
+                class="btn btn-danger btn-block">Pagar</button>
 
+        </p>
+        <div id="mispagos"></div>
+        
         <!-- Paginación -->
         <nav>
             <ul class="pagination justify-content-center" id="pagination"></ul>
@@ -311,6 +317,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./pagos.js"></script>
     <script>
         let token = localStorage.getItem('token');
         let filteredTablones = [];
