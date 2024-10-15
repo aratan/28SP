@@ -9,6 +9,8 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
+	"encoding/base64"
+	"path/filepath"
 	"encoding/hex"
 	"encoding/json"
 	"flag"
@@ -84,6 +86,8 @@ type Message struct {
 	Content   Content  `json:"content"`
 	Action    string   `json:"action"` // "create", "delete", "like"
 	TablonID  string   `json:"tablonId"`
+	BinaryData string `json:"binaryData,omitempty"`
+	FileName   string `json:"fileName,omitempty"`
 }
 
 type Tablon struct {
@@ -130,6 +134,108 @@ func readConfig() (*Config, error) {
 		return nil, err
 	}
 	return &config, nil
+}
+
+// New function to encode file to base64
+func encodeFileToBase64(filePath string) (string, error) {
+	data, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(data), nil
+}
+// New function to decode base64 to file
+func decodeBase64ToFile(base64String, outputPath string) error {
+	data, err := base64.StdEncoding.DecodeString(base64String)
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(outputPath, data, 0644)
+}
+// New handler for sending binary data
+// New handler for sending binary data
+func sendBinaryHandler(w http.ResponseWriter, r *http.Request) {
+	file, header, err := r.FormFile("file")
+	if err != nil {
+		http.Error(w, "Error retrieving the file", http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	// Create a temporary file to store the uploaded content
+	tempFile, err := ioutil.TempFile("", "upload-*.tmp")
+	if err != nil {
+		http.Error(w, "Error creating temporary file", http.StatusInternalServerError)
+		return
+	}
+	defer os.Remove(tempFile.Name())
+	defer tempFile.Close()
+
+	// Copy the uploaded file to the temporary file
+	_, err = io.Copy(tempFile, file)
+	if err != nil {
+		http.Error(w, "Error saving the file", http.StatusInternalServerError)
+		return
+	}
+
+	// Encode the file to base64
+	base64Data, err := encodeFileToBase64(tempFile.Name())
+	if err != nil {
+		http.Error(w, "Error encoding file to base64", http.StatusInternalServerError)
+		return
+	}
+
+	// Create a new message with the binary data
+	msg := Message{
+		ID:         generateMessageID(),
+		From:       UserInfo{PeerID: "sender_peer_id", Username: "sender_username", Photo: "sender_photo_url"},
+		To:         "BROADCAST", // or specific peer ID
+		Timestamp:  time.Now().Format(time.RFC3339),
+		Action:     "binary_transfer",
+		BinaryData: base64Data,
+		FileName:   header.Filename,
+	}
+
+	// Publish the message to the P2P network
+	go publishToP2P(msg)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"status": "file sent", "messageId": msg.ID})
+}
+
+// New handler for receiving binary data
+func receiveBinaryHandler(w http.ResponseWriter, r *http.Request) {
+	var msg Message
+	err := json.NewDecoder(r.Body).Decode(&msg)
+	if err != nil {
+		http.Error(w, "Error decoding message", http.StatusBadRequest)
+		return
+	}
+
+	if msg.Action != "binary_transfer" || msg.BinaryData == "" {
+		http.Error(w, "Invalid binary transfer message", http.StatusBadRequest)
+		return
+	}
+
+	// Create a directory for received files if it doesn't exist
+	receivedDir := "received_files"
+	if err := os.MkdirAll(receivedDir, 0755); err != nil {
+		http.Error(w, "Error creating directory for received files", http.StatusInternalServerError)
+		return
+	}
+
+	// Generate a unique filename
+	outputPath := filepath.Join(receivedDir, fmt.Sprintf("%s_%s", msg.ID, msg.FileName))
+
+	// Decode and save the file
+	err = decodeBase64ToFile(msg.BinaryData, outputPath)
+	if err != nil {
+		http.Error(w, "Error saving received file", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"status": "file received", "filePath": outputPath})
 }
 
 // Actualiza createTablonHandler para publicar en la red P2P
@@ -756,6 +862,9 @@ func main() {
 	api.HandleFunc("/recibe", receiveMessagesHandler).Methods("GET")
 	api.HandleFunc("/generateToken", generateTokenHandler).Methods("GET")
 	api.HandleFunc("/login", generateTokenHandler).Methods("POST")
+	// Add new routes for binary transfer
+	api.HandleFunc("/api/sendBinary", sendBinaryHandler).Methods("POST")
+	api.HandleFunc("/api/receiveBinary", receiveBinaryHandler).Methods("POST")
 	//http://localhost:8080/api/generateToken?username=victor/
 
 	// Middleware CORS
@@ -831,21 +940,40 @@ func main() {
 	select {}
 }
 
+// Update the handleP2PMessages function to handle binary transfers
 func handleP2PMessages(ctx context.Context) {
 	for {
 		m, err := p2pSub.Next(ctx)
 		if err != nil {
-			log.Printf(Red+"Failed to get next message: %v"+Reset, err)
+			log.Printf("Failed to get next message: %v", err)
 			continue
 		}
 		msg, err := deserializeMessage(m.Message.Data, p2pKeys)
 		if err != nil {
-			log.Printf(Red+"Deserialization error: %v"+Reset, err)
+			log.Printf("Deserialization error: %v", err)
 			continue
 		}
 
-		// Procesar el mensaje P2P
-		processP2PMessage(msg)
+		// Handle binary transfer messages
+		if msg.Action == "binary_transfer" {
+			log.Printf("Received binary file: %s", msg.FileName)
+			// Process the binary data (e.g., save to disk)
+			receivedDir := "received_files"
+			if err := os.MkdirAll(receivedDir, 0755); err != nil {
+				log.Printf("Error creating directory for received files: %v", err)
+				continue
+			}
+			outputPath := filepath.Join(receivedDir, fmt.Sprintf("%s_%s", msg.ID, msg.FileName))
+			err = decodeBase64ToFile(msg.BinaryData, outputPath)
+			if err != nil {
+				log.Printf("Error saving received file: %v", err)
+				continue
+			}
+			log.Printf("File saved to: %s", outputPath)
+		} else {
+			// Process other message types as before
+			processP2PMessage(msg)
+		}
 	}
 }
 func createOrUpdateMessage(msg Message) {
