@@ -1,0 +1,237 @@
+body {
+    background-color: #f8f9fa;
+    /* Color de fondo suave */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Tipografía moderna */
+    color: #343a40;
+    /* Color del texto */
+    line-height: 1.6;
+    /* Mejora la legibilidad */
+    margin: 0;
+    /* Eliminar márgenes por defecto */
+    padding: 0;
+    /* Eliminar padding por defecto */
+    box-sizing: border-box;
+    /* Asegura que padding y borde no afecten el ancho total */
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+    /* Herencia de box-sizing */
+}
+
+.container {
+    max-width: 1200px;
+    /* Ancho máximo para el contenedor */
+    margin: 0 auto;
+    /* Centramos el contenedor */
+    padding: 20px;
+    /* Espaciado interno */
+    width: 100%;
+    /* Ancho completo */
+}
+
+.card {
+    border-radius: 15px;
+    /* Bordes redondeados */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    /* Sombra más profunda */
+    transition: transform 0.2s;
+    /* Transición al hacer hover */
+    overflow: hidden;
+    /* Oculta el desbordamiento */
+    width: 100%;
+    /* Ancho completo para adaptarse al contenedor */
+    max-width: 100%;
+    /* Máxima ancho del card */
+}
+
+.card:hover {
+    transform: scale(1.02);
+    /* Efecto de aumento al pasar el ratón */
+}
+
+.card-title {
+    font-size: 1.75rem;
+    /* Tamaño de fuente del título incrementado */
+    font-weight: bold;
+    /* Negrita para mayor énfasis */
+    color: #007bff;
+    /* Color del título */
+}
+
+.form-control {
+    border-radius: 25px;
+    /* Bordes redondeados para entradas */
+    border: 1px solid #ced4da;
+    /* Borde más definido */
+    transition: border-color 0.3s, box-shadow 0.3s;
+    /* Transiciones suaves */
+    width: 100%;
+    /* Ancho completo para entradas */
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    /* Color del borde al enfocar */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    /* Sombra al enfocar */
+}
+
+.btn-primary {
+    border-radius: 25px;
+    /* Bordes redondeados para botones */
+    transition: background-color 0.3s, transform 0.2s;
+    /* Transición suave */
+    background-color: #007bff;
+    /* Color de fondo inicial */
+    color: white;
+    /* Color del texto */
+    padding: 10px 20px;
+    /* Espaciado interno */
+    border: none;
+    /* Sin borde */
+    cursor: pointer;
+    /* Cursor de puntero */
+    width: auto;
+    /* Ancho automático */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    /* Color de fondo al pasar el ratón */
+    transform: translateY(-2px);
+    /* Efecto de desplazamiento al pasar el ratón */
+}
+
+.pagination {
+    display: flex;
+    /* Uso de Flexbox para paginación */
+    justify-content: center;
+    /* Centramos horizontalmente */
+    flex-wrap: wrap;
+    /* Permitir que los elementos se envuelvan */
+}
+
+.pagination .page-item {
+    margin: 0 5px;
+    /* Espaciado entre los elementos de paginación */
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    /* Color de fondo para el elemento activo */
+    border-color: #007bff;
+    /* Bordes del elemento activo */
+    color: white;
+    /* Color del texto del elemento activo */
+}
+
+.pagination .page-link {
+    border-radius: 25px;
+    /* Bordes redondeados para los enlaces de paginación */
+    padding: 8px 12px;
+    /* Espaciado interno */
+    text-decoration: none;
+    /* Sin subrayado */
+    color: #007bff;
+    /* Color inicial */
+    transition: background-color 0.3s;
+    /* Transición suave */
+}
+
+.pagination .page-link:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    /* Fondo claro al pasar el ratón */
+}
+
+.messages .message {
+    border: 1px solid #e0e0e0;
+    /* Borde ligero */
+    border-radius: 10px;
+    /* Bordes redondeados para mensajes */
+    padding: 12px;
+    /* Espaciado interno */
+    margin-bottom: 15px;
+    /* Espaciado entre mensajes */
+    background-color: #ffffff;
+    /* Fondo blanco para mensajes */
+    transition: background-color 0.3s;
+    /* Transición suave */
+    width: 100%;
+    /* Ancho completo para mensajes */
+}
+
+.messages .message:hover {
+    background-color: #f1f1f1;
+    /* Fondo claro al pasar el ratón sobre un mensaje */
+}
+
+.video-container {
+    display: flex;
+    /* Uso de Flexbox para centrar el contenido */
+    justify-content: center;
+    /* Centrado horizontal */
+    align-items: center;
+    /* Centrado vertical */
+    padding: 20px;
+    /* Espaciado alrededor del contenedor */
+    background-color: #f8f9fa;
+    /* Fondo suave */
+    border-radius: 15px;
+    /* Bordes redondeados */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    /* Sombra sutil */
+    max-width: 100%;
+    /* Asegura que el contenedor no exceda el 100% del ancho */
+    overflow: hidden;
+    /* Oculta el desbordamiento del contenido */
+    border-radius: 15px;
+    /* Bordes redondeados para el video */
+}
+
+.video-player {
+    width: 100%;
+    /* Ancho completo para adaptarse al contenedor */
+    height: auto;
+    /* Mantiene la relación de aspecto */
+    max-height: 80vh;
+    /* Máxima altura del video para evitar que ocupe toda la pantalla */
+    border-radius: 15px;
+    /* Bordes redondeados para el video */
+    outline: none;
+    /* Sin contorno */
+}
+
+/* Contenedor del texto deslizante *//* Contenedor del texto deslizante */
+#slidingTextContainer {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex; /* Alinea los elementos en fila horizontal */
+    flex-direction: row; /* Asegura que los elementos se coloquen uno al lado del otro */
+    gap: 20px; /* Espacio entre los elementos (opcional) */
+}
+
+/* Estilos de los elementos del texto deslizante */
+.slidingTextItem {
+    display: inline-block;
+    white-space: nowrap;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    animation: slideLeft 10s linear infinite;
+    flex-shrink: 0; /* Evita que los elementos se reduzcan de tamaño */
+}
+
+/* Animación de deslizamiento de izquierda a derecha */
+@keyframes slideLeft {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
