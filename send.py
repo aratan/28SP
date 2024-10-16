@@ -65,7 +65,7 @@ def main():
         logging.info(f"Obtained token: {token[:10]}...")  # Log first 10 characters of token
 
         title = "Fontanero"
-        message = "24H PEPE <hr>654321456" # cambia esto es el mensaje
+        message = "24H PEPE tlf: 654321456" # cambia esto es el mensaje
         response = send_message(token, title, message)
         logging.info(f"Message sent response: {response}")
     except Exception as e:
