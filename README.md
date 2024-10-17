@@ -105,3 +105,9 @@ Autenticación con JWT:
 
 
 En general, este código proporciona una base sólida para una aplicación de mensajería distribuida y resistente a la censura, con un buen nivel de privacidad y seguridad.
+
+
+
+Compilar desde termux en android
+
+go build -ldflags="-checklinkname=0" -o myapp main.go
