@@ -108,6 +108,11 @@ En general, este código proporciona una base sólida para una aplicación de me
 
 
 
+
+## trabajando en la automatizacion de noticias con IA
+
+
+
 Compilar desde termux en android
 
 go build -ldflags="-checklinkname=0" -o myapp main.go
