@@ -1,5 +1,7 @@
 # aplicación de mensajería distribuida (DMA)
 
+![12f4413a-c382-4448-bedb-e4e82c5c43a8](https://github.com/user-attachments/assets/3c0e7822-71a7-4559-ab21-0a56c89f051c)
+
 ## utilizando la biblioteca libp2p de Go. Aquí está un resumen de sus características principales:
 
 1. Cifrado:
