@@ -1,7 +1,9 @@
 topicName: "applesauce"
-encryptionKey: "your-encryption-key-here"
+# ¡¡USA TU PROPIA CLAVE GENERADA AQUÍ!!
+encryptionKey: "e4a2b1f0c8d7e6a5b4f3c2d1e0a9b8f7e4a2b1f0c8d7e6a5b4f3c2d1e0a9b8f7"
 logLevel: "info"
 listenAddress: "/ip4/0.0.0.0/tcp/9000"
+webServerAddr: ":8443" # Añadido o corregido para HTTPS
 maxMessageSize: 1048576
 retryInterval: 2000
 logFile: "app.log"
@@ -9,12 +11,16 @@ mdns:
   enabled: false
   serviceTag: "my-mdns-service"
 useSSL: true
-ssl:
-  certFile: "cert.pem"
-  keyFile: "key.pem"
+# --- CORRECCIÓN SSL ---
+# Los paths de SSL van aquí, no anidados
+certFile: "cert.pem"
+keyFile: "key.pem"
+# ---------------------
+# Estos campos no se usan en el código Go actual, pero no causan error:
 torNodes: 3
 zkpDifficulty: 10
 dhtBootstrap: "/ip4/0.0.0.0/tcp/0"
+# ---------------------
 users:
   - username: admin
     password: "123"
