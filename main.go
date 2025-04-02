@@ -9,8 +9,8 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
-	"crypto/tls"
 	"encoding/base64"
+	"path/filepath"
 	"encoding/hex"
 	"encoding/json"
 	"flag"
@@ -22,7 +22,6 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -61,38 +60,34 @@ const (
 )
 
 type Config struct {
-	TopicName      string `yaml:"topicName"`
-	EncryptionKey  string `yaml:"encryptionKey"`
-	LogLevel       string `yaml:"logLevel"`
-	ListenAddress  string `yaml:"listenAddress"`
-	MaxMessageSize int    `yaml:"maxMessageSize"`
-	LogFile        string `yaml:"logFile"`
-	RetryInterval  int    `yaml:"retryInterval"`
-	Mdns           struct {
-		Enabled    bool   `yaml:"enabled"`
-		ServiceTag string `yaml:"serviceTag"`
-	} `yaml:"mdns"`
-	UseSSL bool `yaml:"useSSL"`
-	Users  []struct {
-		Username string `yaml:"username"`
-		Password string `yaml:"password"`
-	} `yaml:"users"`
-	SSL struct {
-		CertFile string `yaml:"certFile"`
-		KeyFile  string `yaml:"keyFile"`
-	} `yaml:"ssl"`
+    TopicName      string `yaml:"topicName"`
+    EncryptionKey  string `yaml:"encryptionKey"`
+    LogLevel       string `yaml:"logLevel"`
+    ListenAddress  string `yaml:"listenAddress"`
+    MaxMessageSize int    `yaml:"maxMessageSize"`
+    LogFile        string `yaml:"logFile"`
+    RetryInterval  int    `yaml:"retryInterval"`
+    Mdns           struct {
+        Enabled    bool   `yaml:"enabled"`
+        ServiceTag string `yaml:"serviceTag"`
+    } `yaml:"mdns"`
+    UseSSL bool `yaml:"useSSL"`
+    Users  []struct {
+        Username string `yaml:"username"`
+        Password string `yaml:"password"`
+    } `yaml:"users"`
 }
 
 type Message struct {
-	ID         string   `json:"id"`
-	From       UserInfo `json:"from"`
-	To         string   `json:"to"`
-	Timestamp  string   `json:"timestamp"`
-	Content    Content  `json:"content"`
-	Action     string   `json:"action"` // "create", "delete", "like"
-	TablonID   string   `json:"tablonId"`
-	BinaryData string   `json:"binaryData,omitempty"`
-	FileName   string   `json:"fileName,omitempty"`
+	ID        string   `json:"id"`
+	From      UserInfo `json:"from"`
+	To        string   `json:"to"`
+	Timestamp string   `json:"timestamp"`
+	Content   Content  `json:"content"`
+	Action    string   `json:"action"` // "create", "delete", "like"
+	TablonID  string   `json:"tablonId"`
+	BinaryData string `json:"binaryData,omitempty"`
+	FileName   string `json:"fileName,omitempty"`
 }
 
 type Tablon struct {
@@ -149,7 +144,6 @@ func encodeFileToBase64(filePath string) (string, error) {
 	}
 	return base64.StdEncoding.EncodeToString(data), nil
 }
-
 // New function to decode base64 to file
 func decodeBase64ToFile(base64String, outputPath string) error {
 	data, err := base64.StdEncoding.DecodeString(base64String)
@@ -158,7 +152,6 @@ func decodeBase64ToFile(base64String, outputPath string) error {
 	}
 	return ioutil.WriteFile(outputPath, data, 0644)
 }
-
 // New handler for sending binary data
 // New handler for sending binary data
 func sendBinaryHandler(w http.ResponseWriter, r *http.Request) {
@@ -390,16 +383,16 @@ func validateCredentials(username, password string) bool {
 	return false
 }
 func getClaimsFromToken(r *http.Request) jwt.MapClaims {
-	tokenString := r.Header.Get("Authorization")
-	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return jwtSecretKey, nil
-	})
+    tokenString := r.Header.Get("Authorization")
+    token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+        return jwtSecretKey, nil
+    })
 
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return claims
-	}
+    if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+        return claims
+    }
 
-	return nil
+    return nil
 }
 func deleteTablonHandler(w http.ResponseWriter, r *http.Request) {
 	// Verificar el token JWT
@@ -447,23 +440,23 @@ func deleteTablonHandler(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Tablon not found", http.StatusNotFound)
 }
 func verifyJWT(r *http.Request) bool {
-	tokenString := r.Header.Get("Authorization")
-	if tokenString == "" {
-		return false
-	}
+    tokenString := r.Header.Get("Authorization")
+    if tokenString == "" {
+        return false
+    }
 
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method")
-		}
-		return jwtSecretKey, nil
-	})
+    token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+        if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+            return nil, fmt.Errorf("Unexpected signing method")
+        }
+        return jwtSecretKey, nil
+    })
 
-	if err != nil {
-		return false
-	}
+    if err != nil {
+        return false
+    }
 
-	return token.Valid
+    return token.Valid
 }
 func deleteMessageHandler(w http.ResponseWriter, r *http.Request) {
 	// Verificar el token JWT
@@ -471,7 +464,7 @@ func deleteMessageHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-
+	
 	tablonID := r.URL.Query().Get("tablonId")
 	messageID := r.URL.Query().Get("messageId")
 	msg := Message{
@@ -746,48 +739,48 @@ func authenticate(next http.Handler) http.Handler {
 }
 
 func generateTokenHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
+    if r.Method != "POST" {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
 
-	var credentials struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-		PeerId   string `json:"peerId"`
-		Photo    string `json:"photo"`
-	}
+    var credentials struct {
+        Username string `json:"username"`
+        Password string `json:"password"`
+        PeerId   string `json:"peerId"`
+        Photo    string `json:"photo"`
+    }
 
-	err := json.NewDecoder(r.Body).Decode(&credentials)
-	if err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
-		return
-	}
+    err := json.NewDecoder(r.Body).Decode(&credentials)
+    if err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
 
-	if !validateCredentials(credentials.Username, credentials.Password) {
-		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-		return
-	}
+    if !validateCredentials(credentials.Username, credentials.Password) {
+        http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+        return
+    }
 
-	claims := jwt.MapClaims{
-		"authorized": true,
-		"username":   credentials.Username,
-		"peerId":     credentials.PeerId,
-		"photo":      credentials.Photo,
-		"exp":        time.Now().Add(time.Hour * 24).Unix(),
-	}
+    claims := jwt.MapClaims{
+        "authorized": true,
+        "username":   credentials.Username,
+        "peerId":     credentials.PeerId,
+        "photo":      credentials.Photo,
+        "exp":        time.Now().Add(time.Hour * 24).Unix(),
+    }
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtSecretKey)
-	if err != nil {
-		http.Error(w, "Error al generar el token", http.StatusInternalServerError)
-		return
-	}
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+    tokenString, err := token.SignedString(jwtSecretKey)
+    if err != nil {
+        http.Error(w, "Error al generar el token", http.StatusInternalServerError)
+        return
+    }
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{
-		"token": tokenString,
-	})
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(map[string]string{
+        "token": tokenString,
+    })
 }
 
 func sendMessageHandler(w http.ResponseWriter, r *http.Request) {
@@ -900,34 +893,9 @@ func main() {
 
 	// Iniciar servidor HTTP
 	go func() {
-		if config.UseSSL {
-			log.Println(Green + "Starting HTTPS server on :8443" + Reset)
-
-			// Create TLS configuration
-			tlsConfig := &tls.Config{
-				MinVersion:               tls.VersionTLS12,
-				CurvePreferences:         []tls.CurveID{tls.CurveP521, tls.CurveP384, tls.CurveP256},
-				PreferServerCipherSuites: true,
-			}
-
-			// Create custom server
-			srv := &http.Server{
-				Addr:         ":8443",
-				Handler:      r,
-				TLSConfig:    tlsConfig,
-				ReadTimeout:  5 * time.Second,
-				WriteTimeout: 10 * time.Second,
-				IdleTimeout:  120 * time.Second,
-			}
-
-			if err := srv.ListenAndServeTLS("cert.pem", "key.pem"); err != nil {
-				log.Fatalf(Red+"HTTPS server error: %v"+Reset, err)
-			}
-		} else {
-			log.Println(Yellow + "Warning: Running in HTTP mode (insecure)" + Reset)
-			if err := http.ListenAndServe(":8080", r); err != nil {
-				log.Fatalf(Red+"HTTP server error: %v"+Reset, err)
-			}
+		log.Println("Starting HTTP server on :8080")
+		if err := http.ListenAndServe(":8080", r); err != nil {
+			log.Fatalf("HTTP server error: %v", err)
 		}
 	}()
 
