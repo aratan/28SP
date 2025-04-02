@@ -1,14 +1,17 @@
 topicName: "applesauce"
-encryptionKey: "$QjsDHE5Hge*tAd-zLQwJbW2mFu5GsCh"
-logLevel: "ERROR"
-listenAddress: "/ip4/0.0.0.0/tcp/0"
-maxMessageSize: 10485760
+encryptionKey: "your-encryption-key-here"
+logLevel: "info"
+listenAddress: "/ip4/0.0.0.0/tcp/9000"
+maxMessageSize: 1048576
 retryInterval: 2000
 logFile: "app.log"
 mdns:
   enabled: false
   serviceTag: "my-mdns-service"
 useSSL: true
+ssl:
+  certFile: "cert.pem"
+  keyFile: "key.pem"
 torNodes: 3
 zkpDifficulty: 10
 dhtBootstrap: "/ip4/0.0.0.0/tcp/0"
