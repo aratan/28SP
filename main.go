@@ -1,7 +1,7 @@
 package main
 
 import (
-
+	"bufio"
 	"bytes"
 	"compress/gzip"
 	"context"
@@ -33,11 +33,13 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-libp2p/core/host"
-	"github.com/libp2p/go-libp2p/core/network" // <--- *** AÑADIDO IMPORT ***
+	"github.com/libp2p/go-libp2p/core/network" // Importado para network.Connected
 	"github.com/libp2p/go-libp2p/core/peer"
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery/mdns"
 	drouting "github.com/libp2p/go-libp2p/p2p/discovery/routing"
 	dutil "github.com/libp2p/go-libp2p/p2p/discovery/util"
+	libp2ptls "github.com/libp2p/go-libp2p/p2p/security/tls"   // *** AÑADIDO IMPORT para TLS explícito ***
+	libp2ptcp "github.com/libp2p/go-libp2p/p2p/transport/tcp" // *** AÑADIDO IMPORT para TCP explícito ***
 	"gopkg.in/yaml.v2"
 )
 
@@ -177,13 +179,14 @@ func readConfig() (*Config, error) {
 	}
     if config.EncryptionKey == "" {
         log.Println(Yellow + "Warning: P2P EncryptionKey is empty in config.yaml. Messages will not be encrypted." + Reset)
+        p2pKeys = nil // Asegurarse de que sea nil si está vacío
     } else {
         // Validar formato de la clave de encriptación P2P (hexadecimal de 64 chars)
 		keyBytes, err := hex.DecodeString(config.EncryptionKey)
 		if err != nil || len(keyBytes) != 32 { // AES-256 necesita 32 bytes
 			return nil, fmt.Errorf("invalid EncryptionKey in config.yaml: must be a 64-character hex string (representing 32 bytes), got %d chars, error: %v", len(config.EncryptionKey), err)
 		}
-        p2pKeys = [][]byte{keyBytes}
+        p2pKeys = [][]byte{keyBytes} // Establecer la clave global
         log.Println(Blue+"P2P encryption key loaded successfully."+Reset)
     }
 
@@ -234,12 +237,16 @@ func sendBinaryHandler(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Invalid token", http.StatusUnauthorized)
 		return
     }
-    userInfo := UserInfo{
-		PeerID:   claims["peerId"].(string), // Asegúrate que estos campos existen en el token
-		Username: claims["username"].(string),
-		Photo:    claims["photo"].(string),
-	}
-
+    // Extraer info del usuario de forma segura
+    peerId, okPeer := claims["peerId"].(string)
+    username, okUser := claims["username"].(string)
+    photo, okPhoto := claims["photo"].(string)
+    if !okPeer || !okUser || !okPhoto {
+         log.Printf(Red + "Error extracting user info from JWT claims" + Reset)
+         http.Error(w, "Invalid token claims", http.StatusUnauthorized)
+         return
+    }
+    userInfo := UserInfo{PeerID: peerId, Username: username, Photo: photo}
 
 	// Limitar tamaño del request body
 	r.Body = http.MaxBytesReader(w, r.Body, 100<<20) // Limite de 100 MB (ajustar según necesidad)
@@ -277,7 +284,13 @@ func sendBinaryHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error saving the file", http.StatusInternalServerError)
 		return
 	}
-	tempFile.Close() // Cerrar antes de reabrir para leer
+	// Es importante cerrar el archivo *antes* de intentar leerlo de nuevo para codificarlo
+	err = tempFile.Close()
+    if err != nil {
+        log.Printf(Red+"Error closing temporary file after write: %v"+Reset, err)
+        // Podría continuar, pero es una señal de alerta
+    }
+
 
 	log.Printf("File saved temporarily to: %s, Bytes written: %d", tempFilePath, fileBytes)
 
@@ -309,51 +322,6 @@ func sendBinaryHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"status": "file queued for P2P transfer", "messageId": msg.ID, "fileName": msg.FileName})
 }
 
-// receiveBinaryHandler (Endpoint API para recibir desde P2P - No llamado directamente por cliente)
-// Este handler parece conceptualmente erróneo. La recepción P2P ocurre en handleP2PMessages.
-// Podría ser un endpoint para *solicitar* un archivo de otro peer, pero no para *recibir* el push.
-// Se comenta por ahora, ya que la lógica de recepción está en handleP2PMessages.
-/*
-func receiveBinaryHandler(w http.ResponseWriter, r *http.Request) {
-	var msg Message
-	err := json.NewDecoder(r.Body).Decode(&msg)
-	if err != nil {
-		http.Error(w, "Error decoding message", http.StatusBadRequest)
-		return
-	}
-
-	if msg.Action != "binary_transfer" || msg.BinaryData == "" {
-		http.Error(w, "Invalid binary transfer message", http.StatusBadRequest)
-		return
-	}
-
-	// Directorio para guardar archivos recibidos
-	receivedDir := "received_files"
-	if err := os.MkdirAll(receivedDir, 0755); err != nil {
-		log.Printf(Red+"Error creating directory for received files: %v"+Reset, err)
-		http.Error(w, "Error creating directory for received files", http.StatusInternalServerError)
-		return
-	}
-
-	// Generar nombre único o usar el proporcionado + ID para evitar colisiones
-	// Cuidado con Path Traversal si se usa msg.FileName directamente sin sanear
-	safeFileName := filepath.Base(msg.FileName) // Evita usar paths relativos como ../../
-	outputPath := filepath.Join(receivedDir, fmt.Sprintf("%s_%s", msg.ID, safeFileName))
-
-	// Decodificar y guardar
-	err = decodeBase64ToFile(msg.BinaryData, outputPath)
-	if err != nil {
-		log.Printf(Red+"Error saving received file: %v"+Reset, err)
-		http.Error(w, "Error saving received file", http.StatusInternalServerError)
-		return
-	}
-
-	log.Printf(Green+"Binary file received via API and saved to: %s"+Reset, outputPath)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{"status": "file received via API", "filePath": outputPath})
-}
-*/
-
 
 // createTablonHandler crea un nuevo tablón y lo anuncia por P2P
 func createTablonHandler(w http.ResponseWriter, r *http.Request) {
@@ -366,11 +334,15 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Invalid token", http.StatusUnauthorized)
 		return
     }
-    userInfo := UserInfo{
-		PeerID:   claims["peerId"].(string),
-		Username: claims["username"].(string),
-		Photo:    claims["photo"].(string),
-	}
+    peerId, okPeer := claims["peerId"].(string)
+    username, okUser := claims["username"].(string)
+    photo, okPhoto := claims["photo"].(string)
+    if !okPeer || !okUser || !okPhoto {
+         log.Printf(Red + "Error extracting user info from JWT claims" + Reset)
+         http.Error(w, "Invalid token claims", http.StatusUnauthorized)
+         return
+    }
+    userInfo := UserInfo{PeerID: peerId, Username: username, Photo: photo}
 
 
 	tablonName := r.URL.Query().Get("name")
@@ -446,11 +418,15 @@ func addMessageToTablonHandler(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Invalid token", http.StatusUnauthorized)
 		return
     }
-    userInfo := UserInfo{
-		PeerID:   claims["peerId"].(string),
-		Username: claims["username"].(string),
-		Photo:    claims["photo"].(string),
-	}
+    peerId, okPeer := claims["peerId"].(string)
+    username, okUser := claims["username"].(string)
+    photo, okPhoto := claims["photo"].(string)
+    if !okPeer || !okUser || !okPhoto {
+         log.Printf(Red + "Error extracting user info from JWT claims" + Reset)
+         http.Error(w, "Invalid token claims", http.StatusUnauthorized)
+         return
+    }
+    userInfo := UserInfo{PeerID: peerId, Username: username, Photo: photo}
 
 	tablonID := r.URL.Query().Get("tablon_id")
 	if tablonID == "" {
@@ -539,11 +515,15 @@ func deleteTablonHandler(w http.ResponseWriter, r *http.Request) {
 		return
     }
     // Opcional: Verificar si el usuario tiene permiso para borrar este tablón
-    userInfo := UserInfo{
-		PeerID:   claims["peerId"].(string),
-		Username: claims["username"].(string),
-		Photo:    claims["photo"].(string),
-	}
+    peerId, okPeer := claims["peerId"].(string)
+    username, okUser := claims["username"].(string)
+    photo, okPhoto := claims["photo"].(string)
+    if !okPeer || !okUser || !okPhoto {
+         log.Printf(Red + "Error extracting user info from JWT claims" + Reset)
+         http.Error(w, "Invalid token claims", http.StatusUnauthorized)
+         return
+    }
+    userInfo := UserInfo{PeerID: peerId, Username: username, Photo: photo}
 
 	tablonID := r.URL.Query().Get("id")
 	if tablonID == "" {
@@ -595,11 +575,15 @@ func deleteMessageHandler(w http.ResponseWriter, r *http.Request) {
 		return
     }
     // Opcional: Verificar permisos del usuario para borrar el mensaje
-    userInfo := UserInfo{
-		PeerID:   claims["peerId"].(string),
-		Username: claims["username"].(string),
-		Photo:    claims["photo"].(string),
-	}
+    peerId, okPeer := claims["peerId"].(string)
+    username, okUser := claims["username"].(string)
+    photo, okPhoto := claims["photo"].(string)
+    if !okPeer || !okUser || !okPhoto {
+         log.Printf(Red + "Error extracting user info from JWT claims" + Reset)
+         http.Error(w, "Invalid token claims", http.StatusUnauthorized)
+         return
+    }
+    userInfo := UserInfo{PeerID: peerId, Username: username, Photo: photo}
 
 	tablonID := r.URL.Query().Get("tablonId")
 	messageID := r.URL.Query().Get("messageId")
@@ -628,8 +612,6 @@ func deleteMessageHandler(w http.ResponseWriter, r *http.Request) {
     messageDeleted := false
 	for i, tablon := range tablones {
 		if tablon.ID == tablonID {
-            // *** CORRECCIÓN: originalMsgCount no se usaba ***
-            // originalMsgCount := len(tablon.Messages)
             filteredMessages := []Message{}
 			for _, message := range tablon.Messages {
 				if message.ID != messageID {
@@ -828,7 +810,8 @@ func verifyJWT(r *http.Request) bool {
 	})
 
 	if err != nil {
-		log.Printf(Yellow+"JWT validation error: %v"+Reset, err)
+		// No loguear cada token inválido como error necesariamente, podría ser normal
+		// log.Printf(Yellow+"JWT validation error: %v"+Reset, err)
 		return false
 	}
 
@@ -853,6 +836,7 @@ func getClaimsFromToken(r *http.Request) jwt.MapClaims {
 		return jwtSecretKey, nil
 	})
 
+    // Verificar validez de nuevo por si acaso
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		return claims
 	}
@@ -928,9 +912,12 @@ func publishToP2P(msg Message) {
 	}
 
 	// Publicar con reintentos
-    config, _ := readConfig() // Leer config para obtener RetryInterval
+    config, err := readConfig() // Leer config para obtener RetryInterval
+    if err != nil {
+        log.Printf(Yellow+"Warning: Could not read config for P2P publish retry interval: %v. Using default."+Reset, err)
+    }
     retryInterval := 500 // Default si falla lectura de config
-    if config != nil {
+    if config != nil && config.RetryInterval > 0 { // Usar valor de config si es válido
         retryInterval = config.RetryInterval
     }
 	maxRetries := 3
@@ -960,20 +947,20 @@ func handleP2PMessages(ctx context.Context) {
 	for {
 		m, err := p2pSub.Next(ctx)
 		if err != nil {
-            if err == context.Canceled || err == context.DeadlineExceeded {
-                log.Println(Yellow+"P2P subscription context canceled. Exiting handler."+Reset)
+            if ctx.Err() != nil { // Verificar si el contexto fue cancelado
+                log.Println(Yellow+"P2P subscription context canceled or deadline exceeded. Exiting handler."+Reset)
                 return
             }
 			// Errores de suscripción pueden ser serios
-			log.Printf(Red+"FATAL: Failed to get next P2P message: %v. Subscription might be broken."+Reset, err)
+			log.Printf(Red+"ERROR: Failed to get next P2P message: %v. Subscription might be broken."+Reset, err)
             // Considerar lógica de reconexión o terminar el programa si la subscripción falla persistentemente
             time.Sleep(5 * time.Second) // Esperar antes de reintentar
 			continue
 		}
 
 		// Ignorar mensajes propios (si no se configuró en GossipSub)
-		// config, _ := readConfig() // Necesitas acceso al host ID
-		// if m.ReceivedFrom == myHost.ID() { continue }
+		// Necesitaría acceso al host 'h' aquí para comparar h.ID()
+		// if m.ReceivedFrom == h.ID() { continue }
 
 		// Desencriptar y deserializar
 		msg, err := decryptAndDeserializeMessage(m.Message.GetData(), p2pKeys)
@@ -1084,13 +1071,12 @@ func processP2PMessage(msg Message) {
 				for j := range tablones[i].Messages {
                     // msg.ID aquí es el ID del mensaje que recibió el like
 					if tablones[i].Messages[j].ID == msg.ID {
-                        // Actualizar solo si el contador P2P es mayor (evita problemas de orden)
-                        // O simplemente aceptar el último valor recibido
-                        if msg.Content.Likes > tablones[i].Messages[j].Content.Likes {
+                        // Simplemente actualizar al valor recibido. Podría causar inconsistencias
+                        // si los mensajes llegan fuera de orden, pero es más simple.
+                        // Para consistencia fuerte se necesitaría CRDTs o lógica más compleja.
+                        if msg.Content.Likes != tablones[i].Messages[j].Content.Likes {
                             tablones[i].Messages[j].Content.Likes = msg.Content.Likes
                             log.Printf(Green+"P2P: Likes updated for message %s in tablon %s to %d"+Reset, msg.ID, msg.TablonID, msg.Content.Likes)
-                        } else {
-                             log.Printf(Yellow+"P2P: Received 'like' for message %s with older/equal count (%d <= %d)"+Reset, msg.ID, msg.Content.Likes, tablones[i].Messages[j].Content.Likes)
                         }
                         foundMessage = true
 						break // Mensaje encontrado
@@ -1114,8 +1100,13 @@ func processP2PMessage(msg Message) {
         }
         // Sanear nombre de archivo y crear path de salida
         safeFileName := filepath.Base(msg.FileName) // Previene path traversal
-        if safeFileName == "." || safeFileName == "/" { safeFileName = "downloaded_file" } // Evitar nombres vacíos o raíz
-        outputPath := filepath.Join(receivedDir, fmt.Sprintf("%s_%s_%s", msg.From.PeerID[:8], msg.ID[:8], safeFileName)) // Añadir PeerID/MsgID para unicidad
+        if safeFileName == "." || safeFileName == "/" || safeFileName == "" { safeFileName = "downloaded_file" } // Evitar nombres vacíos o peligrosos
+         // Crear un nombre más único usando PeerID y MsgID (cortados para brevedad)
+        peerIdPrefix := "unknown"
+        if len(msg.From.PeerID) >= 8 { peerIdPrefix = msg.From.PeerID[:8] }
+        msgIdPrefix := "unknown"
+        if len(msg.ID) >= 8 { msgIdPrefix = msg.ID[:8] }
+        outputPath := filepath.Join(receivedDir, fmt.Sprintf("%s_%s_%s", peerIdPrefix, msgIdPrefix, safeFileName))
 
         // Decodificar y guardar
         err := decodeBase64ToFile(msg.BinaryData, outputPath)
@@ -1156,11 +1147,12 @@ func encryptMessage(plaintext, key []byte) ([]byte, error) {
 	}
 
 	// Seal cifra y autentica. El nonce se prepende al ciphertext.
-	ciphertext := aesgcm.Seal(nil, nonce, plaintext, nil) // El primer nil añade el nonce al principio
-    // Prepend nonce explícitamente para claridad (aunque Seal lo hace si el primer arg es nil y tiene cap)
-    finalCiphertext := append(nonce, ciphertext...)
+	// Seal appends the ciphertext to the first argument and returns the updated slice.
+    // If the first argument is nil, a new slice is allocated.
+    // Seal prepends the nonce to the returned ciphertext.
+	ciphertext := aesgcm.Seal(nonce[:0], nonce, plaintext, nil) // Prepend nonce to ciphertext
 
-	return finalCiphertext, nil
+	return ciphertext, nil
 }
 
 // decryptMessage desencripta un mensaje AES-GCM usando una clave dada
@@ -1188,6 +1180,7 @@ func decryptMessage(ciphertextWithNonce, key []byte) ([]byte, error) {
 	}
 
 	// Open descifra y verifica la autenticidad
+    // Open appends the decrypted plaintext to the first argument and returns the updated slice.
 	plaintext, err := aesgcm.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
 		// Este error es común si la clave es incorrecta o el mensaje fue manipulado
@@ -1200,9 +1193,14 @@ func decryptMessage(ciphertextWithNonce, key []byte) ([]byte, error) {
 // compress comprime datos usando Gzip
 func compress(data []byte) ([]byte, error) {
 	var buf bytes.Buffer
-	writer := gzip.NewWriter(&buf)
-	_, err := writer.Write(data)
+	// Usar compresión con mejor relación velocidad/tamaño
+	writer, err := gzip.NewWriterLevel(&buf, gzip.BestSpeed)
+    if err != nil {
+        return nil, fmt.Errorf("gzip writer creation error: %w", err)
+    }
+	_, err = writer.Write(data)
 	if err != nil {
+        writer.Close() // Intentar cerrar incluso si hay error de escritura
 		return nil, fmt.Errorf("gzip write error: %w", err)
 	}
 	err = writer.Close() // Es crucial cerrar para volcar los datos restantes
@@ -1235,18 +1233,19 @@ func decompress(data []byte) ([]byte, error) {
 }
 
 // mixnetEncrypt aplica múltiples capas de encriptación (si hay múltiples claves)
-// NOTA: Con una sola clave, esto es solo una encriptación simple.
+// NOTA: Con una sola clave (p2pKeys), esto es solo una encriptación simple.
 func mixnetEncrypt(message []byte, keys [][]byte) ([]byte, error) {
 	if len(keys) == 0 {
+        log.Println(Yellow + "Warning: mixnetEncrypt called with no keys. Message not encrypted." + Reset)
 		return message, nil // No encriptar si no hay claves
 	}
 	ciphertext := message
 	// Encriptar capa por capa
-	for _, key := range keys {
+	for i, key := range keys {
 		var err error
 		ciphertext, err = encryptMessage(ciphertext, key)
 		if err != nil {
-			return nil, fmt.Errorf("mixnet encryption layer failed: %w", err)
+			return nil, fmt.Errorf("mixnet encryption layer %d failed: %w", i, err)
 		}
 	}
 	return ciphertext, nil
@@ -1255,6 +1254,7 @@ func mixnetEncrypt(message []byte, keys [][]byte) ([]byte, error) {
 // mixnetDecrypt desencripta múltiples capas en orden inverso
 func mixnetDecrypt(ciphertext []byte, keys [][]byte) ([]byte, error) {
 	if len(keys) == 0 {
+         log.Println(Yellow + "Warning: mixnetDecrypt called with no keys. Assuming message was not encrypted." + Reset)
 		return ciphertext, nil // No desencriptar si no había claves
 	}
 	plaintext := ciphertext
@@ -1283,12 +1283,16 @@ func serializeAndEncryptMessage(msg Message, keys [][]byte) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("compression failed: %w", err)
 	}
+    // log.Printf("Original: %d bytes, Compressed: %d bytes", len(msgBytes), len(compressedData))
+
 
 	// 3. Encriptar (con las claves P2P proporcionadas)
 	encryptedData, err := mixnetEncrypt(compressedData, keys)
 	if err != nil {
 		return nil, fmt.Errorf("encryption failed: %w", err)
 	}
+    // if len(keys) > 0 { log.Printf("Encrypted size: %d bytes", len(encryptedData)) }
+
 
 	return encryptedData, nil
 }
@@ -1302,20 +1306,27 @@ func decryptAndDeserializeMessage(data []byte, keys [][]byte) (Message, error) {
 	if err != nil {
 		return msg, fmt.Errorf("decryption failed: %w", err)
 	}
+     // if len(keys) > 0 { log.Printf("Decrypted size: %d bytes", len(decryptedData)) }
+
 
 	// 2. Descomprimir
 	decompressedData, err := decompress(decryptedData)
 	if err != nil {
 		return msg, fmt.Errorf("decompression failed: %w", err)
 	}
+    // log.Printf("Decompressed size: %d bytes", len(decompressedData))
 
-    // Log de datos descomprimidos (para depuración)
-    // log.Printf("Decompressed data: %s", string(decompressedData))
+
+    // Log de datos descomprimidos (para depuración, ¡cuidado con datos binarios!)
+    // if len(decompressedData) < 500 { // Log solo si es pequeño
+    //    log.Printf("Decompressed data: %s", string(decompressedData))
+    // }
+
 
 	// 3. Unmarshal JSON
 	err = json.Unmarshal(decompressedData, &msg)
 	if err != nil {
-		return msg, fmt.Errorf("json unmarshal failed: %w", err)
+		return msg, fmt.Errorf("json unmarshal failed: %w (data: %s)", err, string(decompressedData))
 	}
 
 	return msg, nil
@@ -1346,12 +1357,16 @@ func (n *mdnsNotifee) HandlePeerFound(pi peer.AddrInfo) {
 	if pi.ID == n.h.ID() {
 		return
 	}
-	log.Printf(Blue+"mDNS Peer Found: %s. Connecting..."+Reset, pi.ID.ShortString())
+	// Filtrar direcciones no útiles (ej: loopback si no se espera conexión local)
+    // Podríamos añadir más lógica de filtrado si fuera necesario
+	log.Printf(Blue+"mDNS Peer Found: %s. Addresses: %v. Connecting..."+Reset, pi.ID.ShortString(), pi.Addrs)
+
     // Intentar conectar en segundo plano
     go func() {
-        ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second) // Timeout para conexión
+        ctxConnect, cancel := context.WithTimeout(context.Background(), 20*time.Second) // Aumentar timeout
         defer cancel()
-        if err := n.h.Connect(ctx, pi); err != nil {
+        if err := n.h.Connect(ctxConnect, pi); err != nil {
+             // Loguear el error detallado de conexión mDNS
             log.Printf(Yellow+"mDNS connection failed to %s: %v"+Reset, pi.ID.ShortString(), err)
         } else {
             log.Printf(Green+"mDNS connection successful to: %s"+Reset, pi.ID.ShortString())
@@ -1370,26 +1385,36 @@ func hashTopic(topic string) string {
 func initDHT(ctx context.Context, h host.Host) (*dht.IpfsDHT, error) {
     // Opciones para el DHT
     opts := []dht.Option{
-        dht.Mode(dht.ModeAutoServer), // Intentar ser servidor DHT si es posible
-        dht.ProtocolPrefix("/myapp"), // Usar un prefijo de protocolo para evitar colisiones (opcional)
-         // Proporcionar bootstrappers específicos si se conocen
+        dht.Mode(dht.ModeAutoServer), // Intentar ser servidor DHT si es posible (ModeAuto es más conservador)
+        dht.ProtocolPrefix("/myapp-p2p"), // Usar un prefijo de protocolo único
+         // Podrías añadir peers bootstrap específicos de tu red aquí si los tienes
         // dht.BootstrapPeers(peerAddrInfo1, peerAddrInfo2),
     }
 
+	log.Println(Blue + "Creating new DHT..." + Reset)
 	kademliaDHT, err := dht.New(ctx, h, opts...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create DHT: %w", err)
 	}
+    log.Println(Green + "DHT instance created." + Reset)
+
 
 	// Arrancar la DHT (conectar a nodos bootstrap por defecto de libp2p)
+    log.Println(Blue + "Bootstrapping DHT..." + Reset)
 	if err = kademliaDHT.Bootstrap(ctx); err != nil {
-		return nil, fmt.Errorf("failed to bootstrap DHT: %w", err)
-	}
+         // No fatal, podría conectarse más tarde, pero loguear como error
+		log.Printf(Red+"ERROR: Failed to bootstrap DHT: %v. Discovery might be delayed."+Reset, err)
+        // return nil, fmt.Errorf("failed to bootstrap DHT: %w", err) // O hacerlo fatal
+	} else {
+         log.Println(Green + "DHT bootstrap process initiated." + Reset)
+    }
+
 
 	// Conectar explícitamente a algunos peers bootstrap para asegurar conectividad inicial
 	// Esto es útil si el bootstrap automático no funciona bien inmediatamente.
 	var wg sync.WaitGroup
 	connectedBootstrappers := 0
+    log.Println(Blue + "Attempting connections to default bootstrap peers..." + Reset)
 	for _, peerAddr := range dht.DefaultBootstrapPeers {
 		peerinfo, err := peer.AddrInfoFromP2pAddr(peerAddr)
 		if err != nil {
@@ -1399,23 +1424,36 @@ func initDHT(ctx context.Context, h host.Host) (*dht.IpfsDHT, error) {
 		wg.Add(1)
 		go func(pi peer.AddrInfo) {
 			defer wg.Done()
-            ctxConnect, cancel := context.WithTimeout(ctx, 15*time.Second)
+            // Usar un contexto con timeout más corto para estas conexiones iniciales
+            ctxConnect, cancel := context.WithTimeout(ctx, 10*time.Second)
             defer cancel()
 			if err := h.Connect(ctxConnect, pi); err != nil {
 				// Loguear como debug o warning, no es necesariamente un error fatal
 				// log.Printf(Yellow+"DHT Bootstrap warning (could not connect to %s): %v"+Reset, pi.ID.ShortString(), err)
 			} else {
 				log.Printf(Blue+"DHT Bootstrap connection successful to: %s"+Reset, pi.ID.ShortString())
-				connectedBootstrappers++
+                // Usar sync.Mutex si modificáramos una variable compartida aquí,
+                // pero para el log no es estrictamente necesario.
+				connectedBootstrappers++ // Cuidado: concurrencia si no se usa Atomic o Mutex. Mejor contar al final.
 			}
 		}(*peerinfo)
 	}
 	wg.Wait() // Esperar a que terminen los intentos de conexión
 
-    if connectedBootstrappers == 0 {
-        log.Println(Yellow + "DHT: Warning - Could not connect to any default bootstrap peers." + Reset)
+    // Re-evaluar la cuenta de conectados de forma segura después del Wait()
+    finalConnectedCount := 0
+    for _, peerAddr := range dht.DefaultBootstrapPeers {
+        peerinfo, err := peer.AddrInfoFromP2pAddr(peerAddr)
+        if err == nil && h.Network().Connectedness(peerinfo.ID) == network.Connected {
+            finalConnectedCount++
+        }
+    }
+
+
+    if finalConnectedCount == 0 {
+        log.Println(Yellow + "DHT: Warning - Could not connect to any default bootstrap peers initially." + Reset)
     } else {
-        log.Printf(Green + "DHT: Connected to %d bootstrap peers." + Reset, connectedBootstrappers)
+        log.Printf(Green + "DHT: Connected to %d default bootstrap peers." + Reset, finalConnectedCount)
     }
 
 	return kademliaDHT, nil
@@ -1427,83 +1465,86 @@ func discoverPeers(ctx context.Context, h host.Host, topicName string) {
 	kademliaDHT, err := initDHT(ctx, h)
 	if err != nil {
         // Si DHT falla, el descubrimiento global no funcionará. mDNS podría seguir funcionando.
-        log.Printf(Red+"FATAL: Could not initialize DHT: %v. Peer discovery might be limited."+Reset, err)
-        // Podría decidirse terminar aquí o continuar solo con mDNS si está habilitado
-        return
-    }
-    log.Println(Green + "DHT Initialized successfully." + Reset)
+        log.Printf(Red+"ERROR: Could not initialize DHT: %v. Global peer discovery might fail."+Reset, err)
+        // Continuar para permitir que mDNS funcione si está habilitado
+    } else {
+        log.Println(Green + "DHT Initialized successfully for discovery." + Reset)
+         // Usar Routing Discovery sobre la DHT solo si la DHT se inicializó
+        routingDiscovery := drouting.NewRoutingDiscovery(kademliaDHT)
 
-    // Usar Routing Discovery sobre la DHT
-	routingDiscovery := drouting.NewRoutingDiscovery(kademliaDHT)
-
-	// Anunciar que este nodo está interesado en el topic (usa el hash)
-    hashedTopic := hashTopic(topicName)
-	log.Printf(Blue+"Announcing presence for topic '%s' (Hashed: %s) on the DHT..."+Reset, topicName, hashedTopic)
-	dutil.Advertise(ctx, routingDiscovery, hashedTopic)
-    log.Println(Green + "DHT Advertisement started." + Reset)
+        // Anunciar que este nodo está interesado en el topic (usa el hash)
+        hashedTopic := hashTopic(topicName)
+        log.Printf(Blue+"Announcing presence for topic '%s' (Hashed: %s) on the DHT..."+Reset, topicName, hashedTopic)
+        dutil.Advertise(ctx, routingDiscovery, hashedTopic)
+        log.Println(Green + "DHT Advertisement started." + Reset)
 
 
-	// Bucle para buscar pares periódicamente
-    ticker := time.NewTicker(1 * time.Minute) // Buscar nuevos pares cada minuto
-    defer ticker.Stop()
+        // Bucle para buscar pares periódicamente
+        ticker := time.NewTicker(1 * time.Minute) // Buscar nuevos pares cada minuto
+        defer ticker.Stop()
 
-    findAndConnect := func() {
-        log.Println(Blue + "Searching for peers for topic via DHT..." + Reset)
-        peerChan, err := routingDiscovery.FindPeers(ctx, hashedTopic)
-        if err != nil {
-            log.Printf(Red+"DHT FindPeers error for topic '%s': %v"+Reset, topicName, err)
-            return // Error al buscar, reintentar en el próximo tick
-        }
-
-        foundPeers := 0
-        connectedNewPeers := 0
-        // Iterar sobre los peers encontrados
-        for peerInfo := range peerChan {
-            // Ignorar a sí mismo
-            if peerInfo.ID == h.ID() {
-                continue
+        findAndConnect := func() {
+            log.Println(Blue + "Searching for peers for topic via DHT..." + Reset)
+            // Usar FindPeers con un contexto propio para la búsqueda
+            findCtx, findCancel := context.WithTimeout(ctx, 30*time.Second)
+            defer findCancel()
+            peerChan, err := routingDiscovery.FindPeers(findCtx, hashedTopic)
+            if err != nil {
+                // No fatal, puede ocurrir si la red está inestable
+                log.Printf(Yellow+"DHT FindPeers warning for topic '%s': %v"+Reset, topicName, err)
+                return // Error al buscar, reintentar en el próximo tick
             }
 
-            foundPeers++
-            // Intentar conectar si no estamos ya conectados
-            // *** CORRECCIÓN: Usar network.Connected del paquete importado ***
-            isConnected := h.Network().Connectedness(peerInfo.ID) == network.Connected
-            if !isConnected {
-                 log.Printf(Blue+"DHT Found peer: %s. Attempting connection..."+Reset, peerInfo.ID.ShortString())
-                 go func(pi peer.AddrInfo) { // Conectar en goroutine para no bloquear la búsqueda
-                     ctxConnect, cancel := context.WithTimeout(ctx, 20*time.Second)
-                     defer cancel()
-                     if err := h.Connect(ctxConnect, pi); err != nil {
-                        // Loguear como warning
-                        // log.Printf(Yellow+"DHT Failed connecting to %s: %v"+Reset, pi.ID.ShortString(), err)
-                     } else {
-                         log.Printf(Green+"DHT Connection successful to discovered peer: %s"+Reset, pi.ID.ShortString())
-                         connectedNewPeers++
-                     }
-                 }(peerInfo)
+            foundPeers := 0
+            connectionAttempts := 0
+            // Iterar sobre los peers encontrados
+            for peerInfo := range peerChan {
+                // Ignorar a sí mismo
+                if peerInfo.ID == h.ID() {
+                    continue
+                }
+
+                foundPeers++
+                // Intentar conectar si no estamos ya conectados
+                if h.Network().Connectedness(peerInfo.ID) != network.Connected {
+                     log.Printf(Blue+"DHT Found peer: %s. Attempting connection..."+Reset, peerInfo.ID.ShortString())
+                     connectionAttempts++
+                     go func(pi peer.AddrInfo) { // Conectar en goroutine para no bloquear la búsqueda
+                         ctxConnect, cancel := context.WithTimeout(ctx, 20*time.Second)
+                         defer cancel()
+                         if err := h.Connect(ctxConnect, pi); err != nil {
+                            // Loguear como debug o info, no warning necesariamente
+                            // log.Printf(Blue+"DHT Failed connecting to %s: %v"+Reset, pi.ID.ShortString(), err)
+                         } else {
+                             log.Printf(Green+"DHT Connection successful to discovered peer: %s"+Reset, pi.ID.ShortString())
+                         }
+                     }(peerInfo)
+                }
+                 // else { log.Printf("DHT Found peer %s (already connected)", peerInfo.ID.ShortString()) }
             }
-             // else { log.Printf("DHT Found peer %s (already connected)", peerInfo.ID.ShortString()) }
+             if foundPeers > 0 {
+                 log.Printf(Green+"DHT Peer search cycle complete. Found %d potential peers, attempted %d new connections."+Reset, foundPeers, connectionAttempts)
+             } else {
+                 log.Println(Blue+"DHT Peer search cycle complete. No new peers found in this cycle."+Reset)
+             }
         }
-        if foundPeers > 0 {
-             log.Printf(Green+"DHT Peer search complete. Found %d potential peers, initiated %d new connections."+Reset, foundPeers, connectedNewPeers)
-        } else {
-             log.Println(Blue+"DHT Peer search complete. No new peers found in this cycle."+Reset)
-        }
-    }
 
-    // Búsqueda inicial inmediata
-    findAndConnect()
+        // Búsqueda inicial después de un breve retraso para permitir que DHT se estabilice un poco
+        time.Sleep(5 * time.Second)
+        findAndConnect()
 
-    // Búsquedas periódicas
-    for {
-        select {
-        case <-ticker.C:
-            findAndConnect()
-        case <-ctx.Done():
-            log.Println(Yellow + "Peer discovery context canceled. Stopping." + Reset)
-            return
+        // Búsquedas periódicas
+        for {
+            select {
+            case <-ticker.C:
+                findAndConnect()
+            case <-ctx.Done():
+                log.Println(Yellow + "Peer discovery context canceled. Stopping DHT discovery loop." + Reset)
+                return
+            }
         }
-    }
+    } // Fin del else (DHT inicializado)
+
 }
 
 // --- Main Function ---
@@ -1566,14 +1607,15 @@ func main() {
             w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin") // Controla info enviada en Referer
             // Content-Security-Policy es potente pero compleja de configurar:
             // w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self'; object-src 'none';")
-			w.Header().Set("Strict-Transport-Security", "max-age=63072000; includeSubDomains") // Si usas HTTPS, fuerza HTTPS
+			// Solo añadir HSTS si se está usando SSL/TLS
+            if config.UseSSL {
+                w.Header().Set("Strict-Transport-Security", "max-age=63072000; includeSubDomains")
+            }
 			next.ServeHTTP(w, r)
 		})
 	}
 
 	// Aplicar middleware: seguridad -> CORS -> router
-	// El orden importa: CORS debe procesarse antes que las rutas si maneja OPTIONS.
-    // Seguridad se aplica a todas las respuestas.
 	finalHandler := securityMiddleware(corsMiddleware(r))
 
 	// --- 4. Servir Archivos Estáticos ---
@@ -1585,15 +1627,17 @@ func main() {
 		if !strings.HasPrefix(r.URL.Path, "/api/") {
 			// Servir index.html para rutas no encontradas (típico en SPAs)
             // Comprobar si el archivo existe
-            _, err := os.Stat(filepath.Join("./web", filepath.Clean(r.URL.Path)))
+            staticFilePath := filepath.Join("./web", filepath.Clean(r.URL.Path))
+            _, err := os.Stat(staticFilePath)
             if os.IsNotExist(err) && !strings.HasSuffix(r.URL.Path, "/") && filepath.Ext(r.URL.Path) == "" {
                  // Si no existe y parece una ruta de SPA (sin extensión), servir index.html
                  http.ServeFile(w, r, filepath.Join("./web", "index.html"))
                  return
             }
+            // Si existe o es una ruta base "/", dejar que FileServer lo maneje
 			fs.ServeHTTP(w, r)
 		}
-		// Si es /api/, Mux se encarga, no hacemos nada aquí.
+		// Si es /api/, Mux se encarga, no hacemos nada aquí (ya fue manejado por el router principal 'r').
 	}))
 
 
@@ -1636,14 +1680,20 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel() // Asegura que el contexto se cancele al salir de main
 
-	// Opciones para el host libp2p
+	// Opciones para el host libp2p - *** CONFIGURACIÓN EXPLÍCITA ***
+	log.Println(Blue + "Configuring P2P host with explicit TCP transport and TLS security..." + Reset)
 	opts := []libp2p.Option{
 		libp2p.ListenAddrStrings(config.ListenAddress), // Dirección P2P del config
-		libp2p.NATPortMap(),                            // Intentar mapeo UPnP/NAT-PMP
-		libp2p.EnableRelay(),                           // Habilitar soporte para relays (cliente y servidor)
-		libp2p.EnableHolePunching(),                    // Habilitar perforación de NAT (hole punching)
-        // libp2p usa TLS 1.3 por defecto para la seguridad del transporte P2P.
-        // No se necesita configurar cert.pem/key.pem aquí.
+
+		// --- Configuración Explícita de Transporte y Seguridad ---
+		libp2p.Transport(libp2ptcp.NewTCPTransport), // Forzar solo transporte TCP
+		libp2p.Security(libp2ptls.ID, libp2ptls.New), // Forzar solo seguridad TLS (ID: "/tls/1.0.0")
+		// No usar libp2p.DefaultSecurity
+
+		// --- Mantener otras opciones útiles (pueden comentarse si causan problemas) ---
+		libp2p.NATPortMap(),            // Intentar mapeo UPnP/NAT-PMP
+		libp2p.EnableRelay(),           // Habilitar soporte para relays (cliente y servidor)
+		libp2p.EnableHolePunching(),    // Habilitar perforación de NAT
 	}
 
 	h, err := libp2p.New(opts...)
@@ -1711,6 +1761,12 @@ func main() {
 	select {
         case <-ctx.Done():
             log.Println(Yellow + "Main context canceled. Shutting down..." + Reset)
+        // Podríamos añadir manejo de señales OS aquí (SIGINT, SIGTERM)
+        // sigs := make(chan os.Signal, 1)
+        // signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+        // <-sigs
+        // log.Println(Yellow + "Received OS signal. Shutting down..." + Reset)
+        // cancel() // Cancelar el contexto si recibimos señal
     }
 
     // --- 10. Limpieza (Opcional pero recomendado) ---
@@ -1718,13 +1774,22 @@ func main() {
     // Cerrar suscripción y topic
     if p2pSub != nil {
         p2pSub.Cancel()
+        log.Println(Blue + "P2P subscription canceled." + Reset)
     }
     if p2pTopic != nil {
-        p2pTopic.Close()
+        // Cerrar el topic puede tardar un poco si hay mensajes pendientes
+        if err := p2pTopic.Close(); err != nil {
+             log.Printf(Red+"Error closing P2P topic: %v"+Reset, err)
+        } else {
+             log.Println(Blue + "P2P topic closed." + Reset)
+        }
     }
     // Cerrar el host libp2p
+    log.Println(Blue + "Closing P2P host..." + Reset)
     if err := h.Close(); err != nil {
         log.Printf(Red+"Error closing P2P host: %v"+Reset, err)
+    } else {
+        log.Println(Blue + "P2P host closed." + Reset)
     }
     log.Println(Green + "Shutdown complete." + Reset)
 
@@ -1775,12 +1840,83 @@ func routeMessage(data []byte) ([]byte, error) {
 func streamConsoleTo(ctx context.Context, topic *pubsub.Topic, keys [][]byte, retryInterval int, from string, to string) {
 	// ... (código original)
     log.Println(Yellow+"Warning: streamConsoleTo function called - is console input needed?"+Reset)
-    // ...
+    reader := bufio.NewReader(os.Stdin)
+	maxRetries := 5
+	for {
+		s, err := reader.ReadString('\n')
+		if err != nil {
+			if err == io.EOF || ctx.Err() != nil {
+                log.Println(Blue+"Exiting streamConsoleTo due to EOF or context cancellation."+Reset)
+				break
+			}
+			log.Printf(Red+"Failed to read input in streamConsoleTo: %v"+Reset, err)
+            break // Salir en caso de error de lectura
+		}
+		s = strings.TrimSpace(s)
+        if s == "" { continue } // Ignorar líneas vacías
+
+		msg := Message{
+			ID:        generateMessageID(),
+			From:      UserInfo{PeerID: from, Username: "ConsoleUser", Photo: ""}, // Usar info real si es posible
+			To:        to, // "BROADCAST" o específico
+			Timestamp: time.Now().Format(time.RFC3339),
+			Content: Content{
+				Title:      "Console Message",
+				Message:    s,
+			},
+            Action: "console_input", // Acción específica
+		}
+		serializedMsg, err := serializeAndEncryptMessage(msg, keys)
+		if err != nil {
+			log.Printf(Red+"Failed to serialize message from console: %v"+Reset, err)
+			continue
+		}
+
+        publishSuccessful := false
+		for i := 0; i < maxRetries; i++ {
+            pubCtx, pubCancel := context.WithTimeout(ctx, 10*time.Second)
+			if err := topic.Publish(pubCtx, serializedMsg); err != nil {
+				pubCancel()
+                log.Printf(Red+"Console publish error: %v, retrying... (%d/%d)"+Reset, err, i+1, maxRetries)
+                // Verificar si el contexto principal fue cancelado
+                if ctx.Err() != nil { break }
+				time.Sleep(time.Duration(retryInterval) * time.Millisecond * time.Duration(1<<i)) // Exponencial backoff
+			} else {
+                pubCancel()
+                publishSuccessful = true
+				break
+			}
+		}
+        if !publishSuccessful {
+            log.Printf(Red+"Failed to publish console message after %d retries."+Reset, maxRetries)
+            if ctx.Err() != nil { break } // Salir si el contexto fue cancelado
+        }
+	}
 }
 
 // printMessagesFrom (lógica de impresión simple, reemplazada por handleP2PMessages y processP2PMessage)
 func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]byte) {
 	// ... (código original)
     log.Println(Yellow+"Warning: printMessagesFrom function called - likely deprecated by handleP2PMessages"+Reset)
-    // ...
+	for {
+		m, err := sub.Next(ctx)
+		if err != nil {
+            if ctx.Err() != nil {
+                 log.Println(Blue+"Exiting printMessagesFrom due to context cancellation."+Reset)
+                 return
+            }
+			log.Printf(Red+"Failed to get next message in printMessagesFrom: %v"+Reset, err)
+            // Podría ser fatal o requerir re-suscripción
+            return // Salir en caso de error
+		}
+		msg, err := decryptAndDeserializeMessage(m.Message.GetData(), keys)
+		if err != nil {
+			log.Printf(Red+"Deserialization error in printMessagesFrom: %v"+Reset, err)
+			continue
+		}
+
+		// Log simple
+		fmt.Printf("[PrintMsg] From: %s -> %s\n", msg.From.Username, msg.Content.Message)
+
+	}
 }

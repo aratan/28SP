@@ -8,7 +8,7 @@ maxMessageSize: 1048576
 retryInterval: 2000
 logFile: "app.log"
 mdns:
-  enabled: false
+  enabled: true
   serviceTag: "my-mdns-service"
 useSSL: true
 # --- CORRECCIÓN SSL ---
