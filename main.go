@@ -159,8 +159,7 @@ func decodeBase64ToFile(base64String, outputPath string) error {
 	return ioutil.WriteFile(outputPath, data, 0644)
 }
 
-// New handler for sending binary data
-// New handler for sending binary data
+// Handler for sending binary data
 func sendBinaryHandler(w http.ResponseWriter, r *http.Request) {
 	file, header, err := r.FormFile("file")
 	if err != nil {

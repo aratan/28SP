@@ -382,96 +382,9 @@ document
   .addEventListener("input", refreshTablones);
 refreshTablones(); // Inicializar la lista de tablones al cargar la página
 
-// Configurar el formulario de carga de archivos
-document
-  .getElementById("fileUploadForm")
-  .addEventListener("submit", async function (e) {
-    e.preventDefault();
+// La configuración del formulario de carga de archivos se maneja en file-handler.js
 
-    const fileInput = document.getElementById("fileInput");
-    if (!fileInput.files || fileInput.files.length === 0) {
-      alert("Por favor, selecciona un archivo");
-      return;
-    }
-
-    const file = fileInput.files[0];
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch("/api/sendBinary", {
-        method: "POST",
-        headers: {
-          Authorization: token,
-        },
-        body: formData,
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        alert(
-          `Archivo enviado correctamente. ID del mensaje: ${result.messageId}`
-        );
-        fileInput.value = ""; // Limpiar el input
-        refreshReceivedFiles();
-      } else {
-        alert("Error al enviar el archivo");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Error al enviar el archivo");
-    }
-  });
-
-// Función para actualizar la lista de archivos recibidos
-async function refreshReceivedFiles() {
-  try {
-    const response = await fetch("/api/recibe", {
-      headers: {
-        Authorization: token,
-      },
-    });
-
-    if (response.ok) {
-      const messages = await response.json();
-      const fileMessages = messages.filter(
-        (msg) => msg.Action === "binary_transfer"
-      );
-
-      const receivedFilesContainer = document.getElementById("receivedFiles");
-      receivedFilesContainer.innerHTML = "";
-
-      if (fileMessages.length === 0) {
-        receivedFilesContainer.innerHTML =
-          '<p class="text-muted">No hay archivos recibidos</p>';
-        return;
-      }
-
-      fileMessages.forEach((file) => {
-        const fileItem = document.createElement("a");
-        fileItem.className = "list-group-item list-group-item-action";
-        fileItem.href = `received_files/${file.ID}_${file.FileName}`;
-        fileItem.target = "_blank";
-        fileItem.innerHTML = `
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">${file.FileName}</h5>
-                                <small>${new Date(
-                                  file.Timestamp
-                                ).toLocaleString()}</small>
-                            </div>
-                            <p class="mb-1">Enviado por: ${
-                              file.From.Username
-                            }</p>
-                        `;
-        receivedFilesContainer.appendChild(fileItem);
-      });
-    } else {
-      console.error("Error al obtener archivos recibidos");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-}
+// La función refreshReceivedFiles se encuentra en file-handler.js
 
 // Función para borrar el token cada 1 hora
 setInterval(() => {
