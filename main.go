@@ -305,9 +305,33 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// SimpleSerializeMessage serializes a message using a simple method
+func SimpleSerializeMessage(msg Message, keys [][]byte) ([]byte, error) {
+	// Marshal the message to JSON
+	msgBytes, err := json.Marshal(msg)
+	if err != nil {
+		return nil, fmt.Errorf("marshal error: %v", err)
+	}
+
+	// Skip encryption for now to ensure compatibility
+	return msgBytes, nil
+}
+
+// SimpleDeserializeMessage deserializes a message using a simple method
+func SimpleDeserializeMessage(data []byte, keys [][]byte) (Message, error) {
+	// Try to unmarshal the data directly
+	var msg Message
+	err := json.Unmarshal(data, &msg)
+	if err != nil {
+		return Message{}, fmt.Errorf("unmarshal error: %v", err)
+	}
+
+	return msg, nil
+}
+
 func publishToP2P(msg Message) {
-	// Use our new simple serialization function
-	serializedMsg, err := SimpleSerializeMessage(msg, p2pKeys)
+	// Marshal the message directly to JSON
+	serializedMsg, err := json.Marshal(msg)
 	if err != nil {
 		log.Printf(Red+"Failed to serialize message for P2P: %v"+Reset, err)
 		return
@@ -946,8 +970,9 @@ func handleP2PMessages(ctx context.Context) {
 		// Log the message data size before deserialization
 		log.Printf("Received message data size: %d bytes", len(m.Message.Data))
 
-		// Try to deserialize the message using our new simple deserialization function
-		msg, err := SimpleDeserializeMessage(m.Message.Data, p2pKeys)
+		// Try to unmarshal the message directly
+		var msg Message
+		err = json.Unmarshal(m.Message.Data, &msg)
 		if err != nil {
 			log.Printf(Yellow+"Deserialization error: %v - Skipping message"+Reset, err)
 			continue
@@ -1212,8 +1237,9 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 		// Log the message data size before deserialization
 		log.Printf("Received message data size: %d bytes", len(m.Message.Data))
 
-		// Try to deserialize the message using our new simple deserialization function
-		msg, err := SimpleDeserializeMessage(m.Message.Data, keys)
+		// Try to unmarshal the message directly
+		var msg Message
+		err = json.Unmarshal(m.Message.Data, &msg)
 		if err != nil {
 			log.Printf(Yellow+"Deserialization error: %v - Skipping message"+Reset, err)
 			continue
