@@ -65,6 +65,7 @@ type Config struct {
 	EncryptionKey  string `yaml:"encryptionKey"`
 	LogLevel       string `yaml:"logLevel"`
 	ListenAddress  string `yaml:"listenAddress"`
+	WebServerAddr  string `yaml:"webServerAddr"`
 	MaxMessageSize int    `yaml:"maxMessageSize"`
 	LogFile        string `yaml:"logFile"`
 	RetryInterval  int    `yaml:"retryInterval"`
@@ -72,8 +73,10 @@ type Config struct {
 		Enabled    bool   `yaml:"enabled"`
 		ServiceTag string `yaml:"serviceTag"`
 	} `yaml:"mdns"`
-	UseSSL bool `yaml:"useSSL"`
-	Users  []struct {
+	UseSSL   bool   `yaml:"useSSL"`
+	CertFile string `yaml:"certFile"`
+	KeyFile  string `yaml:"keyFile"`
+	Users    []struct {
 		Username string `yaml:"username"`
 		Password string `yaml:"password"`
 	} `yaml:"users"`
@@ -944,11 +947,33 @@ func main() {
 	fs := http.FileServer(http.Dir("./web"))
 	r.PathPrefix("/").Handler(fs)
 
-	// Iniciar servidor HTTP
+	// Iniciar servidor HTTP/HTTPS
 	go func() {
-		log.Println("Starting HTTP server on :8080")
-		if err := http.ListenAndServe(":8080", r); err != nil {
-			log.Fatalf("HTTP server error: %v", err)
+		serverAddr := ":8080" // Default HTTP port
+		if config.WebServerAddr != "" {
+			serverAddr = config.WebServerAddr
+		}
+
+		if config.UseSSL {
+			// Check if certificate files exist
+			if _, err := os.Stat(config.CertFile); os.IsNotExist(err) {
+				log.Fatalf(Red+"Certificate file %s not found: %v"+Reset, config.CertFile, err)
+			}
+			if _, err := os.Stat(config.KeyFile); os.IsNotExist(err) {
+				log.Fatalf(Red+"Key file %s not found: %v"+Reset, config.KeyFile, err)
+			}
+
+			// Start HTTPS server
+			log.Printf(Green+"Starting HTTPS server on %s"+Reset, serverAddr)
+			if err := http.ListenAndServeTLS(serverAddr, config.CertFile, config.KeyFile, r); err != nil {
+				log.Fatalf(Red+"HTTPS server error: %v"+Reset, err)
+			}
+		} else {
+			// Start HTTP server
+			log.Printf(Green+"Starting HTTP server on %s"+Reset, serverAddr)
+			if err := http.ListenAndServe(serverAddr, r); err != nil {
+				log.Fatalf(Red+"HTTP server error: %v"+Reset, err)
+			}
 		}
 	}()
 
