@@ -1637,7 +1637,7 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 		log.Printf("Received message data size: %d bytes", len(m.Message.Data))
 
 		// Usar el deserializador seguro que intenta varios métodos
-		msg, err := SecureDeserializeMessage(m.Message.Data, keys)
+		msg, err := secureDeserializeMessage(m.Message.Data, keys)
 		if err != nil {
 			log.Printf(Yellow+"Deserialization error: %v - Skipping message"+Reset, err)
 			continue
