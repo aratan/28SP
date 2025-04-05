@@ -10,7 +10,6 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
-	"path/filepath"
 	"encoding/hex"
 	"encoding/json"
 	"flag"
@@ -22,6 +21,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -46,9 +46,10 @@ var (
 )
 
 var (
-	p2pTopic *pubsub.Topic
-	p2pSub   *pubsub.Subscription
-	p2pKeys  [][]byte
+	p2pTopic     *pubsub.Topic
+	p2pSub       *pubsub.Subscription
+	p2pKeys      [][]byte
+	p2pKeysMutex sync.Mutex // Mutex for safely updating encryption keys
 )
 
 const (
@@ -60,34 +61,34 @@ const (
 )
 
 type Config struct {
-    TopicName      string `yaml:"topicName"`
-    EncryptionKey  string `yaml:"encryptionKey"`
-    LogLevel       string `yaml:"logLevel"`
-    ListenAddress  string `yaml:"listenAddress"`
-    MaxMessageSize int    `yaml:"maxMessageSize"`
-    LogFile        string `yaml:"logFile"`
-    RetryInterval  int    `yaml:"retryInterval"`
-    Mdns           struct {
-        Enabled    bool   `yaml:"enabled"`
-        ServiceTag string `yaml:"serviceTag"`
-    } `yaml:"mdns"`
-    UseSSL bool `yaml:"useSSL"`
-    Users  []struct {
-        Username string `yaml:"username"`
-        Password string `yaml:"password"`
-    } `yaml:"users"`
+	TopicName      string `yaml:"topicName"`
+	EncryptionKey  string `yaml:"encryptionKey"`
+	LogLevel       string `yaml:"logLevel"`
+	ListenAddress  string `yaml:"listenAddress"`
+	MaxMessageSize int    `yaml:"maxMessageSize"`
+	LogFile        string `yaml:"logFile"`
+	RetryInterval  int    `yaml:"retryInterval"`
+	Mdns           struct {
+		Enabled    bool   `yaml:"enabled"`
+		ServiceTag string `yaml:"serviceTag"`
+	} `yaml:"mdns"`
+	UseSSL bool `yaml:"useSSL"`
+	Users  []struct {
+		Username string `yaml:"username"`
+		Password string `yaml:"password"`
+	} `yaml:"users"`
 }
 
 type Message struct {
-	ID        string   `json:"id"`
-	From      UserInfo `json:"from"`
-	To        string   `json:"to"`
-	Timestamp string   `json:"timestamp"`
-	Content   Content  `json:"content"`
-	Action    string   `json:"action"` // "create", "delete", "like"
-	TablonID  string   `json:"tablonId"`
-	BinaryData string `json:"binaryData,omitempty"`
-	FileName   string `json:"fileName,omitempty"`
+	ID         string   `json:"id"`
+	From       UserInfo `json:"from"`
+	To         string   `json:"to"`
+	Timestamp  string   `json:"timestamp"`
+	Content    Content  `json:"content"`
+	Action     string   `json:"action"` // "create", "delete", "like"
+	TablonID   string   `json:"tablonId"`
+	BinaryData string   `json:"binaryData,omitempty"`
+	FileName   string   `json:"fileName,omitempty"`
 }
 
 type Tablon struct {
@@ -144,6 +145,7 @@ func encodeFileToBase64(filePath string) (string, error) {
 	}
 	return base64.StdEncoding.EncodeToString(data), nil
 }
+
 // New function to decode base64 to file
 func decodeBase64ToFile(base64String, outputPath string) error {
 	data, err := base64.StdEncoding.DecodeString(base64String)
@@ -152,6 +154,7 @@ func decodeBase64ToFile(base64String, outputPath string) error {
 	}
 	return ioutil.WriteFile(outputPath, data, 0644)
 }
+
 // New handler for sending binary data
 // New handler for sending binary data
 func sendBinaryHandler(w http.ResponseWriter, r *http.Request) {
@@ -306,12 +309,19 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func publishToP2P(msg Message) {
-	serializedMsg, err := serializeMessage(msg, p2pKeys)
+	// Lock the mutex to safely access the encryption keys
+	p2pKeysMutex.Lock()
+	keys := p2pKeys // Make a local copy of the keys
+	p2pKeysMutex.Unlock()
+
+	// Serialize the message with the current keys
+	serializedMsg, err := serializeMessage(msg, keys)
 	if err != nil {
 		log.Printf(Red+"Failed to serialize message for P2P: %v"+Reset, err)
 		return
 	}
 
+	// Publish the message to the P2P network
 	err = p2pTopic.Publish(context.Background(), serializedMsg)
 	if err != nil {
 		log.Printf(Red+"Failed to publish message to P2P network: %v"+Reset, err)
@@ -383,16 +393,16 @@ func validateCredentials(username, password string) bool {
 	return false
 }
 func getClaimsFromToken(r *http.Request) jwt.MapClaims {
-    tokenString := r.Header.Get("Authorization")
-    token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-        return jwtSecretKey, nil
-    })
+	tokenString := r.Header.Get("Authorization")
+	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return jwtSecretKey, nil
+	})
 
-    if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-        return claims
-    }
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return claims
+	}
 
-    return nil
+	return nil
 }
 func deleteTablonHandler(w http.ResponseWriter, r *http.Request) {
 	// Verificar el token JWT
@@ -440,23 +450,23 @@ func deleteTablonHandler(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Tablon not found", http.StatusNotFound)
 }
 func verifyJWT(r *http.Request) bool {
-    tokenString := r.Header.Get("Authorization")
-    if tokenString == "" {
-        return false
-    }
+	tokenString := r.Header.Get("Authorization")
+	if tokenString == "" {
+		return false
+	}
 
-    token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-        if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-            return nil, fmt.Errorf("Unexpected signing method")
-        }
-        return jwtSecretKey, nil
-    })
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method")
+		}
+		return jwtSecretKey, nil
+	})
 
-    if err != nil {
-        return false
-    }
+	if err != nil {
+		return false
+	}
 
-    return token.Valid
+	return token.Valid
 }
 func deleteMessageHandler(w http.ResponseWriter, r *http.Request) {
 	// Verificar el token JWT
@@ -464,7 +474,7 @@ func deleteMessageHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	
+
 	tablonID := r.URL.Query().Get("tablonId")
 	messageID := r.URL.Query().Get("messageId")
 	msg := Message{
@@ -608,46 +618,89 @@ func decompress(data []byte) ([]byte, error) {
 }
 
 func encryptMessage(message, key []byte) ([]byte, error) {
-	block, err := aes.NewCipher(key)
+	// Ensure the key is exactly 32 bytes (256 bits) for AES-256
+	hashedKey := sha256.Sum256(key)
+
+	block, err := aes.NewCipher(hashedKey[:])
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create cipher: %v", err)
 	}
 
+	// Generate a random nonce
 	nonce := make([]byte, 12)
 	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to generate nonce: %v", err)
 	}
 
 	aesgcm, err := cipher.NewGCM(block)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create GCM: %v", err)
 	}
 
-	ciphertext := aesgcm.Seal(nonce, nonce, message, nil)
-	return ciphertext, nil
+	// Add additional authenticated data (AAD) for extra security
+	// This is a timestamp that will be authenticated but not encrypted
+	aad := []byte(fmt.Sprintf("%d", time.Now().UnixNano()))
+
+	// Encrypt and authenticate the message
+	ciphertext := aesgcm.Seal(nonce, nonce, message, aad)
+
+	// Prepend the AAD length and AAD to the ciphertext
+	aadLenBytes := make([]byte, 2)
+	aadLenBytes[0] = byte(len(aad) >> 8)
+	aadLenBytes[1] = byte(len(aad))
+
+	// Final format: [aadLen(2 bytes)][aad][nonce(12 bytes)][ciphertext]
+	result := append(aadLenBytes, aad...)
+	return append(result, ciphertext...), nil
 }
 
 func decryptMessage(ciphertext, key []byte) ([]byte, error) {
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return nil, err
+	// Ensure the key is exactly 32 bytes (256 bits) for AES-256
+	hashedKey := sha256.Sum256(key)
+
+	// Check if the ciphertext is long enough to contain our header
+	if len(ciphertext) < 2 {
+		return nil, fmt.Errorf("ciphertext too short: missing AAD length")
 	}
 
+	// Extract the AAD length
+	aadLen := int(ciphertext[0])<<8 | int(ciphertext[1])
+	ciphertext = ciphertext[2:]
+
+	// Check if the ciphertext is long enough to contain the AAD
+	if len(ciphertext) < aadLen {
+		return nil, fmt.Errorf("ciphertext too short: missing AAD")
+	}
+
+	// Extract the AAD
+	aad := ciphertext[:aadLen]
+	ciphertext = ciphertext[aadLen:]
+
+	// Check if the ciphertext is long enough to contain the nonce
 	if len(ciphertext) < 12 {
-		return nil, fmt.Errorf("ciphertext too short")
+		return nil, fmt.Errorf("ciphertext too short: missing nonce")
 	}
 
+	// Extract the nonce
 	nonce := ciphertext[:12]
 	ciphertext = ciphertext[12:]
 
-	aesgcm, err := cipher.NewGCM(block)
+	// Create the AES cipher
+	block, err := aes.NewCipher(hashedKey[:])
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create cipher: %v", err)
 	}
 
-	plaintext, err := aesgcm.Open(nil, nonce, ciphertext, nil)
+	// Create the GCM instance
+	aesgcm, err := cipher.NewGCM(block)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create GCM: %v", err)
+	}
+
+	// Decrypt the message
+	plaintext, err := aesgcm.Open(nil, nonce, ciphertext, aad)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decrypt: %v", err)
 	}
 
 	return plaintext, nil
@@ -739,48 +792,48 @@ func authenticate(next http.Handler) http.Handler {
 }
 
 func generateTokenHandler(w http.ResponseWriter, r *http.Request) {
-    if r.Method != "POST" {
-        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-        return
-    }
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 
-    var credentials struct {
-        Username string `json:"username"`
-        Password string `json:"password"`
-        PeerId   string `json:"peerId"`
-        Photo    string `json:"photo"`
-    }
+	var credentials struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+		PeerId   string `json:"peerId"`
+		Photo    string `json:"photo"`
+	}
 
-    err := json.NewDecoder(r.Body).Decode(&credentials)
-    if err != nil {
-        http.Error(w, "Invalid request body", http.StatusBadRequest)
-        return
-    }
+	err := json.NewDecoder(r.Body).Decode(&credentials)
+	if err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
 
-    if !validateCredentials(credentials.Username, credentials.Password) {
-        http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-        return
-    }
+	if !validateCredentials(credentials.Username, credentials.Password) {
+		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+		return
+	}
 
-    claims := jwt.MapClaims{
-        "authorized": true,
-        "username":   credentials.Username,
-        "peerId":     credentials.PeerId,
-        "photo":      credentials.Photo,
-        "exp":        time.Now().Add(time.Hour * 24).Unix(),
-    }
+	claims := jwt.MapClaims{
+		"authorized": true,
+		"username":   credentials.Username,
+		"peerId":     credentials.PeerId,
+		"photo":      credentials.Photo,
+		"exp":        time.Now().Add(time.Hour * 24).Unix(),
+	}
 
-    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-    tokenString, err := token.SignedString(jwtSecretKey)
-    if err != nil {
-        http.Error(w, "Error al generar el token", http.StatusInternalServerError)
-        return
-    }
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(jwtSecretKey)
+	if err != nil {
+		http.Error(w, "Error al generar el token", http.StatusInternalServerError)
+		return
+	}
 
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(map[string]string{
-        "token": tokenString,
-    })
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{
+		"token": tokenString,
+	})
 }
 
 func sendMessageHandler(w http.ResponseWriter, r *http.Request) {
@@ -933,7 +986,11 @@ func main() {
 		log.Fatalf(Red+"Failed to subscribe to topic: %v"+Reset, err)
 	}
 
-	p2pKeys = [][]byte{[]byte(config.EncryptionKey)}
+	// Generate multiple encryption keys from the master key
+	p2pKeys = deriveEncryptionKeys(config.EncryptionKey, 3)
+
+	// Start key rotation in a separate goroutine
+	go rotateEncryptionKeys(config.EncryptionKey, 3*time.Hour)
 
 	go handleP2PMessages(ctx)
 
@@ -948,7 +1005,14 @@ func handleP2PMessages(ctx context.Context) {
 			log.Printf("Failed to get next message: %v", err)
 			continue
 		}
-		msg, err := deserializeMessage(m.Message.Data, p2pKeys)
+
+		// Lock the mutex to safely access the encryption keys
+		p2pKeysMutex.Lock()
+		keys := p2pKeys // Make a local copy of the keys
+		p2pKeysMutex.Unlock()
+
+		// Deserialize the message with the current keys
+		msg, err := deserializeMessage(m.Message.Data, keys)
 		if err != nil {
 			log.Printf("Deserialization error: %v", err)
 			continue
@@ -1184,7 +1248,13 @@ func streamConsoleTo(ctx context.Context, topic *pubsub.Topic, keys [][]byte, re
 				Subscribed: false,
 			},
 		}
-		serializedMsg, err := serializeMessage(msg, keys)
+
+		// Lock the mutex to safely access the encryption keys
+		p2pKeysMutex.Lock()
+		currentKeys := p2pKeys // Make a local copy of the keys
+		p2pKeysMutex.Unlock()
+
+		serializedMsg, err := serializeMessage(msg, currentKeys)
 		if err != nil {
 			log.Printf(Red+"Failed to serialize message: %v"+Reset, err)
 			continue
@@ -1207,7 +1277,13 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 		if err != nil {
 			log.Fatalf(Red+"Failed to get next message: %v"+Reset, err)
 		}
-		msg, err := deserializeMessage(m.Message.Data, keys)
+
+		// Lock the mutex to safely access the encryption keys
+		p2pKeysMutex.Lock()
+		currentKeys := p2pKeys // Make a local copy of the keys
+		p2pKeysMutex.Unlock()
+
+		msg, err := deserializeMessage(m.Message.Data, currentKeys)
 		if err != nil {
 			log.Printf(Red+"Deserialization error: %v"+Reset, err)
 			continue
@@ -1235,4 +1311,65 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 
 func generateMessageID() string {
 	return fmt.Sprintf("msg_%d", time.Now().UnixNano())
+}
+
+// deriveEncryptionKeys generates multiple encryption keys from a master key
+func deriveEncryptionKeys(masterKey string, count int) [][]byte {
+	// Ensure we have a strong master key by hashing it
+	masterHash := sha256.Sum256([]byte(masterKey))
+
+	// Create the specified number of derived keys
+	keys := make([][]byte, count)
+
+	// The first key is the master key hash
+	keys[0] = masterHash[:]
+
+	// Generate additional keys by repeatedly hashing with a salt
+	for i := 1; i < count; i++ {
+		// Create a unique salt for each key
+		salt := fmt.Sprintf("key-%d-%s", i, masterKey)
+
+		// Hash the previous key with the salt
+		hasher := sha256.New()
+		hasher.Write(keys[i-1])
+		hasher.Write([]byte(salt))
+
+		// Store the new key
+		keys[i] = hasher.Sum(nil)
+	}
+
+	log.Printf(Green+"Generated %d encryption keys from master key"+Reset, count)
+	return keys
+}
+
+// rotateEncryptionKeys periodically rotates the encryption keys for better security
+func rotateEncryptionKeys(masterKey string, interval time.Duration) {
+	// Create a ticker that triggers at the specified interval
+	ticker := time.NewTicker(interval)
+
+	// Add some randomness to the first rotation to avoid predictable patterns
+	randomValue, err := rand.Int(rand.Reader, big.NewInt(int64(interval/2)))
+	if err != nil {
+		log.Printf(Red+"Failed to generate random delay: %v"+Reset, err)
+		randomValue = big.NewInt(0)
+	}
+	initialDelay := time.Duration(randomValue.Int64())
+	time.Sleep(initialDelay)
+
+	// Start the rotation loop
+	for range ticker.C {
+		// Lock the global mutex before updating the keys
+		p2pKeysMutex.Lock()
+
+		// Generate new keys with a timestamp to ensure uniqueness
+		newKeys := deriveEncryptionKeys(masterKey+fmt.Sprintf("-%d", time.Now().UnixNano()), 3)
+
+		// Update the global keys
+		p2pKeys = newKeys
+
+		// Unlock the mutex
+		p2pKeysMutex.Unlock()
+
+		log.Printf(Yellow+"Encryption keys rotated at %s"+Reset, time.Now().Format(time.RFC3339))
+	}
 }
