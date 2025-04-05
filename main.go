@@ -330,6 +330,21 @@ func SimpleDeserializeMessage(data []byte, keys [][]byte) (Message, error) {
 }
 
 func publishToP2P(msg Message) {
+	// Asegurarse de que el mensaje tenga un ID
+	if msg.ID == "" {
+		msg.ID = generateMessageID()
+	}
+
+	// Asegurarse de que el mensaje tenga información del remitente
+	if msg.From.Username == "" {
+		config, _ := readConfig()
+		if config != nil && len(config.Users) > 0 {
+			msg.From.Username = config.Users[0].Username
+		} else {
+			msg.From.Username = "anonymous"
+		}
+	}
+
 	// Marshal the message directly to JSON
 	serializedMsg, err := json.Marshal(msg)
 	if err != nil {
@@ -970,9 +985,8 @@ func handleP2PMessages(ctx context.Context) {
 		// Log the message data size before deserialization
 		log.Printf("Received message data size: %d bytes", len(m.Message.Data))
 
-		// Try to unmarshal the message directly
-		var msg Message
-		err = json.Unmarshal(m.Message.Data, &msg)
+		// Usar el deserializador universal que intenta varios métodos
+		msg, err := UniversalDeserializeMessage(m.Message.Data, p2pKeys)
 		if err != nil {
 			log.Printf(Yellow+"Deserialization error: %v - Skipping message"+Reset, err)
 			continue
@@ -1237,9 +1251,8 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 		// Log the message data size before deserialization
 		log.Printf("Received message data size: %d bytes", len(m.Message.Data))
 
-		// Try to unmarshal the message directly
-		var msg Message
-		err = json.Unmarshal(m.Message.Data, &msg)
+		// Usar el deserializador universal que intenta varios métodos
+		msg, err := UniversalDeserializeMessage(m.Message.Data, keys)
 		if err != nil {
 			log.Printf(Yellow+"Deserialization error: %v - Skipping message"+Reset, err)
 			continue
