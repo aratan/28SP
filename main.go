@@ -46,10 +46,9 @@ var (
 )
 
 var (
-	p2pTopic     *pubsub.Topic
-	p2pSub       *pubsub.Subscription
-	p2pKeys      [][]byte
-	p2pKeysMutex sync.Mutex // Mutex for safely updating encryption keys
+	p2pTopic *pubsub.Topic
+	p2pSub   *pubsub.Subscription
+	p2pKeys  [][]byte
 )
 
 const (
@@ -309,19 +308,12 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func publishToP2P(msg Message) {
-	// Lock the mutex to safely access the encryption keys
-	p2pKeysMutex.Lock()
-	keys := p2pKeys // Make a local copy of the keys
-	p2pKeysMutex.Unlock()
-
-	// Serialize the message with the current keys
-	serializedMsg, err := serializeMessage(msg, keys)
+	serializedMsg, err := serializeMessage(msg, p2pKeys)
 	if err != nil {
 		log.Printf(Red+"Failed to serialize message for P2P: %v"+Reset, err)
 		return
 	}
 
-	// Publish the message to the P2P network
 	err = p2pTopic.Publish(context.Background(), serializedMsg)
 	if err != nil {
 		log.Printf(Red+"Failed to publish message to P2P network: %v"+Reset, err)
@@ -618,89 +610,46 @@ func decompress(data []byte) ([]byte, error) {
 }
 
 func encryptMessage(message, key []byte) ([]byte, error) {
-	// Ensure the key is exactly 32 bytes (256 bits) for AES-256
-	hashedKey := sha256.Sum256(key)
-
-	block, err := aes.NewCipher(hashedKey[:])
+	block, err := aes.NewCipher(key)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create cipher: %v", err)
+		return nil, err
 	}
 
-	// Generate a random nonce
 	nonce := make([]byte, 12)
 	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		return nil, fmt.Errorf("failed to generate nonce: %v", err)
+		return nil, err
 	}
 
 	aesgcm, err := cipher.NewGCM(block)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create GCM: %v", err)
+		return nil, err
 	}
 
-	// Add additional authenticated data (AAD) for extra security
-	// This is a timestamp that will be authenticated but not encrypted
-	aad := []byte(fmt.Sprintf("%d", time.Now().UnixNano()))
-
-	// Encrypt and authenticate the message
-	ciphertext := aesgcm.Seal(nonce, nonce, message, aad)
-
-	// Prepend the AAD length and AAD to the ciphertext
-	aadLenBytes := make([]byte, 2)
-	aadLenBytes[0] = byte(len(aad) >> 8)
-	aadLenBytes[1] = byte(len(aad))
-
-	// Final format: [aadLen(2 bytes)][aad][nonce(12 bytes)][ciphertext]
-	result := append(aadLenBytes, aad...)
-	return append(result, ciphertext...), nil
+	ciphertext := aesgcm.Seal(nonce, nonce, message, nil)
+	return ciphertext, nil
 }
 
 func decryptMessage(ciphertext, key []byte) ([]byte, error) {
-	// Ensure the key is exactly 32 bytes (256 bits) for AES-256
-	hashedKey := sha256.Sum256(key)
-
-	// Check if the ciphertext is long enough to contain our header
-	if len(ciphertext) < 2 {
-		return nil, fmt.Errorf("ciphertext too short: missing AAD length")
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
 	}
 
-	// Extract the AAD length
-	aadLen := int(ciphertext[0])<<8 | int(ciphertext[1])
-	ciphertext = ciphertext[2:]
-
-	// Check if the ciphertext is long enough to contain the AAD
-	if len(ciphertext) < aadLen {
-		return nil, fmt.Errorf("ciphertext too short: missing AAD")
-	}
-
-	// Extract the AAD
-	aad := ciphertext[:aadLen]
-	ciphertext = ciphertext[aadLen:]
-
-	// Check if the ciphertext is long enough to contain the nonce
 	if len(ciphertext) < 12 {
-		return nil, fmt.Errorf("ciphertext too short: missing nonce")
+		return nil, fmt.Errorf("ciphertext too short")
 	}
 
-	// Extract the nonce
 	nonce := ciphertext[:12]
 	ciphertext = ciphertext[12:]
 
-	// Create the AES cipher
-	block, err := aes.NewCipher(hashedKey[:])
-	if err != nil {
-		return nil, fmt.Errorf("failed to create cipher: %v", err)
-	}
-
-	// Create the GCM instance
 	aesgcm, err := cipher.NewGCM(block)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create GCM: %v", err)
+		return nil, err
 	}
 
-	// Decrypt the message
-	plaintext, err := aesgcm.Open(nil, nonce, ciphertext, aad)
+	plaintext, err := aesgcm.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to decrypt: %v", err)
+		return nil, err
 	}
 
 	return plaintext, nil
@@ -986,11 +935,7 @@ func main() {
 		log.Fatalf(Red+"Failed to subscribe to topic: %v"+Reset, err)
 	}
 
-	// Generate multiple encryption keys from the master key
-	p2pKeys = deriveEncryptionKeys(config.EncryptionKey, 3)
-
-	// Start key rotation in a separate goroutine
-	go rotateEncryptionKeys(config.EncryptionKey, 3*time.Hour)
+	p2pKeys = [][]byte{[]byte(config.EncryptionKey)}
 
 	go handleP2PMessages(ctx)
 
@@ -1005,14 +950,7 @@ func handleP2PMessages(ctx context.Context) {
 			log.Printf("Failed to get next message: %v", err)
 			continue
 		}
-
-		// Lock the mutex to safely access the encryption keys
-		p2pKeysMutex.Lock()
-		keys := p2pKeys // Make a local copy of the keys
-		p2pKeysMutex.Unlock()
-
-		// Deserialize the message with the current keys
-		msg, err := deserializeMessage(m.Message.Data, keys)
+		msg, err := deserializeMessage(m.Message.Data, p2pKeys)
 		if err != nil {
 			log.Printf("Deserialization error: %v", err)
 			continue
@@ -1248,13 +1186,7 @@ func streamConsoleTo(ctx context.Context, topic *pubsub.Topic, keys [][]byte, re
 				Subscribed: false,
 			},
 		}
-
-		// Lock the mutex to safely access the encryption keys
-		p2pKeysMutex.Lock()
-		currentKeys := p2pKeys // Make a local copy of the keys
-		p2pKeysMutex.Unlock()
-
-		serializedMsg, err := serializeMessage(msg, currentKeys)
+		serializedMsg, err := serializeMessage(msg, keys)
 		if err != nil {
 			log.Printf(Red+"Failed to serialize message: %v"+Reset, err)
 			continue
@@ -1277,13 +1209,7 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 		if err != nil {
 			log.Fatalf(Red+"Failed to get next message: %v"+Reset, err)
 		}
-
-		// Lock the mutex to safely access the encryption keys
-		p2pKeysMutex.Lock()
-		currentKeys := p2pKeys // Make a local copy of the keys
-		p2pKeysMutex.Unlock()
-
-		msg, err := deserializeMessage(m.Message.Data, currentKeys)
+		msg, err := deserializeMessage(m.Message.Data, keys)
 		if err != nil {
 			log.Printf(Red+"Deserialization error: %v"+Reset, err)
 			continue
@@ -1311,65 +1237,4 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 
 func generateMessageID() string {
 	return fmt.Sprintf("msg_%d", time.Now().UnixNano())
-}
-
-// deriveEncryptionKeys generates multiple encryption keys from a master key
-func deriveEncryptionKeys(masterKey string, count int) [][]byte {
-	// Ensure we have a strong master key by hashing it
-	masterHash := sha256.Sum256([]byte(masterKey))
-
-	// Create the specified number of derived keys
-	keys := make([][]byte, count)
-
-	// The first key is the master key hash
-	keys[0] = masterHash[:]
-
-	// Generate additional keys by repeatedly hashing with a salt
-	for i := 1; i < count; i++ {
-		// Create a unique salt for each key
-		salt := fmt.Sprintf("key-%d-%s", i, masterKey)
-
-		// Hash the previous key with the salt
-		hasher := sha256.New()
-		hasher.Write(keys[i-1])
-		hasher.Write([]byte(salt))
-
-		// Store the new key
-		keys[i] = hasher.Sum(nil)
-	}
-
-	log.Printf(Green+"Generated %d encryption keys from master key"+Reset, count)
-	return keys
-}
-
-// rotateEncryptionKeys periodically rotates the encryption keys for better security
-func rotateEncryptionKeys(masterKey string, interval time.Duration) {
-	// Create a ticker that triggers at the specified interval
-	ticker := time.NewTicker(interval)
-
-	// Add some randomness to the first rotation to avoid predictable patterns
-	randomValue, err := rand.Int(rand.Reader, big.NewInt(int64(interval/2)))
-	if err != nil {
-		log.Printf(Red+"Failed to generate random delay: %v"+Reset, err)
-		randomValue = big.NewInt(0)
-	}
-	initialDelay := time.Duration(randomValue.Int64())
-	time.Sleep(initialDelay)
-
-	// Start the rotation loop
-	for range ticker.C {
-		// Lock the global mutex before updating the keys
-		p2pKeysMutex.Lock()
-
-		// Generate new keys with a timestamp to ensure uniqueness
-		newKeys := deriveEncryptionKeys(masterKey+fmt.Sprintf("-%d", time.Now().UnixNano()), 3)
-
-		// Update the global keys
-		p2pKeys = newKeys
-
-		// Unlock the mutex
-		p2pKeysMutex.Unlock()
-
-		log.Printf(Yellow+"Encryption keys rotated at %s"+Reset, time.Now().Format(time.RFC3339))
-	}
 }
