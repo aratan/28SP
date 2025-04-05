@@ -642,32 +642,39 @@ func decryptMessage(ciphertext, key []byte) ([]byte, error) {
 }
 
 func serializeMessage(msg Message, keys [][]byte) ([]byte, error) {
+	// Marshal the message to JSON
 	msgBytes, err := json.Marshal(msg)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("marshal error: %v", err)
 	}
-	compressedData, err := compress(msgBytes)
-	if err != nil {
-		return nil, err
-	}
-	return mixnetEncrypt(compressedData, keys)
+
+	// Skip compression for now to ensure compatibility
+	// This makes the messages larger but more reliable
+	return mixnetEncrypt(msgBytes, keys)
 }
 
 func deserializeMessage(data []byte, keys [][]byte) (Message, error) {
+	// Decrypt the data
 	decryptedData, err := mixnetDecrypt(data, keys)
 	if err != nil {
 		return Message{}, err
 	}
+
+	// Try to decompress the data
 	decompressedData, err := decompress(decryptedData)
 	if err != nil {
-		return Message{}, err
+		// If decompression fails, try using the decrypted data directly
+		log.Printf(Yellow+"Decompression failed: %v - Trying direct unmarshaling"+Reset, err)
+		decompressedData = decryptedData
 	}
 
+	// Try to unmarshal the data
 	var msg Message
 	err = json.Unmarshal(decompressedData, &msg)
 	if err != nil {
-		return Message{}, err
+		return Message{}, fmt.Errorf("unmarshal error: %v", err)
 	}
+
 	return msg, nil
 }
 
