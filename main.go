@@ -638,8 +638,17 @@ func anonymizeMessageFix(msg Message) Message {
 	return anonymized
 }
 
+// Variable para controlar si se usan saltos para pruebas
+var disableRoutingHops = true
+
 // generateRandomRoutesFix generates random routes for onion routing
 func generateRandomRoutesFix(minHops, maxHops int) []string {
+	// Para pruebas, desactivar los saltos si la bandera está activada
+	if disableRoutingHops {
+		log.Printf("Saltos de routing desactivados para pruebas")
+		return []string{}
+	}
+
 	// Generate a random number between minHops and maxHops
 	random, _ := rand.Int(rand.Reader, big.NewInt(int64(maxHops-minHops+1)))
 	numHops := minHops + int(random.Int64())
@@ -654,6 +663,7 @@ func generateRandomRoutesFix(minHops, maxHops int) []string {
 		routes[i] = hex.EncodeToString(hash[:8])
 	}
 
+	log.Printf("Generados %d saltos de routing", numHops)
 	return routes
 }
 
@@ -662,6 +672,8 @@ func publishToP2P(msg Message) {
 	if msg.ID == "" {
 		msg.ID = generateMessageID()
 	}
+
+	log.Printf("Publicando mensaje ID: %s a P2P. Destino: %s", msg.ID, msg.To)
 
 	// Asegurarse de que el mensaje tenga información del remitente
 	if msg.From.Username == "" {
@@ -673,8 +685,13 @@ func publishToP2P(msg Message) {
 		}
 	}
 
+	log.Printf("Remitente del mensaje: %s", msg.From.Username)
+
 	// Aplicar opciones de seguridad al mensaje
 	SecureMessageFix(&msg, securityConfig)
+
+	log.Printf("Mensaje preparado con seguridad. Encrypted: %v, AnonymousSender: %v",
+		msg.Encrypted, msg.AnonymousSender)
 
 	// Usar el cifrado seguro para serializar el mensaje
 	serializedMsg, err := SecureSerializeMessageFix(msg, p2pKeys)
@@ -1454,14 +1471,16 @@ func main() {
 
 // Update the handleP2PMessages function to handle binary transfers
 func handleP2PMessages(ctx context.Context) {
+	log.Printf("Iniciando manejador de mensajes P2P...")
 	for {
+		log.Printf("Esperando mensajes P2P...")
 		m, err := p2pSub.Next(ctx)
 		if err != nil {
 			log.Printf("Failed to get next message: %v", err)
 			continue
 		}
 		// Log the message data size before deserialization
-		log.Printf("Received message data size: %d bytes", len(m.Message.Data))
+		log.Printf("Received message from %s, data size: %d bytes", m.ReceivedFrom, len(m.Message.Data))
 
 		// Usar el deserializador seguro que intenta varios métodos
 		msg, err := SecureDeserializeMessageFix(m.Message.Data, p2pKeys)
