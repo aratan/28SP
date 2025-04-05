@@ -192,10 +192,23 @@ func sendBinaryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Obtener información del usuario desde el token JWT
+	claims := getClaimsFromToken(r)
+	var username, peerId, photo string
+	if claims != nil {
+		username = claims["username"].(string)
+		peerId = claims["peerId"].(string)
+		photo = claims["photo"].(string)
+	} else {
+		username = "anonymous"
+		peerId = "unknown"
+		photo = ""
+	}
+
 	// Create a new message with the binary data
 	msg := Message{
 		ID:         generateMessageID(),
-		From:       UserInfo{PeerID: "sender_peer_id", Username: "sender_username", Photo: "sender_photo_url"},
+		From:       UserInfo{PeerID: peerId, Username: username, Photo: photo},
 		To:         "BROADCAST", // or specific peer ID
 		Timestamp:  time.Now().Format(time.RFC3339),
 		Action:     "binary_transfer",
@@ -1388,8 +1401,8 @@ func main() {
 	api.HandleFunc("/generateToken", generateTokenHandler).Methods("GET")
 	api.HandleFunc("/login", generateTokenHandler).Methods("POST")
 	// Add new routes for binary transfer
-	api.HandleFunc("/api/sendBinary", sendBinaryHandler).Methods("POST")
-	api.HandleFunc("/api/receiveBinary", receiveBinaryHandler).Methods("POST")
+	api.HandleFunc("/sendBinary", sendBinaryHandler).Methods("POST")
+	api.HandleFunc("/receiveBinary", receiveBinaryHandler).Methods("POST")
 	//http://localhost:8080/api/generateToken?username=victor/
 
 	// Middleware CORS

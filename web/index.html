@@ -92,6 +92,30 @@
             </div>
         </div>
 
+        <!-- Enviar Archivos -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Enviar Archivo</h5>
+                <form id="fileUploadForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <input type="file" class="form-control" id="fileInput" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enviar Archivo</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Lista de Archivos Recibidos -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Archivos Recibidos</h5>
+                <div id="receivedFiles" class="list-group">
+                    <!-- Los archivos recibidos se mostrarán aquí -->
+                </div>
+                <button onclick="refreshReceivedFiles()" class="btn btn-secondary mt-3">Actualizar Lista</button>
+            </div>
+        </div>
+
         <!-- Lista de Tablones -->
         <div id="tablonesList"></div>
         <p id="pagos-content">
@@ -120,6 +144,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./pagos.js"></script>
+    <script src="./file-handler.js"></script>
     <script src="./main.js"></script>
 </body>
 
