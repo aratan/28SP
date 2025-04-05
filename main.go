@@ -5,6 +5,8 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
+	"crypto/aes"
+	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
@@ -63,7 +65,6 @@ type Config struct {
 	EncryptionKey  string `yaml:"encryptionKey"`
 	LogLevel       string `yaml:"logLevel"`
 	ListenAddress  string `yaml:"listenAddress"`
-	WebServerAddr  string `yaml:"webServerAddr"`
 	MaxMessageSize int    `yaml:"maxMessageSize"`
 	LogFile        string `yaml:"logFile"`
 	RetryInterval  int    `yaml:"retryInterval"`
@@ -71,10 +72,8 @@ type Config struct {
 		Enabled    bool   `yaml:"enabled"`
 		ServiceTag string `yaml:"serviceTag"`
 	} `yaml:"mdns"`
-	UseSSL   bool   `yaml:"useSSL"`
-	CertFile string `yaml:"certFile"`
-	KeyFile  string `yaml:"keyFile"`
-	Users    []struct {
+	UseSSL bool `yaml:"useSSL"`
+	Users  []struct {
 		Username string `yaml:"username"`
 		Password string `yaml:"password"`
 	} `yaml:"users"`
@@ -318,12 +317,9 @@ func publishToP2P(msg Message) {
 	// Serialize the message with the current keys
 	serializedMsg, err := serializeMessage(msg, keys)
 	if err != nil {
-		log.Printf(Red+"Failed to serialize message for P2P: %v - Message will not be sent"+Reset, err)
+		log.Printf(Red+"Failed to serialize message for P2P: %v"+Reset, err)
 		return
 	}
-
-	// Log successful serialization
-	log.Printf(Green + "Message serialized successfully, sending to P2P network" + Reset)
 
 	// Publish the message to the P2P network
 	err = p2pTopic.Publish(context.Background(), serializedMsg)
@@ -622,37 +618,92 @@ func decompress(data []byte) ([]byte, error) {
 }
 
 func encryptMessage(message, key []byte) ([]byte, error) {
-	// Extremely simplified encryption - just XOR with the key
-	// This is not secure for production but will work reliably for testing
-
-	// Create a hash of the key for consistent length
+	// Ensure the key is exactly 32 bytes (256 bits) for AES-256
 	hashedKey := sha256.Sum256(key)
 
-	// XOR each byte of the message with the corresponding byte of the key
-	encrypted := make([]byte, len(message))
-	for i := 0; i < len(message); i++ {
-		encrypted[i] = message[i] ^ hashedKey[i%32] // Use modulo to cycle through the key
+	block, err := aes.NewCipher(hashedKey[:])
+	if err != nil {
+		return nil, fmt.Errorf("failed to create cipher: %v", err)
 	}
 
-	// Return the encrypted message
-	return encrypted, nil
+	// Generate a random nonce
+	nonce := make([]byte, 12)
+	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+		return nil, fmt.Errorf("failed to generate nonce: %v", err)
+	}
+
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create GCM: %v", err)
+	}
+
+	// Add additional authenticated data (AAD) for extra security
+	// This is a timestamp that will be authenticated but not encrypted
+	aad := []byte(fmt.Sprintf("%d", time.Now().UnixNano()))
+
+	// Encrypt and authenticate the message
+	ciphertext := aesgcm.Seal(nonce, nonce, message, aad)
+
+	// Prepend the AAD length and AAD to the ciphertext
+	aadLenBytes := make([]byte, 2)
+	aadLenBytes[0] = byte(len(aad) >> 8)
+	aadLenBytes[1] = byte(len(aad))
+
+	// Final format: [aadLen(2 bytes)][aad][nonce(12 bytes)][ciphertext]
+	result := append(aadLenBytes, aad...)
+	return append(result, ciphertext...), nil
 }
 
 func decryptMessage(ciphertext, key []byte) ([]byte, error) {
-	// Extremely simplified decryption - just XOR with the key (reverse of encryption)
-	// This is not secure for production but will work reliably for testing
-
-	// Create a hash of the key for consistent length
+	// Ensure the key is exactly 32 bytes (256 bits) for AES-256
 	hashedKey := sha256.Sum256(key)
 
-	// XOR each byte of the ciphertext with the corresponding byte of the key
-	decrypted := make([]byte, len(ciphertext))
-	for i := 0; i < len(ciphertext); i++ {
-		decrypted[i] = ciphertext[i] ^ hashedKey[i%32] // Use modulo to cycle through the key
+	// Check if the ciphertext is long enough to contain our header
+	if len(ciphertext) < 2 {
+		return nil, fmt.Errorf("ciphertext too short: missing AAD length")
 	}
 
-	// Return the decrypted message
-	return decrypted, nil
+	// Extract the AAD length
+	aadLen := int(ciphertext[0])<<8 | int(ciphertext[1])
+	ciphertext = ciphertext[2:]
+
+	// Check if the ciphertext is long enough to contain the AAD
+	if len(ciphertext) < aadLen {
+		return nil, fmt.Errorf("ciphertext too short: missing AAD")
+	}
+
+	// Extract the AAD
+	aad := ciphertext[:aadLen]
+	ciphertext = ciphertext[aadLen:]
+
+	// Check if the ciphertext is long enough to contain the nonce
+	if len(ciphertext) < 12 {
+		return nil, fmt.Errorf("ciphertext too short: missing nonce")
+	}
+
+	// Extract the nonce
+	nonce := ciphertext[:12]
+	ciphertext = ciphertext[12:]
+
+	// Create the AES cipher
+	block, err := aes.NewCipher(hashedKey[:])
+	if err != nil {
+		return nil, fmt.Errorf("failed to create cipher: %v", err)
+	}
+
+	// Create the GCM instance
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create GCM: %v", err)
+	}
+
+	// Decrypt the message
+	plaintext, err := aesgcm.Open(nil, nonce, ciphertext, aad)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decrypt: %v", err)
+	}
+
+	return plaintext, nil
 }
 
 func serializeMessage(msg Message, keys [][]byte) ([]byte, error) {
@@ -686,21 +737,27 @@ func deserializeMessage(data []byte, keys [][]byte) (Message, error) {
 }
 
 func mixnetEncrypt(message []byte, keys [][]byte) ([]byte, error) {
-	// Just use the first key for simplicity
-	if len(keys) > 0 {
-		return encryptMessage(message, keys[0])
+	ciphertext := message
+	for _, key := range keys {
+		var err error
+		ciphertext, err = encryptMessage(ciphertext, key)
+		if err != nil {
+			return nil, err
+		}
 	}
-	// If no keys are provided, return the message as is
-	return message, nil
+	return ciphertext, nil
 }
 
 func mixnetDecrypt(ciphertext []byte, keys [][]byte) ([]byte, error) {
-	// Just use the first key for simplicity
-	if len(keys) > 0 {
-		return decryptMessage(ciphertext, keys[0])
+	plaintext := ciphertext
+	for i := len(keys) - 1; i >= 0; i-- {
+		var err error
+		plaintext, err = decryptMessage(plaintext, keys[i])
+		if err != nil {
+			return nil, err
+		}
 	}
-	// If no keys are provided, return the ciphertext as is
-	return ciphertext, nil
+	return plaintext, nil
 }
 
 func authenticate(next http.Handler) http.Handler {
@@ -887,33 +944,11 @@ func main() {
 	fs := http.FileServer(http.Dir("./web"))
 	r.PathPrefix("/").Handler(fs)
 
-	// Iniciar servidor HTTP/HTTPS
+	// Iniciar servidor HTTP
 	go func() {
-		serverAddr := ":8080" // Default HTTP port
-		if config.WebServerAddr != "" {
-			serverAddr = config.WebServerAddr
-		}
-
-		if config.UseSSL {
-			// Check if certificate files exist but don't fail if they don't exist yet
-			if _, err := os.Stat(config.CertFile); os.IsNotExist(err) {
-				log.Printf(Yellow+"Certificate file %s not found: %v"+Reset, config.CertFile, err)
-			}
-			if _, err := os.Stat(config.KeyFile); os.IsNotExist(err) {
-				log.Printf(Yellow+"Key file %s not found: %v"+Reset, config.KeyFile, err)
-			}
-
-			// Always use HTTP for now
-			log.Printf(Yellow+"Using HTTP server on %s"+Reset, serverAddr)
-			if err := http.ListenAndServe(serverAddr, r); err != nil {
-				log.Fatalf(Red+"HTTP server error: %v"+Reset, err)
-			}
-		} else {
-			// Start HTTP server
-			log.Printf(Green+"Starting HTTP server on %s"+Reset, serverAddr)
-			if err := http.ListenAndServe(serverAddr, r); err != nil {
-				log.Fatalf(Red+"HTTP server error: %v"+Reset, err)
-			}
+		log.Println("Starting HTTP server on :8080")
+		if err := http.ListenAndServe(":8080", r); err != nil {
+			log.Fatalf("HTTP server error: %v", err)
 		}
 	}()
 
@@ -979,46 +1014,8 @@ func handleP2PMessages(ctx context.Context) {
 		// Deserialize the message with the current keys
 		msg, err := deserializeMessage(m.Message.Data, keys)
 		if err != nil {
-			// Try with a simpler approach - direct decryption without mixnet
-			log.Printf(Yellow + "Trying alternative decryption method..." + Reset)
-
-			// Try each key individually
-			var decrypted []byte
-			var decryptErr error
-			for _, key := range keys {
-				decrypted, decryptErr = decryptMessage(m.Message.Data, key)
-				if decryptErr == nil {
-					// Successfully decrypted
-					break
-				}
-			}
-
-			if decryptErr != nil {
-				log.Printf(Red+"All decryption methods failed: %v - Skipping message"+Reset, err)
-				continue
-			}
-
-			// Try to decompress and unmarshal
-			decompressed, decompressErr := decompress(decrypted)
-			if decompressErr != nil {
-				// Try without decompression
-				decompressed = decrypted
-			}
-
-			// Try to unmarshal
-			var altMsg Message
-			unmarshalErr := json.Unmarshal(decompressed, &altMsg)
-			if unmarshalErr != nil {
-				log.Printf(Red+"Failed to unmarshal message: %v - Skipping message"+Reset, unmarshalErr)
-				continue
-			}
-
-			// Successfully recovered the message
-			msg = altMsg
-			log.Printf(Green + "Message recovered using alternative method" + Reset)
-		} else {
-			// Log successful message reception with normal method
-			log.Printf(Green+"Received message from %s"+Reset, msg.From.Username)
+			log.Printf("Deserialization error: %v", err)
+			continue
 		}
 
 		// Handle binary transfer messages
@@ -1259,12 +1256,9 @@ func streamConsoleTo(ctx context.Context, topic *pubsub.Topic, keys [][]byte, re
 
 		serializedMsg, err := serializeMessage(msg, currentKeys)
 		if err != nil {
-			log.Printf(Red+"Failed to serialize message: %v - Skipping message"+Reset, err)
+			log.Printf(Red+"Failed to serialize message: %v"+Reset, err)
 			continue
 		}
-
-		// Log successful serialization
-		log.Printf(Green+"Message serialized successfully, sending to %s"+Reset, to)
 
 		for i := 0; i < maxRetries; i++ {
 			if err := topic.Publish(ctx, serializedMsg); err != nil {
@@ -1291,46 +1285,8 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 
 		msg, err := deserializeMessage(m.Message.Data, currentKeys)
 		if err != nil {
-			// Try with a simpler approach - direct decryption without mixnet
-			log.Printf(Yellow + "Trying alternative decryption method..." + Reset)
-
-			// Try each key individually
-			var decrypted []byte
-			var decryptErr error
-			for _, key := range currentKeys {
-				decrypted, decryptErr = decryptMessage(m.Message.Data, key)
-				if decryptErr == nil {
-					// Successfully decrypted
-					break
-				}
-			}
-
-			if decryptErr != nil {
-				log.Printf(Red+"All decryption methods failed: %v - Skipping message"+Reset, err)
-				continue
-			}
-
-			// Try to decompress and unmarshal
-			decompressed, decompressErr := decompress(decrypted)
-			if decompressErr != nil {
-				// Try without decompression
-				decompressed = decrypted
-			}
-
-			// Try to unmarshal
-			var altMsg Message
-			unmarshalErr := json.Unmarshal(decompressed, &altMsg)
-			if unmarshalErr != nil {
-				log.Printf(Red+"Failed to unmarshal message: %v - Skipping message"+Reset, unmarshalErr)
-				continue
-			}
-
-			// Successfully recovered the message
-			msg = altMsg
-			log.Printf(Green + "Message recovered using alternative method" + Reset)
-		} else {
-			// Log successful message reception with normal method
-			log.Printf(Green+"Received message from %s"+Reset, msg.From.Username)
+			log.Printf(Red+"Deserialization error: %v"+Reset, err)
+			continue
 		}
 
 		// p2p log
