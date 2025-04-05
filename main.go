@@ -306,11 +306,15 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func publishToP2P(msg Message) {
-	serializedMsg, err := serializeMessage(msg, p2pKeys)
+	// Use our new simple serialization function
+	serializedMsg, err := SimpleSerializeMessage(msg, p2pKeys)
 	if err != nil {
 		log.Printf(Red+"Failed to serialize message for P2P: %v"+Reset, err)
 		return
 	}
+
+	// Log successful serialization
+	log.Printf(Green + "Message serialized successfully, sending to P2P network" + Reset)
 
 	err = p2pTopic.Publish(context.Background(), serializedMsg)
 	if err != nil {
@@ -942,8 +946,8 @@ func handleP2PMessages(ctx context.Context) {
 		// Log the message data size before deserialization
 		log.Printf("Received message data size: %d bytes", len(m.Message.Data))
 
-		// Try to deserialize the message
-		msg, err := deserializeMessage(m.Message.Data, p2pKeys)
+		// Try to deserialize the message using our new simple deserialization function
+		msg, err := SimpleDeserializeMessage(m.Message.Data, p2pKeys)
 		if err != nil {
 			log.Printf(Yellow+"Deserialization error: %v - Skipping message"+Reset, err)
 			continue
@@ -1208,8 +1212,8 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 		// Log the message data size before deserialization
 		log.Printf("Received message data size: %d bytes", len(m.Message.Data))
 
-		// Try to deserialize the message
-		msg, err := deserializeMessage(m.Message.Data, keys)
+		// Try to deserialize the message using our new simple deserialization function
+		msg, err := SimpleDeserializeMessage(m.Message.Data, keys)
 		if err != nil {
 			log.Printf(Yellow+"Deserialization error: %v - Skipping message"+Reset, err)
 			continue
