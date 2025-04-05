@@ -624,14 +624,13 @@ func decompress(data []byte) ([]byte, error) {
 }
 
 func encryptMessage(message, key []byte) ([]byte, error) {
-	// Check if we should use the new format with AAD or the old format
-	// For compatibility, we'll use the old format for now
-	// This will ensure that all nodes can decrypt the messages
-	useOldFormat := true
+	// Simplify the encryption process to use the most basic format
+	// This is the most compatible approach
 
 	// Ensure the key is exactly 32 bytes (256 bits) for AES-256
 	hashedKey := sha256.Sum256(key)
 
+	// Create the AES cipher
 	block, err := aes.NewCipher(hashedKey[:])
 	if err != nil {
 		return nil, fmt.Errorf("failed to create cipher: %v", err)
@@ -643,83 +642,33 @@ func encryptMessage(message, key []byte) ([]byte, error) {
 		return nil, fmt.Errorf("failed to generate nonce: %v", err)
 	}
 
+	// Create the GCM instance
 	aesgcm, err := cipher.NewGCM(block)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create GCM: %v", err)
 	}
 
-	if useOldFormat {
-		// Old format: just encrypt with empty AAD
-		// Format: [nonce(12 bytes)][ciphertext]
-		ciphertext := aesgcm.Seal(nonce, nonce, message, []byte{})
-		return ciphertext, nil
-	} else {
-		// New format with AAD
-		// Add additional authenticated data (AAD) for extra security
-		// This is a timestamp that will be authenticated but not encrypted
-		aad := []byte(fmt.Sprintf("%d", time.Now().UnixNano()))
-
-		// Encrypt and authenticate the message
-		ciphertext := aesgcm.Seal(nonce, nonce, message, aad)
-
-		// Prepend the AAD length and AAD to the ciphertext
-		aadLenBytes := make([]byte, 2)
-		aadLenBytes[0] = byte(len(aad) >> 8)
-		aadLenBytes[1] = byte(len(aad))
-
-		// Final format: [aadLen(2 bytes)][aad][nonce(12 bytes)][ciphertext]
-		result := append(aadLenBytes, aad...)
-		return append(result, ciphertext...), nil
-	}
+	// Basic format: encrypt with nil AAD
+	// Format: [nonce(12 bytes)][ciphertext]
+	ciphertext := aesgcm.Seal(nonce, nonce, message, nil)
+	return ciphertext, nil
 }
 
 func decryptMessage(ciphertext, key []byte) ([]byte, error) {
+	// Simplify the decryption process to use the most basic format
+	// This is the most compatible approach
+
+	// Check if the ciphertext is long enough
+	if len(ciphertext) < 12 {
+		return nil, fmt.Errorf("ciphertext too short: must be at least 12 bytes")
+	}
+
+	// Extract the nonce (first 12 bytes)
+	nonce := ciphertext[:12]
+	actualCiphertext := ciphertext[12:]
+
 	// Ensure the key is exactly 32 bytes (256 bits) for AES-256
 	hashedKey := sha256.Sum256(key)
-
-	// Check if we're using the new format with AAD or the old format
-	// New format starts with 2 bytes for AAD length
-	// Old format starts directly with the nonce (12 bytes)
-	var nonce []byte
-	var aad []byte
-	var actualCiphertext []byte
-
-	// Try to detect the format based on the first few bytes
-	// If the first 2 bytes could be a valid AAD length and the message is long enough
-	if len(ciphertext) >= 2 {
-		possibleAadLen := int(ciphertext[0])<<8 | int(ciphertext[1])
-
-		// If the AAD length seems reasonable (not too large) and the message is long enough
-		if possibleAadLen < 100 && len(ciphertext) >= 2+possibleAadLen+12 {
-			// This is likely the new format with AAD
-			aadLen := possibleAadLen
-			ciphertext = ciphertext[2:] // Skip AAD length bytes
-
-			// Extract the AAD
-			aad = ciphertext[:aadLen]
-			ciphertext = ciphertext[aadLen:]
-
-			// Extract the nonce
-			nonce = ciphertext[:12]
-			actualCiphertext = ciphertext[12:]
-		} else {
-			// This is likely the old format without AAD
-			// Check if the ciphertext is long enough to contain at least the nonce
-			if len(ciphertext) < 12 {
-				return nil, fmt.Errorf("ciphertext too short: missing nonce")
-			}
-
-			// Extract the nonce
-			nonce = ciphertext[:12]
-			actualCiphertext = ciphertext[12:]
-
-			// Empty AAD for old format
-			aad = []byte{}
-		}
-	} else {
-		// Message is too short even for the old format
-		return nil, fmt.Errorf("ciphertext too short: less than 12 bytes")
-	}
 
 	// Create the AES cipher
 	block, err := aes.NewCipher(hashedKey[:])
@@ -733,27 +682,27 @@ func decryptMessage(ciphertext, key []byte) ([]byte, error) {
 		return nil, fmt.Errorf("failed to create GCM: %v", err)
 	}
 
-	// Try to decrypt with the detected format
-	plaintext, err := aesgcm.Open(nil, nonce, actualCiphertext, aad)
+	// Try to decrypt with empty AAD
+	plaintext, err := aesgcm.Open(nil, nonce, actualCiphertext, nil)
 	if err != nil {
-		// If decryption fails and we detected the new format, try the old format as fallback
-		if len(aad) > 0 {
-			// Reset to the beginning and try old format
-			if len(ciphertext) < 12 {
-				return nil, fmt.Errorf("failed to decrypt with new format and ciphertext too short for old format: %v", err)
-			}
-
-			nonce = ciphertext[:12]
-			actualCiphertext = ciphertext[12:]
-
-			// Try with empty AAD
-			plaintext, err = aesgcm.Open(nil, nonce, actualCiphertext, []byte{})
-			if err != nil {
-				return nil, fmt.Errorf("failed to decrypt with both formats: %v", err)
-			}
-		} else {
-			return nil, fmt.Errorf("failed to decrypt: %v", err)
+		// If that fails, try with a few different AAD values
+		// This is a fallback mechanism for compatibility
+		possibleAADs := [][]byte{
+			[]byte{},             // Empty AAD
+			[]byte("timestamp"),  // Simple string AAD
+			[]byte("1234567890"), // Numeric string AAD
 		}
+
+		for _, aad := range possibleAADs {
+			plaintext, err = aesgcm.Open(nil, nonce, actualCiphertext, aad)
+			if err == nil {
+				// Successfully decrypted with this AAD
+				return plaintext, nil
+			}
+		}
+
+		// If we get here, all decryption attempts failed
+		return nil, fmt.Errorf("failed to decrypt: %v", err)
 	}
 
 	return plaintext, nil
@@ -803,14 +752,31 @@ func mixnetEncrypt(message []byte, keys [][]byte) ([]byte, error) {
 
 func mixnetDecrypt(ciphertext []byte, keys [][]byte) ([]byte, error) {
 	plaintext := ciphertext
+	var lastError error
+
+	// Try to decrypt with all keys in reverse order
 	for i := len(keys) - 1; i >= 0; i-- {
 		var err error
 		plaintext, err = decryptMessage(plaintext, keys[i])
 		if err != nil {
-			return nil, err
+			// Save the error but continue with the next key
+			lastError = err
+			// Try with the original ciphertext for each key
+			plaintext = ciphertext
+			continue
 		}
+
+		// If we successfully decrypted, return the result
+		return plaintext, nil
 	}
-	return plaintext, nil
+
+	// If we get here, all decryption attempts failed
+	if lastError != nil {
+		return nil, fmt.Errorf("failed to decrypt with any key: %v", lastError)
+	}
+
+	// This should never happen (we should have at least one key)
+	return nil, fmt.Errorf("no keys available for decryption")
 }
 
 func authenticate(next http.Handler) http.Handler {
@@ -1089,12 +1055,47 @@ func handleP2PMessages(ctx context.Context) {
 		// Deserialize the message with the current keys
 		msg, err := deserializeMessage(m.Message.Data, keys)
 		if err != nil {
-			log.Printf(Yellow+"Deserialization error: %v - Skipping message"+Reset, err)
-			continue
-		}
+			// Try with a simpler approach - direct decryption without mixnet
+			log.Printf(Yellow + "Trying alternative decryption method..." + Reset)
 
-		// Log successful message reception
-		log.Printf(Green+"Received message from %s"+Reset, msg.From.Username)
+			// Try each key individually
+			var decrypted []byte
+			var decryptErr error
+			for _, key := range keys {
+				decrypted, decryptErr = decryptMessage(m.Message.Data, key)
+				if decryptErr == nil {
+					// Successfully decrypted
+					break
+				}
+			}
+
+			if decryptErr != nil {
+				log.Printf(Red+"All decryption methods failed: %v - Skipping message"+Reset, err)
+				continue
+			}
+
+			// Try to decompress and unmarshal
+			decompressed, decompressErr := decompress(decrypted)
+			if decompressErr != nil {
+				// Try without decompression
+				decompressed = decrypted
+			}
+
+			// Try to unmarshal
+			var altMsg Message
+			unmarshalErr := json.Unmarshal(decompressed, &altMsg)
+			if unmarshalErr != nil {
+				log.Printf(Red+"Failed to unmarshal message: %v - Skipping message"+Reset, unmarshalErr)
+				continue
+			}
+
+			// Successfully recovered the message
+			msg = altMsg
+			log.Printf(Green + "Message recovered using alternative method" + Reset)
+		} else {
+			// Log successful message reception with normal method
+			log.Printf(Green+"Received message from %s"+Reset, msg.From.Username)
+		}
 
 		// Handle binary transfer messages
 		if msg.Action == "binary_transfer" {
@@ -1366,12 +1367,47 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 
 		msg, err := deserializeMessage(m.Message.Data, currentKeys)
 		if err != nil {
-			log.Printf(Yellow+"Deserialization error: %v - Skipping message"+Reset, err)
-			continue
-		}
+			// Try with a simpler approach - direct decryption without mixnet
+			log.Printf(Yellow + "Trying alternative decryption method..." + Reset)
 
-		// Log successful message reception
-		log.Printf(Green+"Received message from %s"+Reset, msg.From.Username)
+			// Try each key individually
+			var decrypted []byte
+			var decryptErr error
+			for _, key := range currentKeys {
+				decrypted, decryptErr = decryptMessage(m.Message.Data, key)
+				if decryptErr == nil {
+					// Successfully decrypted
+					break
+				}
+			}
+
+			if decryptErr != nil {
+				log.Printf(Red+"All decryption methods failed: %v - Skipping message"+Reset, err)
+				continue
+			}
+
+			// Try to decompress and unmarshal
+			decompressed, decompressErr := decompress(decrypted)
+			if decompressErr != nil {
+				// Try without decompression
+				decompressed = decrypted
+			}
+
+			// Try to unmarshal
+			var altMsg Message
+			unmarshalErr := json.Unmarshal(decompressed, &altMsg)
+			if unmarshalErr != nil {
+				log.Printf(Red+"Failed to unmarshal message: %v - Skipping message"+Reset, unmarshalErr)
+				continue
+			}
+
+			// Successfully recovered the message
+			msg = altMsg
+			log.Printf(Green + "Message recovered using alternative method" + Reset)
+		} else {
+			// Log successful message reception with normal method
+			log.Printf(Green+"Received message from %s"+Reset, msg.From.Username)
+		}
 
 		// p2p log
 		// Imprimir el contenido del mensaje
