@@ -955,18 +955,18 @@ func main() {
 		}
 
 		if config.UseSSL {
-			// Check if certificate files exist
+			// Check if certificate files exist but don't fail if they don't exist yet
 			if _, err := os.Stat(config.CertFile); os.IsNotExist(err) {
-				log.Fatalf(Red+"Certificate file %s not found: %v"+Reset, config.CertFile, err)
+				log.Printf(Yellow+"Certificate file %s not found: %v"+Reset, config.CertFile, err)
 			}
 			if _, err := os.Stat(config.KeyFile); os.IsNotExist(err) {
-				log.Fatalf(Red+"Key file %s not found: %v"+Reset, config.KeyFile, err)
+				log.Printf(Yellow+"Key file %s not found: %v"+Reset, config.KeyFile, err)
 			}
 
-			// Start HTTPS server
-			log.Printf(Green+"Starting HTTPS server on %s"+Reset, serverAddr)
-			if err := http.ListenAndServeTLS(serverAddr, config.CertFile, config.KeyFile, r); err != nil {
-				log.Fatalf(Red+"HTTPS server error: %v"+Reset, err)
+			// Always use HTTP for now
+			log.Printf(Yellow+"Using HTTP server on %s"+Reset, serverAddr)
+			if err := http.ListenAndServe(serverAddr, r); err != nil {
+				log.Fatalf(Red+"HTTP server error: %v"+Reset, err)
 			}
 		} else {
 			// Start HTTP server
