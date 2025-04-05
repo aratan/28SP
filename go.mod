@@ -12,7 +12,7 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 )
 
-require github.com/wlynxg/anet v0.0.3 // indirect
+//-require github.com/wlynxg/anet v0.0.3 // indirect
 
 require (
 	github.com/benbjohnson/clock v1.3.5 // indirect
