@@ -465,92 +465,18 @@ func anonymizeMessage(msg Message) Message {
 	return anonymized
 }
 
-// SecureSerializeMessage serializa y cifra un mensaje con múltiples capas
-func SecureSerializeMessage(msg Message, keys [][]byte) ([]byte, error) {
-	// Ocultar información sensible antes de serializar
-	msg = anonymizeMessage(msg)
-
-	// Serializar el mensaje a JSON
-	msgBytes, err := json.Marshal(msg)
-	if err != nil {
-		return nil, fmt.Errorf("error al serializar: %v", err)
-	}
-
-	// Si no hay claves, usar cifrado base64 simple
-	if len(keys) == 0 {
-		encoded := make([]byte, base64.StdEncoding.EncodedLen(len(msgBytes)))
-		base64.StdEncoding.Encode(encoded, msgBytes)
-		return encoded, nil
-	}
-
-	// Aplicar múltiples capas de cifrado (onion routing)
-	ciphertext := msgBytes
-	for _, key := range keys {
-		ciphertext, err = SecureEncrypt(ciphertext, key)
-		if err != nil {
-			return nil, fmt.Errorf("error en capa de cifrado: %v", err)
-		}
-	}
-
-	return ciphertext, nil
+// SecureSerializeMessageImpl serializa y cifra un mensaje con múltiples capas
+// Esta función es una implementación interna y no debe ser llamada directamente
+func SecureSerializeMessageImpl(msg Message, keys [][]byte) ([]byte, error) {
+	// Usar la función exportada en security_functions.go
+	return SecureSerializeMessage(msg, keys)
 }
 
-// SecureDeserializeMessage descifra y deserializa un mensaje
-func SecureDeserializeMessage(data []byte, keys [][]byte) (Message, error) {
-	// Si no hay claves, intentar decodificar base64
-	if len(keys) == 0 {
-		decoded := make([]byte, base64.StdEncoding.DecodedLen(len(data)))
-		n, err := base64.StdEncoding.Decode(decoded, data)
-		if err == nil {
-			var msg Message
-			if json.Unmarshal(decoded[:n], &msg) == nil {
-				return msg, nil
-			}
-		}
-		// Si falla, intentar deserializar directamente
-		var msg Message
-		if err := json.Unmarshal(data, &msg); err == nil {
-			return msg, nil
-		}
-		return Message{}, fmt.Errorf("no se pudo deserializar el mensaje")
-	}
-
-	// Aplicar múltiples capas de descifrado en orden inverso
-	plaintext := data
-	var lastErr error
-
-	// Intentar descifrar con todas las combinaciones posibles de claves
-	// Esto es importante para la resistencia a la censura y el anonimato
-	for i := len(keys) - 1; i >= 0; i-- {
-		decrypted, err := SecureDecrypt(plaintext, keys[i])
-		if err != nil {
-			lastErr = err
-			continue
-		}
-
-		// Intentar deserializar
-		var msg Message
-		if err := json.Unmarshal(decrypted, &msg); err == nil {
-			log.Printf(Green + "Mensaje descifrado exitosamente" + Reset)
-			return msg, nil
-		}
-
-		// Si no se pudo deserializar, podría ser que necesita más capas de descifrado
-		plaintext = decrypted
-	}
-
-	// Si llegamos aquí, intentar deserializar el último plaintext
-	var msg Message
-	if err := json.Unmarshal(plaintext, &msg); err == nil {
-		return msg, nil
-	}
-
-	// Último recurso: intentar deserializar directamente
-	if err := json.Unmarshal(data, &msg); err == nil {
-		return msg, nil
-	}
-
-	return Message{}, fmt.Errorf("no se pudo descifrar o deserializar: %v", lastErr)
+// SecureDeserializeMessageImpl descifra y deserializa un mensaje
+// Esta función es una implementación interna y no debe ser llamada directamente
+func SecureDeserializeMessageImpl(data []byte, keys [][]byte) (Message, error) {
+	// Usar la función exportada en security_functions.go
+	return SecureDeserializeMessage(data, keys)
 }
 
 func publishToP2P(msg Message) {
@@ -570,10 +496,10 @@ func publishToP2P(msg Message) {
 	}
 
 	// Aplicar opciones de seguridad al mensaje
-	secureMessage(&msg, securityConfig)
+	SecureMessage(&msg, securityConfig)
 
 	// Usar el cifrado seguro para serializar el mensaje
-	serializedMsg, err := secureSerializeMessage(msg, p2pKeys)
+	serializedMsg, err := SecureSerializeMessage(msg, p2pKeys)
 	if err != nil {
 		log.Printf(Red+"Failed to serialize message for P2P: %v"+Reset, err)
 		return
@@ -1356,7 +1282,7 @@ func handleP2PMessages(ctx context.Context) {
 		log.Printf("Received message data size: %d bytes", len(m.Message.Data))
 
 		// Usar el deserializador seguro que intenta varios métodos
-		msg, err := secureDeserializeMessage(m.Message.Data, p2pKeys)
+		msg, err := SecureDeserializeMessage(m.Message.Data, p2pKeys)
 		if err != nil {
 			log.Printf(Yellow+"Deserialization error: %v - Skipping message"+Reset, err)
 			continue
@@ -1637,7 +1563,7 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 		log.Printf("Received message data size: %d bytes", len(m.Message.Data))
 
 		// Usar el deserializador seguro que intenta varios métodos
-		msg, err := secureDeserializeMessage(m.Message.Data, keys)
+		msg, err := SecureDeserializeMessage(m.Message.Data, keys)
 		if err != nil {
 			log.Printf(Yellow+"Deserialization error: %v - Skipping message"+Reset, err)
 			continue
