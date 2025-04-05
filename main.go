@@ -1377,9 +1377,6 @@ func main() {
 	// Inicializar la configuración de seguridad
 	initSecurityConfig()
 
-	// Inicializar la protección contra inundación
-	startFloodProtection()
-
 	config, err := readConfig()
 	if err != nil {
 		log.Fatalf(Red+"Failed to read config: %v"+Reset, err)
@@ -1406,122 +1403,6 @@ func main() {
 	// Add new routes for binary transfer
 	api.HandleFunc("/sendBinary", sendBinaryHandler).Methods("POST")
 	api.HandleFunc("/receiveBinary", receiveBinaryHandler).Methods("POST")
-
-	// Add routes for rate limiter configuration
-	api.HandleFunc("/rate_limiter/settings", func(w http.ResponseWriter, r *http.Request) {
-		// Verificar el token JWT
-		if !verifyJWT(r) {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			return
-		}
-
-		// Obtener la configuración actual
-		settings := struct {
-			MaxMessagesPerMinute int `json:"maxMessagesPerMinute"`
-			DuplicateTTL         int `json:"duplicateTTL"`
-			MinReputationScore   int `json:"minReputationScore"`
-		}{
-			MaxMessagesPerMinute: maxMsgsPerMinute,
-			DuplicateTTL:         30,  // 30 minutos por defecto
-			MinReputationScore:   -10, // -10 por defecto
-		}
-
-		// Devolver la configuración como JSON
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(settings)
-	}).Methods("GET")
-
-	api.HandleFunc("/rate_limiter/settings", func(w http.ResponseWriter, r *http.Request) {
-		// Verificar el token JWT
-		if !verifyJWT(r) {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			return
-		}
-
-		// Decodificar la configuración del cuerpo de la solicitud
-		var settings struct {
-			MaxMessagesPerMinute int `json:"maxMessagesPerMinute"`
-			DuplicateTTL         int `json:"duplicateTTL"`
-			MinReputationScore   int `json:"minReputationScore"`
-		}
-
-		err := json.NewDecoder(r.Body).Decode(&settings)
-		if err != nil {
-			http.Error(w, "Invalid request body", http.StatusBadRequest)
-			return
-		}
-
-		// Validar la configuración
-		if settings.MaxMessagesPerMinute < 1 || settings.MaxMessagesPerMinute > 100 {
-			http.Error(w, "MaxMessagesPerMinute must be between 1 and 100", http.StatusBadRequest)
-			return
-		}
-		if settings.DuplicateTTL < 1 || settings.DuplicateTTL > 1440 {
-			http.Error(w, "DuplicateTTL must be between 1 and 1440 minutes", http.StatusBadRequest)
-			return
-		}
-		if settings.MinReputationScore < -100 || settings.MinReputationScore > 0 {
-			http.Error(w, "MinReputationScore must be between -100 and 0", http.StatusBadRequest)
-			return
-		}
-
-		// Actualizar la configuración
-		floodMutex.Lock()
-		// Actualizar la configuración global
-		maxMsgsPerMinute = settings.MaxMessagesPerMinute
-		log.Printf("Configuración actualizada: MaxMessagesPerMinute=%d, DuplicateTTL=%d, MinReputationScore=%d",
-			settings.MaxMessagesPerMinute, settings.DuplicateTTL, settings.MinReputationScore)
-		floodMutex.Unlock()
-
-		// Devolver respuesta exitosa
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"success": true}`))
-	}).Methods("POST")
-
-	api.HandleFunc("/rate_limiter/stats", func(w http.ResponseWriter, r *http.Request) {
-		// Verificar el token JWT
-		if !verifyJWT(r) {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			return
-		}
-
-		// Obtener estadísticas de usuarios
-		floodMutex.RLock()
-		defer floodMutex.RUnlock()
-
-		var stats []struct {
-			UserID       string `json:"userID"`
-			MessageCount int    `json:"messageCount"`
-			Reputation   int    `json:"reputation"`
-		}
-
-		// Contar mensajes recientes por usuario
-		for userID, times := range userMessageTimes {
-			// Contar mensajes del último minuto
-			var recentCount int
-			oneMinuteAgo := time.Now().Add(-1 * time.Minute)
-
-			for _, t := range times {
-				if t.After(oneMinuteAgo) {
-					recentCount++
-				}
-			}
-
-			stats = append(stats, struct {
-				UserID       string `json:"userID"`
-				MessageCount int    `json:"messageCount"`
-				Reputation   int    `json:"reputation"`
-			}{
-				UserID:       userID,
-				MessageCount: recentCount,
-				Reputation:   0, // No tenemos reputación en esta implementación simplificada
-			})
-		}
-
-		// Devolver estadísticas como JSON
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(stats)
-	}).Methods("GET")
 	//http://localhost:8080/api/generateToken?username=victor/
 
 	// Middleware CORS
@@ -1618,18 +1499,6 @@ func handleP2PMessages(ctx context.Context) {
 		msg, err := SecureDeserializeMessageFix(m.Message.Data, p2pKeys)
 		if err != nil {
 			log.Printf(Yellow+"Deserialization error: %v - Skipping message"+Reset, err)
-			continue
-		}
-
-		// Verificar si el mensaje es un duplicado (control de inundación simple)
-		userID := msg.From.Username
-		if userID == "" {
-			userID = msg.From.PeerID
-		}
-
-		// Verificar si el mensaje debe ser permitido
-		if !shouldAllowMessage(userID, msg.ID) {
-			log.Printf("Mensaje bloqueado por control de inundación: %s de %s", msg.ID, userID)
 			continue
 		}
 
