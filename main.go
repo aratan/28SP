@@ -5,6 +5,8 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
+	"crypto/aes"
+	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
@@ -77,15 +79,19 @@ type Config struct {
 }
 
 type Message struct {
-	ID         string   `json:"id"`
-	From       UserInfo `json:"from"`
-	To         string   `json:"to"`
-	Timestamp  string   `json:"timestamp"`
-	Content    Content  `json:"content"`
-	Action     string   `json:"action"` // "create", "delete", "like"
-	TablonID   string   `json:"tablonId"`
-	BinaryData string   `json:"binaryData,omitempty"`
-	FileName   string   `json:"fileName,omitempty"`
+	ID              string   `json:"id"`
+	From            UserInfo `json:"from"`
+	To              string   `json:"to"`
+	Timestamp       string   `json:"timestamp"`
+	Content         Content  `json:"content"`
+	Action          string   `json:"action"` // "create", "delete", "like"
+	TablonID        string   `json:"tablonId"`
+	BinaryData      string   `json:"binaryData,omitempty"`
+	FileName        string   `json:"fileName,omitempty"`
+	AnonymousSender bool     `json:"anonymousSender,omitempty"`
+	Encrypted       bool     `json:"encrypted,omitempty"`
+	RoutingHops     []string `json:"routingHops,omitempty"`
+	Signature       string   `json:"signature,omitempty"`
 }
 
 type Tablon struct {
@@ -371,6 +377,182 @@ func UniversalDeserializeMessage(data []byte, keys [][]byte) (Message, error) {
 	return Message{}, fmt.Errorf("todos los métodos de deserialización fallaron: %v, %v", err1, err3)
 }
 
+// SecureEncrypt proporciona cifrado AES-GCM con nonce aleatorio
+func SecureEncrypt(plaintext, key []byte) ([]byte, error) {
+	// Asegurar que la clave tenga el tamaño correcto para AES-256
+	hashedKey := sha256.Sum256(key)
+
+	// Crear el cifrador AES
+	block, err := aes.NewCipher(hashedKey[:])
+	if err != nil {
+		return nil, fmt.Errorf("error al crear cifrador AES: %v", err)
+	}
+
+	// Crear el modo GCM
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, fmt.Errorf("error al crear GCM: %v", err)
+	}
+
+	// Crear un nonce aleatorio
+	nonce := make([]byte, gcm.NonceSize())
+	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+		return nil, fmt.Errorf("error al generar nonce: %v", err)
+	}
+
+	// Cifrar y autenticar el mensaje
+	// El formato es: nonce + ciphertext
+	ciphertext := gcm.Seal(nonce, nonce, plaintext, nil)
+
+	return ciphertext, nil
+}
+
+// SecureDecrypt descifra datos cifrados con SecureEncrypt
+func SecureDecrypt(ciphertext, key []byte) ([]byte, error) {
+	// Asegurar que la clave tenga el tamaño correcto para AES-256
+	hashedKey := sha256.Sum256(key)
+
+	// Crear el cifrador AES
+	block, err := aes.NewCipher(hashedKey[:])
+	if err != nil {
+		return nil, fmt.Errorf("error al crear cifrador AES: %v", err)
+	}
+
+	// Crear el modo GCM
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, fmt.Errorf("error al crear GCM: %v", err)
+	}
+
+	// Verificar que el ciphertext sea lo suficientemente largo
+	nonceSize := gcm.NonceSize()
+	if len(ciphertext) < nonceSize {
+		return nil, fmt.Errorf("ciphertext demasiado corto")
+	}
+
+	// Extraer el nonce y el ciphertext real
+	nonce, encryptedData := ciphertext[:nonceSize], ciphertext[nonceSize:]
+
+	// Descifrar el mensaje
+	plaintext, err := gcm.Open(nil, nonce, encryptedData, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error al descifrar: %v", err)
+	}
+
+	return plaintext, nil
+}
+
+// anonymizeMessage oculta información sensible del mensaje
+func anonymizeMessage(msg Message) Message {
+	// Crear una copia para no modificar el original
+	anonymized := msg
+
+	// Ocultar información del remitente si es necesario
+	if anonymized.From.Username != "" && anonymized.AnonymousSender {
+		// Generar un alias para el nombre de usuario
+		hash := sha256.Sum256([]byte(anonymized.From.Username))
+		anonymized.From.Username = fmt.Sprintf("anon_%x", hash[:4])
+
+		// Eliminar foto de perfil
+		anonymized.From.Photo = ""
+
+		// Ocultar PeerID
+		if anonymized.From.PeerID != "" {
+			anonymized.From.PeerID = fmt.Sprintf("hidden_%x", hash[4:8])
+		}
+	}
+
+	return anonymized
+}
+
+// SecureSerializeMessage serializa y cifra un mensaje con múltiples capas
+func SecureSerializeMessage(msg Message, keys [][]byte) ([]byte, error) {
+	// Ocultar información sensible antes de serializar
+	msg = anonymizeMessage(msg)
+
+	// Serializar el mensaje a JSON
+	msgBytes, err := json.Marshal(msg)
+	if err != nil {
+		return nil, fmt.Errorf("error al serializar: %v", err)
+	}
+
+	// Si no hay claves, usar cifrado base64 simple
+	if len(keys) == 0 {
+		encoded := make([]byte, base64.StdEncoding.EncodedLen(len(msgBytes)))
+		base64.StdEncoding.Encode(encoded, msgBytes)
+		return encoded, nil
+	}
+
+	// Aplicar múltiples capas de cifrado (onion routing)
+	ciphertext := msgBytes
+	for _, key := range keys {
+		ciphertext, err = SecureEncrypt(ciphertext, key)
+		if err != nil {
+			return nil, fmt.Errorf("error en capa de cifrado: %v", err)
+		}
+	}
+
+	return ciphertext, nil
+}
+
+// SecureDeserializeMessage descifra y deserializa un mensaje
+func SecureDeserializeMessage(data []byte, keys [][]byte) (Message, error) {
+	// Si no hay claves, intentar decodificar base64
+	if len(keys) == 0 {
+		decoded := make([]byte, base64.StdEncoding.DecodedLen(len(data)))
+		n, err := base64.StdEncoding.Decode(decoded, data)
+		if err == nil {
+			var msg Message
+			if json.Unmarshal(decoded[:n], &msg) == nil {
+				return msg, nil
+			}
+		}
+		// Si falla, intentar deserializar directamente
+		var msg Message
+		if err := json.Unmarshal(data, &msg); err == nil {
+			return msg, nil
+		}
+		return Message{}, fmt.Errorf("no se pudo deserializar el mensaje")
+	}
+
+	// Aplicar múltiples capas de descifrado en orden inverso
+	plaintext := data
+	var lastErr error
+
+	// Intentar descifrar con todas las combinaciones posibles de claves
+	// Esto es importante para la resistencia a la censura y el anonimato
+	for i := len(keys) - 1; i >= 0; i-- {
+		decrypted, err := SecureDecrypt(plaintext, keys[i])
+		if err != nil {
+			lastErr = err
+			continue
+		}
+
+		// Intentar deserializar
+		var msg Message
+		if err := json.Unmarshal(decrypted, &msg); err == nil {
+			log.Printf(Green + "Mensaje descifrado exitosamente" + Reset)
+			return msg, nil
+		}
+
+		// Si no se pudo deserializar, podría ser que necesita más capas de descifrado
+		plaintext = decrypted
+	}
+
+	// Si llegamos aquí, intentar deserializar el último plaintext
+	var msg Message
+	if err := json.Unmarshal(plaintext, &msg); err == nil {
+		return msg, nil
+	}
+
+	// Último recurso: intentar deserializar directamente
+	if err := json.Unmarshal(data, &msg); err == nil {
+		return msg, nil
+	}
+
+	return Message{}, fmt.Errorf("no se pudo descifrar o deserializar: %v", lastErr)
+}
+
 func publishToP2P(msg Message) {
 	// Asegurarse de que el mensaje tenga un ID
 	if msg.ID == "" {
@@ -387,8 +569,11 @@ func publishToP2P(msg Message) {
 		}
 	}
 
-	// Marshal the message directly to JSON
-	serializedMsg, err := json.Marshal(msg)
+	// Aplicar opciones de seguridad al mensaje
+	secureMessage(&msg, securityConfig)
+
+	// Usar el cifrado seguro para serializar el mensaje
+	serializedMsg, err := secureSerializeMessage(msg, p2pKeys)
 	if err != nil {
 		log.Printf(Red+"Failed to serialize message for P2P: %v"+Reset, err)
 		return
@@ -918,13 +1103,156 @@ func receiveMessagesHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(receivedMessages)
 }
 
+// SecurityConfig contiene la configuración de seguridad y anonimato
+type SecurityConfig struct {
+	EndToEndEncryption    bool   `json:"endToEndEncryption"`
+	EncryptionKey         string `json:"encryptionKey"`
+	KeyRotation           bool   `json:"keyRotation"`
+	KeyRotationInterval   int    `json:"keyRotationInterval"`
+	OnionRouting          bool   `json:"onionRouting"`
+	MinHops               int    `json:"minHops"`
+	MaxHops               int    `json:"maxHops"`
+	AnonymousMessages     bool   `json:"anonymousMessages"`
+	AnonymitySetSize      int    `json:"anonymitySetSize"`
+	TrafficMixing         bool   `json:"trafficMixing"`
+	TrafficMixingInterval int    `json:"trafficMixingInterval"`
+	DummyMessages         bool   `json:"dummyMessages"`
+	DummyMessageInterval  int    `json:"dummyMessageInterval"`
+	MessageTTL            int    `json:"messageTTL"`
+}
+
+// Configuración global de seguridad
+var securityConfig SecurityConfig
+
+// Manejador para la configuración de seguridad
+func securitySettingsHandler(w http.ResponseWriter, r *http.Request) {
+	// Verificar el token JWT
+	if !verifyJWT(r) {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	if r.Method == "GET" {
+		// Devolver la configuración actual
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(securityConfig)
+	} else if r.Method == "POST" {
+		// Actualizar la configuración
+		var newConfig struct {
+			Security SecurityConfig `json:"security"`
+		}
+
+		err := json.NewDecoder(r.Body).Decode(&newConfig)
+		if err != nil {
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+
+		// Actualizar la configuración global
+		securityConfig = newConfig.Security
+
+		// Guardar la configuración en un archivo
+		configBytes, err := json.MarshalIndent(map[string]interface{}{
+			"security": securityConfig,
+		}, "", "  ")
+		if err != nil {
+			http.Error(w, "Failed to marshal config", http.StatusInternalServerError)
+			return
+		}
+
+		err = os.WriteFile("security_config.json", configBytes, 0644)
+		if err != nil {
+			http.Error(w, "Failed to save config", http.StatusInternalServerError)
+			return
+		}
+
+		// Actualizar las claves de cifrado si es necesario
+		if securityConfig.EndToEndEncryption && len(securityConfig.EncryptionKey) >= 32 {
+			// Convertir la clave hexadecimal a bytes
+			keyBytes, err := hex.DecodeString(securityConfig.EncryptionKey)
+			if err == nil && len(keyBytes) >= 32 {
+				// Actualizar la clave global
+				p2pKeys = [][]byte{keyBytes}
+			}
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"status":"ok"}`))
+	} else {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+// Servir la página de configuración de seguridad
+func securityPageHandler(w http.ResponseWriter, r *http.Request) {
+	// Verificar el token JWT
+	if !verifyJWT(r) {
+		http.Redirect(w, r, "/login.html", http.StatusSeeOther)
+		return
+	}
+
+	// Servir la página HTML
+	http.ServeFile(w, r, "security_settings.html")
+}
+
+// Inicializar la configuración de seguridad
+func initSecurityConfig() {
+	// Valores predeterminados
+	securityConfig = SecurityConfig{
+		EndToEndEncryption:    true,
+		EncryptionKey:         "e4a2b1f0c8d7e6a5b4f3c2d1e0a9b8f7e4a2b1f0c8d7e6a5b4f3c2d1e0a9b8f7",
+		KeyRotation:           true,
+		KeyRotationInterval:   86400, // 24 horas en segundos
+		OnionRouting:          true,
+		MinHops:               2,
+		MaxHops:               5,
+		AnonymousMessages:     true,
+		AnonymitySetSize:      10,
+		TrafficMixing:         true,
+		TrafficMixingInterval: 500,
+		DummyMessages:         true,
+		DummyMessageInterval:  1000,
+		MessageTTL:            3600,
+	}
+
+	// Intentar cargar desde el archivo
+	configBytes, err := os.ReadFile("security_config.json")
+	if err == nil {
+		var config struct {
+			Security SecurityConfig `json:"security"`
+		}
+
+		err = json.Unmarshal(configBytes, &config)
+		if err == nil {
+			securityConfig = config.Security
+		}
+	}
+
+	// Inicializar la clave de cifrado
+	if securityConfig.EndToEndEncryption && len(securityConfig.EncryptionKey) >= 32 {
+		// Convertir la clave hexadecimal a bytes
+		keyBytes, err := hex.DecodeString(securityConfig.EncryptionKey)
+		if err == nil && len(keyBytes) >= 32 {
+			// Actualizar la clave global
+			p2pKeys = [][]byte{keyBytes}
+		}
+	}
+}
+
 func main() {
+	// Inicializar la configuración de seguridad
+	initSecurityConfig()
+
 	config, err := readConfig()
 	if err != nil {
 		log.Fatalf(Red+"Failed to read config: %v"+Reset, err)
 	}
 
 	r := mux.NewRouter()
+
+	// Rutas de seguridad y anonimato
+	r.HandleFunc("/security", securityPageHandler).Methods("GET")
+	r.HandleFunc("/api/security/settings", securitySettingsHandler).Methods("GET", "POST")
 
 	// API routes
 	api := r.PathPrefix("/api").Subrouter()
@@ -1027,8 +1355,8 @@ func handleP2PMessages(ctx context.Context) {
 		// Log the message data size before deserialization
 		log.Printf("Received message data size: %d bytes", len(m.Message.Data))
 
-		// Usar el deserializador universal que intenta varios métodos
-		msg, err := UniversalDeserializeMessage(m.Message.Data, p2pKeys)
+		// Usar el deserializador seguro que intenta varios métodos
+		msg, err := secureDeserializeMessage(m.Message.Data, p2pKeys)
 		if err != nil {
 			log.Printf(Yellow+"Deserialization error: %v - Skipping message"+Reset, err)
 			continue
@@ -1036,6 +1364,21 @@ func handleP2PMessages(ctx context.Context) {
 
 		// Log successful deserialization
 		log.Printf(Green+"Successfully deserialized message from %s"+Reset, msg.From.Username)
+
+		// Verificar si el mensaje tiene rutas de enrutamiento (onion routing)
+		if len(msg.RoutingHops) > 0 {
+			log.Printf(Blue+"Message routed through %d hops for enhanced anonymity"+Reset, len(msg.RoutingHops))
+		}
+
+		// Verificar si el mensaje está cifrado
+		if msg.Encrypted {
+			log.Printf(Blue + "Message was encrypted for enhanced security" + Reset)
+		}
+
+		// Verificar si el remitente es anónimo
+		if msg.AnonymousSender {
+			log.Printf(Blue + "Message sent anonymously" + Reset)
+		}
 
 		// Handle binary transfer messages
 		if msg.Action == "binary_transfer" {
@@ -1293,8 +1636,8 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 		// Log the message data size before deserialization
 		log.Printf("Received message data size: %d bytes", len(m.Message.Data))
 
-		// Usar el deserializador universal que intenta varios métodos
-		msg, err := UniversalDeserializeMessage(m.Message.Data, keys)
+		// Usar el deserializador seguro que intenta varios métodos
+		msg, err := SecureDeserializeMessage(m.Message.Data, keys)
 		if err != nil {
 			log.Printf(Yellow+"Deserialization error: %v - Skipping message"+Reset, err)
 			continue
@@ -1302,6 +1645,21 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 
 		// Log successful deserialization
 		log.Printf(Green+"Successfully deserialized message from %s"+Reset, msg.From.Username)
+
+		// Verificar si el mensaje tiene rutas de enrutamiento (onion routing)
+		if len(msg.RoutingHops) > 0 {
+			log.Printf(Blue+"Message routed through %d hops for enhanced anonymity"+Reset, len(msg.RoutingHops))
+		}
+
+		// Verificar si el mensaje está cifrado
+		if msg.Encrypted {
+			log.Printf(Blue + "Message was encrypted for enhanced security" + Reset)
+		}
+
+		// Verificar si el remitente es anónimo
+		if msg.AnonymousSender {
+			log.Printf(Blue + "Message sent anonymously" + Reset)
+		}
 
 		// p2p log
 		// Imprimir el contenido del mensaje

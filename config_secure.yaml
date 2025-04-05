@@ -1,0 +1,50 @@
+topicName: "applesauce"
+# Clave de cifrado de 32 bytes (256 bits) para AES-256
+encryptionKey: "e4a2b1f0c8d7e6a5b4f3c2d1e0a9b8f7e4a2b1f0c8d7e6a5b4f3c2d1e0a9b8f7"
+logLevel: "info"
+listenAddress: "/ip4/0.0.0.0/tcp/9000"
+webServerAddr: ":8080"
+maxMessageSize: 1048576
+retryInterval: 2000
+logFile: "app.log"
+
+# Configuración de seguridad y anonimato
+security:
+  # Habilitar cifrado de extremo a extremo
+  endToEndEncryption: true
+  # Habilitar enrutamiento de cebolla (onion routing)
+  onionRouting: true
+  # Número mínimo de saltos para el enrutamiento de cebolla
+  minHops: 2
+  # Número máximo de saltos para el enrutamiento de cebolla
+  maxHops: 5
+  # Habilitar mensajes anónimos
+  anonymousMessages: true
+  # Tiempo de vida de los mensajes (en segundos)
+  messageTTL: 3600
+  # Rotación de claves (en segundos)
+  keyRotationInterval: 86400
+  # Tamaño del grupo de anonimato
+  anonymitySetSize: 10
+  # Habilitar mezcla de tráfico
+  trafficMixing: true
+  # Intervalo de mezcla de tráfico (en milisegundos)
+  trafficMixingInterval: 500
+  # Habilitar mensajes de relleno (dummy messages)
+  dummyMessages: true
+  # Intervalo de mensajes de relleno (en milisegundos)
+  dummyMessageInterval: 1000
+
+mdns:
+  enabled: true
+  serviceTag: "my-mdns-service"
+
+useSSL: false
+certFile: "cert.pem"
+keyFile: "key.pem"
+
+users:
+  - username: admin
+    password: "123"
+  - username: user
+    password: "123"

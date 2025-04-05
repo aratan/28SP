@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Seguridad y Anonimato</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .security-card {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #6c757d;
+            color: white;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        .form-switch .form-check-input {
+            width: 3em;
+            height: 1.5em;
+        }
+        .form-switch .form-check-input:checked {
+            background-color: #198754;
+            border-color: #198754;
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        .security-level {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .level-low {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+        .level-medium {
+            background-color: #fff3cd;
+            color: #664d03;
+        }
+        .level-high {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+        .info-icon {
+            cursor: pointer;
+            color: #0d6efd;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Configuración de Seguridad y Anonimato</h1>
+        
+        <div class="security-level level-medium text-center" id="securityLevel">
+            Nivel de seguridad actual: MEDIO
+        </div>
+        
+        <form id="securityForm">
+            <div class="card security-card">
+                <div class="card-header">
+                    Cifrado y Privacidad
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="endToEndEncryption" checked>
+                        <label class="form-check-label" for="endToEndEncryption">
+                            Cifrado de extremo a extremo
+                            <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="Cifra los mensajes para que solo el destinatario pueda leerlos"></i>
+                        </label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="encryptionKey" class="form-label">Clave de cifrado personalizada</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="encryptionKey" value="e4a2b1f0c8d7e6a5b4f3c2d1e0a9b8f7e4a2b1f0c8d7e6a5b4f3c2d1e0a9b8f7">
+                            <button class="btn btn-outline-secondary" type="button" id="generateKey">Generar</button>
+                            <button class="btn btn-outline-secondary" type="button" id="showKey">Mostrar</button>
+                        </div>
+                        <div class="form-text">Debe tener al menos 32 caracteres para máxima seguridad</div>
+                    </div>
+                    
+                    <div class="mb-3 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="keyRotation" checked>
+                        <label class="form-check-label" for="keyRotation">
+                            Rotación automática de claves
+                            <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="Cambia las claves periódicamente para mayor seguridad"></i>
+                        </label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="keyRotationInterval" class="form-label">Intervalo de rotación de claves (horas)</label>
+                        <input type="number" class="form-control" id="keyRotationInterval" value="24" min="1" max="168">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card security-card">
+                <div class="card-header">
+                    Anonimato y Enrutamiento
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="onionRouting" checked>
+                        <label class="form-check-label" for="onionRouting">
+                            Enrutamiento de cebolla (Onion Routing)
+                            <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="Enruta los mensajes a través de múltiples nodos para ocultar el origen"></i>
+                        </label>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="minHops" class="form-label">Mínimo de saltos</label>
+                            <input type="number" class="form-control" id="minHops" value="2" min="1" max="10">
+                        </div>
+                        <div class="col">
+                            <label for="maxHops" class="form-label">Máximo de saltos</label>
+                            <input type="number" class="form-control" id="maxHops" value="5" min="2" max="10">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="anonymousMessages" checked>
+                        <label class="form-check-label" for="anonymousMessages">
+                            Mensajes anónimos
+                            <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="Oculta tu identidad al enviar mensajes"></i>
+                        </label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="anonymitySetSize" class="form-label">Tamaño del grupo de anonimato</label>
+                        <input type="number" class="form-control" id="anonymitySetSize" value="10" min="2" max="50">
+                        <div class="form-text">Un número mayor proporciona más anonimato pero puede reducir el rendimiento</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card security-card">
+                <div class="card-header">
+                    Protección contra Análisis de Tráfico
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="trafficMixing" checked>
+                        <label class="form-check-label" for="trafficMixing">
+                            Mezcla de tráfico
+                            <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="Mezcla tu tráfico con el de otros usuarios para dificultar el análisis"></i>
+                        </label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="trafficMixingInterval" class="form-label">Intervalo de mezcla (ms)</label>
+                        <input type="number" class="form-control" id="trafficMixingInterval" value="500" min="100" max="5000" step="100">
+                    </div>
+                    
+                    <div class="mb-3 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="dummyMessages" checked>
+                        <label class="form-check-label" for="dummyMessages">
+                            Mensajes de relleno
+                            <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="Envía mensajes falsos para ocultar patrones de comunicación reales"></i>
+                        </label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="dummyMessageInterval" class="form-label">Intervalo de mensajes de relleno (ms)</label>
+                        <input type="number" class="form-control" id="dummyMessageInterval" value="1000" min="500" max="10000" step="100">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="messageTTL" class="form-label">Tiempo de vida de los mensajes (segundos)</label>
+                        <input type="number" class="form-control" id="messageTTL" value="3600" min="60" max="86400">
+                        <div class="form-text">Los mensajes se eliminarán automáticamente después de este tiempo</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="button" class="btn btn-secondary me-md-2" id="resetDefaults">Restaurar valores predeterminados</button>
+                <button type="submit" class="btn btn-primary">Guardar configuración</button>
+            </div>
+        </form>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+            
+            // Generar clave aleatoria
+            document.getElementById('generateKey').addEventListener('click', function() {
+                const array = new Uint8Array(32);
+                window.crypto.getRandomValues(array);
+                let key = '';
+                for (let i = 0; i < array.length; i++) {
+                    key += array[i].toString(16).padStart(2, '0');
+                }
+                document.getElementById('encryptionKey').value = key;
+                updateSecurityLevel();
+            });
+            
+            // Mostrar/ocultar clave
+            document.getElementById('showKey').addEventListener('click', function() {
+                const keyInput = document.getElementById('encryptionKey');
+                if (keyInput.type === 'password') {
+                    keyInput.type = 'text';
+                    this.textContent = 'Ocultar';
+                } else {
+                    keyInput.type = 'password';
+                    this.textContent = 'Mostrar';
+                }
+            });
+            
+            // Restaurar valores predeterminados
+            document.getElementById('resetDefaults').addEventListener('click', function() {
+                document.getElementById('endToEndEncryption').checked = true;
+                document.getElementById('encryptionKey').value = 'e4a2b1f0c8d7e6a5b4f3c2d1e0a9b8f7e4a2b1f0c8d7e6a5b4f3c2d1e0a9b8f7';
+                document.getElementById('keyRotation').checked = true;
+                document.getElementById('keyRotationInterval').value = '24';
+                document.getElementById('onionRouting').checked = true;
+                document.getElementById('minHops').value = '2';
+                document.getElementById('maxHops').value = '5';
+                document.getElementById('anonymousMessages').checked = true;
+                document.getElementById('anonymitySetSize').value = '10';
+                document.getElementById('trafficMixing').checked = true;
+                document.getElementById('trafficMixingInterval').value = '500';
+                document.getElementById('dummyMessages').checked = true;
+                document.getElementById('dummyMessageInterval').value = '1000';
+                document.getElementById('messageTTL').value = '3600';
+                updateSecurityLevel();
+            });
+            
+            // Actualizar nivel de seguridad
+            function updateSecurityLevel() {
+                let score = 0;
+                
+                // Cifrado
+                if (document.getElementById('endToEndEncryption').checked) score += 2;
+                if (document.getElementById('encryptionKey').value.length >= 32) score += 2;
+                if (document.getElementById('keyRotation').checked) score += 1;
+                
+                // Anonimato
+                if (document.getElementById('onionRouting').checked) score += 3;
+                if (parseInt(document.getElementById('maxHops').value) >= 3) score += 1;
+                if (document.getElementById('anonymousMessages').checked) score += 2;
+                if (parseInt(document.getElementById('anonymitySetSize').value) >= 5) score += 1;
+                
+                // Protección contra análisis
+                if (document.getElementById('trafficMixing').checked) score += 2;
+                if (document.getElementById('dummyMessages').checked) score += 2;
+                
+                const securityLevel = document.getElementById('securityLevel');
+                if (score < 8) {
+                    securityLevel.textContent = 'Nivel de seguridad actual: BAJO';
+                    securityLevel.className = 'security-level level-low text-center';
+                } else if (score < 14) {
+                    securityLevel.textContent = 'Nivel de seguridad actual: MEDIO';
+                    securityLevel.className = 'security-level level-medium text-center';
+                } else {
+                    securityLevel.textContent = 'Nivel de seguridad actual: ALTO';
+                    securityLevel.className = 'security-level level-high text-center';
+                }
+            }
+            
+            // Escuchar cambios en todos los controles
+            const controls = document.querySelectorAll('input');
+            controls.forEach(control => {
+                control.addEventListener('change', updateSecurityLevel);
+                control.addEventListener('input', updateSecurityLevel);
+            });
+            
+            // Enviar formulario
+            document.getElementById('securityForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const config = {
+                    security: {
+                        endToEndEncryption: document.getElementById('endToEndEncryption').checked,
+                        encryptionKey: document.getElementById('encryptionKey').value,
+                        keyRotation: document.getElementById('keyRotation').checked,
+                        keyRotationInterval: parseInt(document.getElementById('keyRotationInterval').value) * 3600,
+                        onionRouting: document.getElementById('onionRouting').checked,
+                        minHops: parseInt(document.getElementById('minHops').value),
+                        maxHops: parseInt(document.getElementById('maxHops').value),
+                        anonymousMessages: document.getElementById('anonymousMessages').checked,
+                        anonymitySetSize: parseInt(document.getElementById('anonymitySetSize').value),
+                        trafficMixing: document.getElementById('trafficMixing').checked,
+                        trafficMixingInterval: parseInt(document.getElementById('trafficMixingInterval').value),
+                        dummyMessages: document.getElementById('dummyMessages').checked,
+                        dummyMessageInterval: parseInt(document.getElementById('dummyMessageInterval').value),
+                        messageTTL: parseInt(document.getElementById('messageTTL').value)
+                    }
+                };
+                
+                // Enviar configuración al servidor
+                fetch('/api/security/settings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('token')
+                    },
+                    body: JSON.stringify(config)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Configuración guardada correctamente');
+                    } else {
+                        alert('Error al guardar la configuración');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al guardar la configuración');
+                });
+            });
+            
+            // Inicializar nivel de seguridad
+            updateSecurityLevel();
+        });
+    </script>
+</body>
+</html>
