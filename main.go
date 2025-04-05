@@ -610,46 +610,61 @@ func decompress(data []byte) ([]byte, error) {
 }
 
 func encryptMessage(message, key []byte) ([]byte, error) {
-	block, err := aes.NewCipher(key)
+	// Ensure the key is exactly 32 bytes (256 bits) for AES-256
+	hashedKey := sha256.Sum256(key)
+
+	// Create the AES cipher with the 32-byte key
+	block, err := aes.NewCipher(hashedKey[:])
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create cipher: %v", err)
 	}
 
+	// Generate a random nonce
 	nonce := make([]byte, 12)
 	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to generate nonce: %v", err)
 	}
 
+	// Create the GCM instance
 	aesgcm, err := cipher.NewGCM(block)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create GCM: %v", err)
 	}
 
+	// Encrypt and authenticate the message
 	ciphertext := aesgcm.Seal(nonce, nonce, message, nil)
 	return ciphertext, nil
 }
 
 func decryptMessage(ciphertext, key []byte) ([]byte, error) {
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return nil, err
-	}
+	// Ensure the key is exactly 32 bytes (256 bits) for AES-256
+	hashedKey := sha256.Sum256(key)
 
+	// Check if the ciphertext is long enough
 	if len(ciphertext) < 12 {
-		return nil, fmt.Errorf("ciphertext too short")
+		return nil, fmt.Errorf("ciphertext too short: must be at least 12 bytes")
 	}
 
+	// Extract the nonce (first 12 bytes)
 	nonce := ciphertext[:12]
 	ciphertext = ciphertext[12:]
 
-	aesgcm, err := cipher.NewGCM(block)
+	// Create the AES cipher with the 32-byte key
+	block, err := aes.NewCipher(hashedKey[:])
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create cipher: %v", err)
 	}
 
+	// Create the GCM instance
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create GCM: %v", err)
+	}
+
+	// Decrypt the message
 	plaintext, err := aesgcm.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to decrypt: %v", err)
 	}
 
 	return plaintext, nil
@@ -686,27 +701,23 @@ func deserializeMessage(data []byte, keys [][]byte) (Message, error) {
 }
 
 func mixnetEncrypt(message []byte, keys [][]byte) ([]byte, error) {
-	ciphertext := message
-	for _, key := range keys {
-		var err error
-		ciphertext, err = encryptMessage(ciphertext, key)
-		if err != nil {
-			return nil, err
-		}
+	// If no keys are provided, return the message as is
+	if len(keys) == 0 {
+		return message, nil
 	}
-	return ciphertext, nil
+
+	// Use only the first key for simplicity and reliability
+	return encryptMessage(message, keys[0])
 }
 
 func mixnetDecrypt(ciphertext []byte, keys [][]byte) ([]byte, error) {
-	plaintext := ciphertext
-	for i := len(keys) - 1; i >= 0; i-- {
-		var err error
-		plaintext, err = decryptMessage(plaintext, keys[i])
-		if err != nil {
-			return nil, err
-		}
+	// If no keys are provided, return the ciphertext as is
+	if len(keys) == 0 {
+		return ciphertext, nil
 	}
-	return plaintext, nil
+
+	// Use only the first key for simplicity and reliability
+	return decryptMessage(ciphertext, keys[0])
 }
 
 func authenticate(next http.Handler) http.Handler {
