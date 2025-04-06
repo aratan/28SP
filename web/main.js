@@ -389,7 +389,8 @@ if (token) {
   document.getElementById("loginForm").style.display = "none";
   refreshTablones();
 }
-//wpa
+//wpa - Deshabilitado temporalmente para evitar errores
+/*
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/service-worker.js")
@@ -400,44 +401,113 @@ if ("serviceWorker" in navigator) {
       console.log("Error al registrar el Service Worker:", error);
     });
 }
+*/
 
 async function fetchRecibe() {
   try {
-    const response = await fetch("http://127.0.0.1:8080/api/recibe", {
-      method: "GET", // O 'POST' según sea necesario
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token, // Si es necesario un token de autorización
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("Error en la solicitud a /api/recibe");
+    // Verificar si hay token
+    if (!token) {
+      console.log("No hay token disponible. Inicia sesión primero.");
+      return;
     }
-
-    const data = await response.json();
-    console.log("Datos recibidos:", data);
 
     // Seleccionar el contenedor
     const slidingTextContainer = document.getElementById(
       "slidingTextContainer"
     );
-    slidingTextContainer.innerHTML = ""; // Limpiar cualquier contenido previo
+    if (!slidingTextContainer) {
+      console.error("No se encontró el contenedor slidingTextContainer");
+      return;
+    }
 
-    // Generar dinámicamente los items con texto deslizante
-    data.forEach((item) => {
-      const slidingText = `
-                <div class="slidingTextItem">
-                    <div class="slidingText">
-                        <h5>${item.content.title}</h5>
-                        <p>${item.content.message}</p>
-                    </div>
-                </div>
-            `;
-      slidingTextContainer.innerHTML += slidingText;
-    });
+    // Mostrar indicador de carga
+    slidingTextContainer.innerHTML =
+      '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando datos...</div>';
+
+    try {
+      const response = await fetch("/api/recibe", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Error en la solicitud: ${response.status} ${response.statusText}`
+        );
+      }
+
+      // Leer el texto de la respuesta
+      const text = await response.text();
+      if (!text || text.trim() === "") {
+        slidingTextContainer.innerHTML =
+          '<div class="alert alert-info">No hay datos disponibles</div>';
+        return;
+      }
+
+      // Intentar parsear el JSON
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (parseError) {
+        console.error(
+          "Error al parsear JSON:",
+          parseError,
+          "Texto recibido:",
+          text
+        );
+        slidingTextContainer.innerHTML =
+          '<div class="alert alert-danger">Error al procesar los datos recibidos</div>';
+        return;
+      }
+
+      // Verificar que data es un array
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        slidingTextContainer.innerHTML =
+          '<div class="alert alert-info">No hay datos disponibles</div>';
+        return;
+      }
+
+      console.log("Datos recibidos:", data);
+
+      // Limpiar el contenedor
+      slidingTextContainer.innerHTML = "";
+
+      // Generar dinámicamente los items con texto deslizante
+      data.forEach((item) => {
+        try {
+          // Verificar que item y sus propiedades existen
+          if (!item) {
+            console.warn("Item inválido:", item);
+            return;
+          }
+
+          // Verificar la estructura del item
+          const content = item.Content || item.content || {};
+          const title = content.Title || content.title || "Sin título";
+          const message = content.Message || content.message || "Sin mensaje";
+
+          const slidingText = `
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">${title}</h5>
+                <p class="card-text">${message}</p>
+              </div>
+            </div>
+          `;
+          slidingTextContainer.innerHTML += slidingText;
+        } catch (itemError) {
+          console.error("Error al procesar item:", itemError, item);
+        }
+      });
+    } catch (fetchError) {
+      console.error("Error al obtener datos:", fetchError);
+      slidingTextContainer.innerHTML = `<div class="alert alert-danger">Error al obtener datos: ${fetchError.message}</div>`;
+    }
   } catch (error) {
-    console.error("Error en fetchRecibe:", error);
+    console.error("Error general en fetchRecibe:", error);
   }
 }
 
