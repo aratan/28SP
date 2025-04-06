@@ -27,18 +27,49 @@ async function login(username, password, peerId, photo) {
 // Función para crear un tablón
 // Modificar las funciones existentes para incluir el token en las peticiones
 async function createTablon(name, message, geo) {
-  const response = await fetch(
-    `/api/createTablon?name=${encodeURIComponent(
-      name
-    )}&mensaje=${encodeURIComponent(message)}&geo=${encodeURIComponent(geo)}`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: token,
-      },
+  try {
+    if (!token) {
+      throw new Error("No hay token disponible. Inicia sesión primero.");
     }
-  );
-  return response.json();
+
+    const response = await fetch(
+      `/api/createTablon?name=${encodeURIComponent(
+        name
+      )}&mensaje=${encodeURIComponent(message)}&geo=${encodeURIComponent(geo)}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Error al crear el grupo: ${response.status} ${response.statusText}`
+      );
+    }
+
+    const text = await response.text();
+    if (!text || text.trim() === "") {
+      return { success: true, messageId: "unknown" };
+    }
+
+    try {
+      return JSON.parse(text);
+    } catch (parseError) {
+      console.error(
+        "Error al parsear la respuesta JSON:",
+        parseError,
+        "Texto recibido:",
+        text
+      );
+      return { success: true, messageId: "unknown" };
+    }
+  } catch (error) {
+    console.error("Error al crear el grupo:", error);
+    throw error;
+  }
 }
 
 // Función para obtener todos los tablones
@@ -171,11 +202,52 @@ function renderTablones(tablones) {
 // Manejadores de eventos
 async function handleCreateTablon(event) {
   event.preventDefault();
-  const name = document.getElementById("tablonName").value;
-  const message = document.getElementById("tablonMessage").value;
-  const geo = document.getElementById("tablonGeo").value;
-  await createTablon(name, message, geo);
-  refreshTablones();
+
+  try {
+    const name = document.getElementById("tablonName").value;
+    const message = document.getElementById("tablonMessage").value;
+    const geo = document.getElementById("tablonGeo").value || "";
+
+    // Validar campos
+    if (!name || !message) {
+      alert("Por favor, completa los campos obligatorios");
+      return;
+    }
+
+    // Mostrar indicador de carga
+    const submitButton = event.target.querySelector('button[type="submit"]');
+    if (submitButton) {
+      const originalText = submitButton.innerHTML;
+      submitButton.innerHTML =
+        '<i class="fas fa-spinner fa-spin"></i> Creando...';
+      submitButton.disabled = true;
+
+      try {
+        await createTablon(name, message, geo);
+
+        // Limpiar formulario
+        document.getElementById("tablonName").value = "";
+        document.getElementById("tablonMessage").value = "";
+        document.getElementById("tablonGeo").value = "";
+
+        // Mostrar mensaje de éxito
+        alert("Grupo creado correctamente");
+
+        // Actualizar lista de tablones
+        refreshTablones();
+      } finally {
+        // Restaurar botón
+        submitButton.innerHTML = originalText;
+        submitButton.disabled = false;
+      }
+    } else {
+      await createTablon(name, message, geo);
+      refreshTablones();
+    }
+  } catch (error) {
+    console.error("Error al crear el grupo:", error);
+    alert(`Error al crear el grupo: ${error.message}`);
+  }
 }
 
 async function handleDeleteTablon(id) {
