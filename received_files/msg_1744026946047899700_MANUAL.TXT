@@ -1,0 +1,2289 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+H A B L A   Versi¢n 3.30
+
+					   
+					   
+					   
+					   
+MANUAL DE USUARIO   
+
+  Noviembre 1.996
+					
+					
+				       
+					
+					
+					
+					
+					
+				       
+					
+
+					
+
+
+
+
+
+
+
+		       Autor:                                                                 Distribuye:  
+ CAYETANO MERO¥O FUENTES.                           UNIDAD TIFLOTECNICA
+
+Instructor de Tiflotecnolog¡a y Braille                                   O.N.C.E.
+
+
+
+
+  I N D I C E 
+
+
+
+ 1. INTRODUCCION        1
+
+ 2. CARGA DEL PROGRAMA  2
+
+ 3. DESCARGA DEL PROGRAMA       3
+
+ 4. PARAMETROS DE VOZ   3
+
+ 5. MODOS DE TRABAJO    3
+
+ 6. LECTURA AUTOMATICA  5
+ 
+ 7. PRINCIPALES COMANDOS DE VERBALIZACION       6
+
+ 8. POSICION DEL CURSOR/ANUNCIADOR      8
+
+ 9. INDICACION DE MAYUSCULAS    8
+
+10. INDICACION DE COLORES       9
+
+11. VERBALIZAR LA PANTALLA POR COLORES  9
+
+12. VERBALIZAR LA VENTANA ACTUAL        10
+
+13. CODIGO ASCII        10
+
+14. COMANDOS PARA SILENCIAR HABLA       11
+
+15. EL MODO DE AYUDA    11
+
+16. LINEA DE ESTADO     11
+
+17. UNION DE CURSORES   12
+
+18. BUSQUEDA DE TEXTO   13
+
+19. SILENCIAR LINEAS    13
+
+20. OTROS COMANDOS DE CONFIGURACION
+20.1 Indicaci¢n de espacios     14      
+20.2 Indicaci¢n de l¡neas en blanco     14      
+20.3 Verbalizaci¢n de caracteres gr ficos       14      
+20.4 Modo de revisi¢n de l¡neas 14      
+20.5 Cambio de la Hotkey        15
+
+21. FORMATOS DE PANTALLA        15
+
+       21.1. MARCAS     15
+
+       21.2. AREAS      15
+
+       21.3. COLUMNAS   16
+
+       21.4. COLORES    19
+
+22. LINEAS VIVAS        19
+
+23. SISTEMA DE DETECCION DE SOFTCURSOR  21
+
+24. GRABACION Y RECUPERACION DE FICHEROS
+      DE CONFIGRUACION  23
+
+25. UTILIZACION DEL BRAILLE HABLADO 
+	       COMO TECLADO EXTERNO     25
+
+26. RESUMEN DE COMANDOS DEL MODO COMUNICACION   28
+
+27. RESUMEN DE COMANDOS DEL MODO REVISION       34
+
+28. CONSEJOS PRACTICOS  34
+
+29. RESUMEN DE COMANDOS DEL MODO COMUNICACION 
+      ORDENADOS  ALFABETICAMENTE POR FUNCION    36
+
+30. RESUMEN DE COMANDOS DEL MODO REVISION ORDENADOS
+      ALFABETICAMENTE POR FUNCION       39
+
+    LA VERSION PARA CIBER 232 P 43
+
+    ANEXO A LA VERSION 3.30     44
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	1. I N T R O D U C C I O N
+
+
+
+	HABLA es un programa dise¤ado para utilizar un ordenador compatible 
+PC, bajo MS-DOS, con un sintetizador de voz externo conectado por puerta 
+serie (en especial con Braille Hablado). Es conveniente se¤alar que los 
+programas residentes y HABLA lo es, por su peculiariedad pueden presentar 
+problemas con otras aplicaciones.
+
+       Entre otras,estas son sus principales caracter¡sticas:
+
+- Programa residente que ocupa 22 Kbytes de memoria. Adem s el programa   
+se puede descargar de la memoria sin tener que apagar el equipo.
+
+- Puede trabajar con los puertos serie de COM1 a COM4.
+
+- Grabaci¢n y recuperaci¢n de ficheros de configuraci¢n, (profiles).
+
+- Posee modo de comunicaci¢n y modo de revisi¢n de pantalla. A su vez posee 
+  el modo de comunicaci¢n v¡deo y el modo de comunicaci¢n teclado.
+
+- Permite b£squeda de texto por pantalla.
+
+- Pronunciaci¢n fon‚tica de caracteres.
+
+- Deletreo autom tico de palabras.
+
+- Indicaci¢n de atributos, colores y colores predominantes.
+
+- Verbalizaci¢n del c¢digo ASCII de un car cter.
+
+- Ayuda incorporada.
+
+- Uni¢n de cursores. Cursor con anunciador y viceversa.
+
+- Silenciar l¡neas concretas de pantalla.
+
+- Detecci¢n de l¡neas vivas.
+
+- Cambiar la Hotkey.
+
+- Definici¢n de l¡nea de estado.
+
+- Definici¢n de hasta 10 formatos de pantalla distintos. En cada formato              
+  podemos definir hasta 10 marcas, hasta 10  reas, hasta 10 columnas y            
+  hasta 10 colores.
+
+- Indicaci¢n de may£sculas, espacios, l¡neas en blanco.
+
+- Variedad de opciones de configuraci¢n.
+
+- Verbalizaci¢n de zonas de pantalla de un color seleccionado.
+
+- Todo tipo de movimientos y verbalizaciones de caracteres, l¡neas, palabras, 
+frases, columnas,  reas, etc. Utilizaci¢n de las teclas de cursor y tripletes de 
+movimiento.
+
+- Sistema de localizaci¢n de softcursor.
+
+- Utilizaci¢n del Braille Hablado como teclado externo.
+
+
+	2. C A R G A  D E L  P R O G R A M A
+
+	Antes de realizar cualquier operaci¢n, le recomendamos 
+encarecidamente que proceda a realizar una copia de trabajo de los diskettes 
+que contienen el programa, y preserve los originales.
+
+	Como hemos dicho anteriormente, el programa funciona con el sistema 
+operativo MS-DOS y ha sido probado satisfactoriamente con la versi¢n 3.30 y 
+superiores.
+
+	HABLA puede trabajar con los puertos serie de COM1 a COM4. Para 
+indicar el puerto basta con poner el n£mero de 1 a 4 como par metro, por 
+ejemplo HABLA 2 seleccionar¡a COM2 como puerto de trabajo. Si no se indica 
+el puerto supone que se va a utilizar COM1.
+
+	Al cargar el programa se configura por defecto la puerta serie a 9600 
+baudios, no paridad, 8 bits de longitud de dato y un bit de parada. Si queremos 
+trabajar con otros par metros de comunicaci¢n, debemos configurar la puerta 
+serie a nuestro gusto con el comando MODE del sistema operativo, y llamar a 
+HABLA con el par metro "N" para indicar que NO queremos que cambie la 
+configuraci¢n (HABLA N).
+
+	El Braille Hablado debe estar forzosamente con la puerta serie y el modo 
+sintetizador de voz activado. El tiempo de espera debe estar puesto a cero. El 
+protocolo es conveniente establecerlo en no protocolo. El resto de par metros, 
+velocidad, tono, etc, a gusto del usuario. Es importante saber que la 
+pronunciaci¢n de la puntuaci¢n y de los n£meros depende del Braille Hablado y 
+no de HABLA.
+
+	3. D E S C A R G A  D E L  P R O G R A M A
+
+	Para descargar HABLA de la memoria no tenemos que "resetear" el 
+ordenador, basta con que lo llamemos con la opci¢n D, es decir pulsar¡amos en 
+el indicador del DOS, HABLA D. De esta forma el ordenador funcionar  
+exactamente igual que si HABLA no se hubiera cargado.
+
+
+	4. P A R A M E T R O S  D E  V O Z
+
+	Desde el teclado QWERTY del ordenador se pueden ajustar, a gusto del 
+usuario, el volumen, la velocidad y el tono de la forma siguiente:
+
+		* May£scula + F1: Disminuye el volumen
+		* May£scula + F2: Disminuye la velocidad
+		* May£scula + F3: Tono m s grave
+
+		*             F1: Aumenta el volumen
+		*             F2: Aumenta la velocidad
+		*             F3: Tono m s agudo
+
+
+	5. M O D O S  D E  T R A B A J O
+
+	Como en otros sintetizadores, HABLA posee dos modos de trabajo: 
+modo de comunicaci¢n y modo de revisi¢n de pantalla.
+
+	El modo de comunicaci¢n es el que interact£a con el programa que 
+estamos ejecutando en cada momento, por ello los comandos de comunicaci¢n 
+deben ser combinaciones de teclas que no sean necesarias en el programa en 
+el que estamos trabajando. As¡, estos comandos ir n siempre acompa¤ados de 
+la "hotkey" que puede ser ALT, CONTROL ¢ ALT+CONTROL. Por defecto la 
+tecla ALT viene como hotkey. En algunos ordenadores se puede utilizar el ALT 
+derecho (ALT Gr) equivalente al ALT izquierdo.
+
+	En el modo revisi¢n, el programa que estemos ejecutando queda 
+bloqueado (parado) y HABLA toma totalmente el control, para poder as¡ revisar 
+c¢modamente la pantalla. Para entrar en el modo revisi¢n pulsaremos ALT-R 
+(hotkey-R). Para salir de este modo pulsaremos INTRO o ESCAPE.
+
+	Es importante saber que todos los comandos de comunicaci¢n son 
+v lidos en el modo revisi¢n.
+
+	Tanto en el modo de revisi¢n, como en el de comunicaci¢n, las teclas de 
+bloqueo may£scula y bloqueo num‚rico producen un pitido para indicar si est n 
+activadas o desactivadas.
+
+	HABLA captura lo que se pinta en pantalla y todo lo que se teclea 
+utilizando la BIOS (memoria b sica encargada principalmente de rutinas de 
+entrada/salida de datos), por ello, existe un buffer (memoria para almacenar 
+datos) de pantalla y otro de teclado, que nos permiten trabajar en los siguientes 
+modos de comunicaci¢n:
+
+		* modo comunicaci¢n teclado car cter
+		* modo comunicaci¢n teclado palabra (por defecto)
+		* modo comunicaci¢n teclado desactivado
+
+		* modo comunicaci¢n v¡deo activado
+		* modo comunicaci¢n v¡deo desactivado.
+
+	Estos modos se cambian alternativamente con Hotkey-1 para el modo 
+teclado y con Hotkey-2 para el modo v¡deo, y afectan a la forma de 
+verbalizaci¢n de la informaci¢n seg£n aparezca en pantalla; por ejemplo, si el 
+modo de comunicaci¢n teclado est  en car cter, cada vez que pulsemos una 
+tecla se verbalizar , y si est  en modo palabra, ‚sta no se verbalizar  hasta 
+que pulsemos un espacio.
+
+	El modo comunicaci¢n v¡deo activado funciona en modo palabra para 
+los comandos tecleados y en modo l¡nea para lo que se pinta en pantalla. De 
+esta forma no es preciso tener activado el modo teclado y no se escuchar n 
+repeticiones. Sin embargo, en los programas en que no se capture el modo 
+video, como por ejemplo WordPerfect, s¡ ser  necesario activar el modo 
+comunicaci¢n teclado (en palabra o en car cter).
+
+	Por tanto, cuando se trabaje en el sistema operativo se deber  activar el 
+modo video y se desactivar  el modo comunicaci¢n teclado; si al trabajar con 
+una aplicaci¢n no se verbaliza la informaci¢n que se introduce por teclapuede 
+desactivarse de forma que el eco de la pantalla, es decir, todo lo que se pinta 
+en pantalla no se verbalice. Si el modo v¡deo est  definido como l¡nea, cada vez 
+que se complete una l¡nea en pantalla se verbalizar .
+
+	Por defecto, viene el modo teclado en palabra y el de v¡deo en l¡nea. De 
+esta forma cuando introducimos un comando en el sistema operativo nos lo 
+verbaliza palabra a palabra, conforme lo escribimos (por el teclado) y cuando 
+pulsamos INTRO nos habla la l¡nea completa (por el v¡deo). Si el comando es 
+de una sola palabra, entonces repite esa palabra dos veces. Esto se puede 
+evitar desactivando el modo teclado.
+
+	A veces, ocurre en algunos programas que por circunstancias 
+desconocidas se pierde la direcci¢n de la pantalla por lo que al solicitar que 
+HABLA nos verbalice una l¡nea o al entrar en modo revisi¢n la verbalizaci¢n es 
+imcomprensible. Para subsanar este problema siempre que se entra en revisi¢n 
+se localiza la direcci¢n del video autom ticamente, por tanto, si esto ocurriera,  
+debemos entrar en revisi¢n y el error se corregir .
+
+	Cuando se pulsa la tecla de retroceso, HABLA lo indica diciendo la letra 
+borrada. Si se borra un espacio no se dice ninguna letra, a menos que est‚ 
+activada la verbalizaci¢n de espacios. Cuando se borra, no s¢lo se actualiza el 
+buffer de teclado, sino tambi‚n el de pantalla. Si pulsamos la tecla de borrar y el 
+cursor no se desplaza, lo indicar  con un pitido.
+
+	Muchas veces para obtener una determinada pulsaci¢n o car cter 
+tenemos que cambiar la hotkey o introducir el ASCII concreto para que no se 
+confunda con un comando de HABLA, por ejemplo para introducir la barra 
+vertical. Con la funci¢n INVALID pulsando hotkey-retroceso se consigue que la 
+siguiente pulsaci¢n sea ignorada por HABLA. Por ejemplo, imaginemos que en 
+un programa necesitamos utilizar la combinaci¢n "ALT-P" para una funci¢n 
+concreta, ser  suficiente con pulsar la secuencia "ALT-retroceso ALT-P".
+
+	Cuando se env¡an palabras o l¡neas a la puerta serie, HABLA hace un 
+an lisis por palabras, para detectar cu les deben ser deletreadas. Por ejemplo 
+"habla.cfg" se mandar¡a como "habla . c f g".
+
+	HABLA est  dise¤ado para que cualquier comando, tanto en modo de 
+comunicaci¢n como en el de revisi¢n, cancele la verbalizaci¢n del anterior, y 
+as¡, el trabajo sea lo m s r pido posible.
+
+
+	6. L E C T U R A  A U T O M A T I C A
+
+	Si estamos trabajando en un procesador de textos y queremos leer el 
+texto completo, no nos vale con revisar la pantalla actual, sino que debemos ir 
+revisando y avanzando al mismo tiempo con el cursor en el modo de 
+comunicaci¢n. Es decir, vamos pulsando flecha abajo y escuchando el texto 
+que va leyendo. Pues bien, HABLA dispone de un modo de lectura autom tica 
+en la que no necesitamos ir pulsando flecha abajo, sino que se simula la 
+pulsaci¢n de esta tecla. De esta forma podemos leer un texto de una vez sin 
+necesidad de tocar el teclado. Evidentemente esto funciona solamente si 
+estamos en un programa en el que la flecha abajo desplace el cursor por el 
+texto.
+
+	Este sistema se pone en marcha en modo de comunicaci¢n pulsando 
+hotkey-T y lo indica con el mensaje "MODO LECTURA". A partir de ese 
+momento se empezar  a desplazar el cursor hacia abajo y se ir  verbalizando 
+el texto. La lectura no finalizar  hasta que pulsemos una tecla (aunque se haya 
+alcanzado el final del archivo). Se recomienda pulsar una de las teclas de 
+may£scula temporal. Una vez pulsada la tecla, la verbalizaci¢n continuar  hasta 
+terminar la £ltima informaci¢n mandada. Al final dir  "FIN DE LECTURA". 
+Puede ser conveniente tener desactivada la lectura de l¡neas en blanco 
+(hotkey-5), para una mejor comprensi¢n.
+
+	El Braille Hablado habitualmente debe funcionar con HABLA sin 
+protocolo de comunicaci¢n ("no protocolo" en el men£ de estado) y esto implica 
+que la verbalizaci¢n es independiente de la transmisi¢n de datos desde 
+HABLA. Por ello si activamos el modo lectura el cursor avanzar  mucho m s 
+r pido de lo que el texto se verbaliza y por tanto puede llegar a dar un mensaje 
+de error ("fichero lleno"). Para evitar esto, activaremos el protocolo hardware en 
+el Braille Hablado solamente cuando vayamos a utilizar la lectura autom tica y 
+lo desactivaremos cuando termine. De esta forma HABLA ir  "esperando" a que 
+el Braille Hablado verbalice la informaci¢n antes de seguir avanzando el cursor.
+
+
+	7. P R I N C I P A L E S  C O M A N D O S  D E 
+V E R B A L I Z A C I O N
+
+	En primer lugar tenemos los tripletes del modo de revisi¢n de pantalla. 
+Las teclas centrales de los tripletes son tambi‚n v lidas para el modo de 
+comunicaci¢n, acompa¤adas de la hotkey, que es, por defecto, ALT. En 
+revisi¢n las teclas de movimiento, cuando llegan a un tope de pantalla producen 
+un pitido.
+
+	- I K ,: L¡nea superior, actual e inferior respectivamente. Flecha arriba y 
+flecha abajo son equivalentes a I y , respectivamente.
+
+	En revisi¢n si queremos ir a la l¡nea n (entre 1 y 25) y que nos la 
+verbalice pulsaremos nK. Por ejemplo, para ir a la l¡nea 25 ser¡a : 25k.
+
+	Tanto en comunicaci¢n como en revisi¢n, HABLA, puede verbalizar 
+cualquier l¡nea usando el comando hotkey-INTRO. Cuando lo pulsamos dice 
+"lectura" y tenemos que introducir el n£mero de l¡nea que queremos que se 
+verbalice (de 1 a 25), pulsamos INTRO y verbaliza la l¡nea pedida.
+
+	- S D F: Palabra anterior, palabra actual, palabra siguiente 
+respectivamente. Adem s de verbalizar la palabra, sit£a el cursor al principio de 
+la palabra anterior o siguiente.
+
+	La palabra actual se verbaliza aunque el cursor est‚ situado un espacio 
+despu‚s de la misma, de esta forma podemos averiguar qu‚ palabra estamos 
+tecleando sin necesidad de retroceder (esto es muy £til para el MS-DOS). Si 
+pulsamos D dos veces entonces se realiza el deletreo de la palabra actual. 
+
+	Tambi‚n podemos utilizar CTRL-flecha izquierda y CTRL-flecha derecha 
+para palabra anterior y siguiente. En el modo revisi¢n son totalmente 
+equivalentes a S y F, y en el de comunicaci¢n producen la verbalizaci¢n de la 
+palabra actual ya que s¢lo se desplazar  a la palabra anterior y siguiente si el 
+programa que estamos ejecutando as¡ lo hace.
+
+	Al desplazarnos a la derecha en revisi¢n, cuando llega al final de la 
+l¡nea, se para en la columna 80 y lo indica con "fin l¡nea".
+
+	- X C V: car cter anterior, actual y siguiente. Flecha izquierda y flecha 
+derecha son equivalentes a X y V en el modo revisi¢n. Si pulsamos C dos 
+veces se produce la pronunciaci¢n fon‚tica del car cter actual ( o ALT-C en el 
+modo de comunicaci¢n).
+
+	Cuando nos desplazamos hacia la derecha en revisi¢n, al cambiar de 
+l¡nea (pasar de la columna 80 a la 1 de la siguiente l¡nea) lo indica con 
+"principio l¡nea". Hacia la izquierda, cuando pasa de la columna 1 a la 80 de la 
+l¡nea anterior verbaliza "fin l¡nea".
+
+	En comunicaci¢n, cuando nos desplazamos con flecha de cursor 
+izquierda o derecha y se produce un cambio de l¡nea, obtenemos un aviso 
+ac£stico con un pitido, indicando que hemos cambiado de l¡nea. Esto es muy 
+£til cuando trabajamos en un editor de textos y nos vamos moviendo con las 
+flechas de desplazamiento de cursor revisando un texto, as¡ sabremos cu ndo 
+hemos cambiado de l¡nea. Puede ocurrir que el pitido sea molesto o que en un 
+programa concreto no se comporte de forma adecuada (debido a que el cursor 
+se mueva a otro sitio), en este caso tenemos la posibilidad de desactivar el 
+pitido pulsando CTRL F7 en modo revisi¢n. Por defecto est  activado y puede 
+ser diferente para cada formato de pantalla.
+
+	En revisi¢n, si queremos ir a la columna n (entre 1 y 80) pulsaremos nC. 
+Por ejemplo, para ir a la columna 45 ser¡a: 45C e indicar  el mensaje "columna 
+45".
+
+	- CTRL-R CTRL-F CTRL-V: frase anterior, actual y siguiente. Se supone 
+que las frases est n delimitadas por signos de puntuaci¢n (.:;!­¨?). El 
+movimiento por frases interesa cuando estemos revisando un texto. Estos 
+comandos son para el modo revisi¢n, si queremos verbalizar la frase actual en 
+el modo de comunicaci¢n, pulsaremos hotkey-F. Cuando llegamos a la frase 
+m s a la izquierda o a la derecha se producir  un pitido.
+
+	- W E R: columnas anterior, actual y siguiente de las definidas por el 
+usuario. Se explican m s adelante en el apartado de COLUMNAS.
+
+	A continuaci¢n vamos a estudiar las p a r e j a s de teclas. En primer 
+lugar veremos las que son v lidas tanto para comunicaci¢n como para revisi¢n:
+
+	- U,O: Verbalizan la l¡nea actual por partes. U verbaliza desde el 
+principio de l¡nea hasta el cursor (exclusive). O verbaliza desde el cursor hasta 
+el final de la l¡nea.
+
+	- Y,N: Verbalizan la pantalla por partes. Y verbaliza desde el principio de 
+pantalla hasta el cursor (exclusive). N verbaliza desde el cursor hasta el final de 
+pantalla.
+
+	Las siguientes parejas son para el modo revisi¢n solamente:
+
+	- T,B: ir al principio y final de pantalla. Lo indica con "principio pantalla" y 
+"final pantalla".
+
+	- ReP g(PgUp) AvP g(PgDn): ir al principio y final de la columna actual 
+respectivamente. Es decir, si estamos en la posici¢n fila 10 columna 38 y 
+pulsamos ReP g nos lleva el anunciador (el cursor de revisi¢n) a la posici¢n fila 
+1 columna 38. Lo indica con los mensajes "principio de columna" y "final de 
+columna".
+
+	- Inicio(Home) Fin(End): Llevan el cursor al principio y final de la l¡nea 
+actual respectivamente. Lo indica con los mensajes "principio"y "fin".
+
+	- J,M: L¡nea superior y l¡nea inferior dentro de una columna. En este 
+caso la columna se refiere a las definidas por el usuario. Se explican mas 
+adelante.
+
+	Por £ltimo vamos a estudiar varias funciones de una tecla v lidas tanto 
+para revisi¢n como para comunicaci¢n.
+
+
+	8. P O S I C I O N  D E L  
+C U R S O R  /  A N U N C I A D O R
+
+	Para averiguar la posici¢n del cursor pulsaremos hotkey-P tanto si 
+estamos en comunicaci¢n como en revisi¢n. Por ejemplo, nos puede verbalizar 
+"cursor 12 10" donde 12 es la fila y 10 la columna. 
+
+	Si estamos en revisi¢n, y pulsamos P, nos dice la posici¢n del 
+anunciador, y si la pulsamos acompa¤ada de la hotkey (por ej. ALT P), nos dir  
+la posici¢n que ten¡a el cursor del sistema cuando entramos en revisi¢n.
+
+
+	9. I N D I C A C I O N  D E  M A Y U S C U L A S
+
+	Si pulsamos A ( o hotkey-A ) nos verbaliza el car cter actual indicando si 
+es may£scula o min£scula. Existe la posibilidad de que indique de forma 
+autom tica las letras may£sculas cuando verbalizamos caracteres, y es 
+activando la indicaci¢n de may£sculas con hotkey-3. Si queremos desactivarla, 
+basta con pulsar de nuevo este comando.
+
+	10. I N D I C A C I O N  D E  C O L O R E S
+
+	Para averiguar los colores de fondo y texto del car cter actual 
+pulsaremos G (o hotkey-G si estamos en comunicaci¢n ).
+La sintaxis utilizada es:
+
+	"el color es " color " sobre " color [parpadeante], 
+
+por ejemplo:
+
+      "el color es   rojo    sobre   azul".
+
+	Si pulsamos G o hotkey-G por segunda vez, nos verbalizar  el color del 
+car cter y del fondo predominantes en pantalla. Con esta funci¢n podremos 
+hacernos una idea de cual es el color predominante en una pantalla.
+
+
+	11. V E R B A L I Z A R  L A  P A N T A L L A  
+P O R  C O L O R E S
+
+	HABLA permite verbalizar la parte de la pantalla que tenga un color 
+concreto. Por color entendemos el color de fondo, el del car cter y si es 
+parpadeante o no. Por tanto podremos decirle que nos verbalice, por ejemplo, 
+todo el texto de color rojo sobre fondo amarillo y que sea parpadeante, o bien el 
+texto que sea de color rojo sobre cualquier fondo sea parpadeante o no.
+
+	Podemos tener simult neamente hasta 10 combinaciones de color de 
+texto, fondo y parpadeante seleccionadas para verbalizar la pantalla. Esta 
+selecci¢n se realiza pulsando + (m s) en el modo de revisi¢n de pantalla. Se 
+verbalizar  "definir color n£mero" y tendremos que introducir un n£mero entre 0 
+y 9 (si pulsamos INTRO tomar  por defecto 0). A continuaci¢n dir  "color de 
+fondo" y el color que tengamos seleccionado. Por defecto el color de fondo es 
+"todos" que significa que se verbalizar  el texto sea cual sea su color de fondo. 
+Para cambiar este color pulsaremos la tecla de espacio para ir hacia adelante 
+un color o retroceso para el color anterior, cuando tengamos el deseado 
+pulsaremos INTRO. Seguidamente, se verbalizar  "color de texto" (que por 
+defecto es "todos" tambi‚n) y pulsaremos espacio o retroceso hasta que 
+seleccionemos el que queramos y luego INTRO. Por £ltimo dir  "parpadeante" 
+que sus valores posibles son "todos", "si" o "no" y se pulsa INTRO de nuevo. Al 
+final se verbaliza "colores definidos" y tendremos definida una combinaci¢n de 
+colores.
+
+	Si queremos que se verbalice la pantalla por colores pulsaremos -(gui¢n) 
+en revisi¢n ¢ hotkey - en comunicaci¢n. Nos pedir  el n£mero de la 
+combinaci¢n que queremos se verbalice (de 0 a 9). Si no se verbaliza nada 
+quiere decir que no hay nada en pantalla con esos atributos. Si escuchamos el 
+mensaje "en blanco" querr  decir que hay zonas de la pantalla con estos 
+atributos pero que est n sin texto. Para suprimir este mensaje pulsaremos 
+hotkey-5.
+
+	Por defecto las diez combinaciones de colores tienen el valor de "todos" 
+para fondo, texto y parpadeante. Las combinaciones seleccionadas se guardan 
+en los ficheros de configuraci¢n (ver apartado n§ 25).
+
+	Con este sistema disponemos de la posibilidad de trabajar en 
+comunicaci¢n averiguando r pidamente la informaci¢n de pantalla de hasta 
+diez colores por cada formato de pantalla seleccionados para una misma 
+configuraci¢n.
+
+	Es posible tambi‚n verbalizar el texto de pantalla que tenga el mismo 
+color de fondo que la posici¢n actual del cursor o softcursor, el comando que se 
+utiliza para esta funci¢n es hotkey-, (coma). Esta opci¢n es muy £til cuando 
+estamos por ejemplo en un men£ y queremos verbalizar la opci¢n resaltada del 
+men£ y el encabezamiento del men£ que tambi‚n suele estar resaltado con el 
+mismo atributo (probar con Edit o Works con seguimiento inteligente). Tambi‚n 
+es £til para verbalizar una ventana completa que aparece delimitada por un 
+color de fondo y en la que se encuentra el cursor o softcursor en este momento.
+
+	* Hotkey-Q : Este comando verbaliza todos los atributos que se 
+encuentran en pantalla y el texto correspondiente que tiene dichos atributos. 
+Construye una lista con las combinaciones de colores que hay en ese momento 
+en pantalla y la ordena de menor a mayor frecuencia. Es decir, la primera vez 
+que pulsamos, nos dir  el color de car cter y fondo que menos aparece en 
+pantalla y el texto que se encuentra con ese atributo. Si volvemos a pulsar nos 
+dir  la siguiente combinaci¢n de color que aparece con m s frecuencia que la 
+anterior y as¡ sucesivamente. Cada vez que escuchamos un pitido nos indica 
+que estamos al principio de la lista (es decir, en el atributo menos frecuente). 
+Cuando ya no haya mas combinaciones de color volver  a la primera.
+
+	Con esta opci¢n podemos averiguar qu‚ colores hay en pantalla y 
+verbalizarlos sin necesidad de definir colores.
+ 
+
+	12. V E R B A L I Z A R  L A  V E N T A N A  A C T U A L
+
+	El comando hotkey ¥ permite la verbalizaci¢n de la ventana actual, es 
+decir, de la porci¢n de la l¡nea actual que se encuentra dentro de dicha 
+ventana. Por ventana se entiende un  rea rectangular enmarcada por 
+caracteres semigr ficos.
+
+	13. C O D I G O  A S C I I
+
+	Si pulsamos . (punto) o hotkey-. nos verbaliza el c¢digo ASCII del 
+car cter actual. La sintaxis utilizada es:
+
+	"el c¢digo ASCII es " n£mero.
+
+14. C O M A N D O S  P A R A  S I L E N C I A R  H A B L A
+
+	Existen varios comandos para "callar" el sintetizador que son v lidos 
+para comunicaci¢n y revisi¢n. Son los siguientes:
+
+	* Hotkey-H: activar/desactivar la voz. Este comando sirve para callar el 
+sintetizador totalmente y as¡ poder transmitir o recibir archivos. Para volver a 
+activarlo basta con pulsar de nuevo la misma combinaci¢n. Con cada pulsaci¢n 
+de este comando, el braille hablado nos verbalizar  "Habla activado" o "Habla 
+desactivado"
+
+	* Hotkey-J: desactivar la voz hasta que est‚ listo. Se utiliza 
+principalmente en el sistema operativo (por ej. con un DIR). Cuando est  
+preparado nos dice "listo". En algunos programas es necesario pulsar una tecla 
+para que diga "listo" y se vuelva a activar la voz.
+
+	* Hotkey-Barra espaciadora: cancelar el mensaje actual. Silencia el 
+sintetizador para el mensaje que se est  verbalizando en estos momentos.
+
+
+	15. E L  M O D O  D E  A Y U D A
+
+	Dentro de revisi¢n, si pulsamos H entramos en el modo de Ayuda. Este 
+modo nos informa brevemente de la funci¢n de cada tecla dentro de HABLA. 
+Para averiguar la funci¢n de una tecla basta con pulsarla. Si nos indica "no 
+definida" significa que no tiene ninguna funci¢n asignada.
+
+	Algunos mensajes a¤aden al final "con hotkey" queriendo significar que 
+tal funci¢n solamente se ejecutar  si se pulsa esa tecla acompa¤ada de la 
+hotkey que est‚ activa (por ej. ALT).
+
+	Hay teclas que tienen doble funci¢n seg£n se pulsen con may£scula 
+temporal o no, por ejemplo, si pulsamos 2 (del teclado principal) nos dir : 
+
+	"cambiar modo comunicaci¢n video, con hotkey" , pero si pulsamos 
+may£sculas-2 (que es la comilla doble), nos dir :
+
+	"definir l¡nea viva". 
+
+La mayor¡a de las teclas de los n£meros tienen doble funci¢n.
+
+
+	16. L I N E A  D E  E S T A D O
+
+	Se suelen llamar l¡neas de estado a aquellas l¡neas de pantalla que nos 
+dan informaci¢n acerca de la situaci¢n (estado) del programa que estamos 
+ejecutando. Son l¡neas con informaci¢n "valiosa", que necesitamos leer con 
+frecuencia y que suelen estar situadas en la primera o £ltima l¡nea de pantalla.
+
+	Para definir una l¡nea de estado entraremos en el modo revisi¢n, 
+situaremos el cursor sobre dicha l¡nea, pulsaremos F8 y nos indicar  que ya 
+est  definida. Para consultarla, pulsaremos L (o hotkey-L) cada vez que lo 
+necesitemos.
+
+
+	17. U N I O N  D E  C U R S O R E S
+
+	Existen dos cursores trabajando con HABLA, el cursor del sistema (con 
+el que trabaja el programa que estamos ejecutando) , y el cursor del modo 
+revisi¢n (que es el cursor propio de HABLA) que tambi‚n llamamos anunciador.
+	
+	Siempre que entramos en revisi¢n el anunciador parte de la posici¢n que 
+tiene el cursor del sistema permaneciendo en su posici¢n hasta que se salga 
+del modo revisi¢n. 
+
+	Hay dos formas de unir cursores, llevar el anunciador a la posici¢n del 
+cursor o viceversa. La primera de ellas es la m s sencilla y se realiza pulsando 
+":" (dos puntos) en el modo revisi¢n. Esta funci¢n lleva el anunciador a la 
+posici¢n que ten¡a el cursor del sistema cuando entramos en revisi¢n y nos da 
+el mensaje de la fila/columna en la que se queda el anunciador. Evidentemente 
+con este comando no se sale del modo revisi¢n de pantalla.
+
+	El caso contrario, es decir, llevar el cursor del sistema a la posici¢n 
+donde tenemos el anunciador es m s complejo pero a su vez, m s £til. Se 
+ejecuta pulsando ";" (punto y coma), l¢gicamente, en el modo revisi¢n. Lo 
+podemos utilizar, por ejemplo, a la hora de revisar y corregir textos, ya que 
+vamos leyendo el texto en revisi¢n y en el supuesto de que se detecte un error, 
+unimos cursores y corregimos.
+
+	Este caso requiere que el programa con el que estamos trabajando 
+permita mover libremente el cursor utilizando las flechas de cursor (que ser  el 
+caso de un procesador de textos). Por ejemplo, en el sistema operativo no tiene 
+mucho sentido utilizar la uni¢n de cursores, ya que las flechas no mueven el 
+cursor por pantalla. 
+
+	Cuando se han unido cursores, lo indica con "cursores unidos". 
+Evidentemente, si la posici¢n donde ten¡amos el anunciador no es accesible 
+por el cursor de un programa concreto, la uni¢n de cursores no funcionar  
+correctamente y nos lo indicar  con el mensaje "no se unieron cursores" (por 
+ejemplo en la l¡nea 25 de WordPerfect). Tanto si se ha conseguido unir los 
+cursores como si no, HABLA sale autom ticamente del modo revisi¢n de 
+pantalla nada m s pulsar ";" (punto y coma).
+
+	Existe el par metro de t i e m p o  d e  e s p e r a que influye 
+decisivamente en la uni¢n de cursores en particular y en el trabajo con 
+cualquier programa en general. Su valor se cambia con F7 en revisi¢n, va 
+desde 0 a 9 y por defecto es igual a 1. Su funci¢n es medir el tiempo que 
+transcurre entre la pulsaci¢n de una tecla de movimiento del cursor y la 
+verbalizaci¢n. Este par metro es muy importante y puede hacer que HABLA 
+funcione correctamente o no con un programa concreto. Influye en la velocidad 
+de la uni¢n de cursores. Para WordPerfect lo mejor es 0 ( con cualquier otro 
+valor superior tambi‚n funciona, aunque m s lento). Para WordStar es 
+necesario como m¡nimo el valor 1. Los editores de programas como el de 
+TURBO PASCAL o TURBO C funcionan mejor con el valor 0.
+
+
+	18. B U S Q U E D A  D E  T E X T O
+
+	Dentro del modo revisi¢n podemos realizar b£squedas de texto por 
+pantalla mediante la introducci¢n de "/" (barra inclinada) que se obtiene 
+pulsando may£scula temporal y la tecla del n£mero 7 o bien la barra inclinada 
+del teclado num‚rico.
+
+	La b£squeda se realiza desde la posici¢n del anunciador hasta el final 
+de la pantalla. Por tanto si queremos buscar en toda la pantalla ser  necesario 
+situarnos en la posici¢n 1,1 pulsando "T". Cuando pulsamos la barra inclinada 
+verbaliza "b£squeda" y a continuaci¢n debemos introducir el texto a buscar 
+finaliz ndolo con INTRO. Si no lo encuentra lo indica con "no lo encuentro" y 
+deja el anunciador en la posici¢n en la que se encontraba. Si no se verbaliza 
+ning£n mensaje, quiere decir que el texto ha sido encontrado, se verbalizar  la 
+palabra buscada y el anunciador se situar  en el primer car cter.
+
+	Si queremos repetir la b£squeda anterior basta con pulsar la barra 
+inclinada de nuevo e INTRO sin introducir ning£n texto.
+
+
+	19. S I L E N C I A R  L I N E A S
+
+	Como explic bamos m s atr s, HABLA captura la informaci¢n que se 
+pinta en pantalla, la procesa y luego la env¡a para su verbalizaci¢n. A este 
+proceso le llam bamos el modo de comunicaci¢n v¡deo. A veces, puede ser 
+interesante que determinada informaci¢n que se pinta en pantalla no sea 
+verbalizada y esto lo podemos realizar "silenciando" l¡neas respecto del modo 
+video.
+
+	La funci¢n de desactivar (silenciar) y activar l¡neas respecto del modo de 
+v¡deo se realiza pulsando la tecla F10 en revisi¢n. Basta con situar el 
+anunciador en la l¡nea que queramos desactivar y pulsar F10 y nos dir  "l¡nea 
+desactivada".
+
+	Para activar de nuevo una l¡nea nos situaremos en ella y pulsaremos de 
+nuevo F10 y dir  "l¡nea activada".
+
+	Esta funci¢n pude ser muy interesante, por ejemplo, en editores como el 
+de TURBO PASCAL que pintan en la l¡nea uno la posici¢n del cursor, y que 
+conforme vamos escribiendo molesta su verbalizaci¢n. Si desactivamos esa 
+l¡nea desaparece el problema.
+
+
+
+20. O T R O S  C O M A N D O S  D E  C O N F I G U R A C I O N
+
+	- 20.1 INDICACION DE ESPACIOS
+	
+	Con hotkey-4 podemos activar o desactivar la indicaci¢n de espacios. 
+Por defecto est  activada.
+
+	Cuando est  activa, al movernos car cter a car cter (cuando se 
+verbalice un car cter), tanto en revisi¢n como en comunicaci¢n, si el cursor (o 
+el anunciador) est  sobre un espacio dir  "espacio". Si est  desactivada no dice 
+nada.
+
+	- 20.2 INDICACION DE LINEAS EN BLANCO
+
+	Esta funci¢n se activa y desactiva con hotkey-5. Por defecto est  
+activada.
+
+	Al verbalizar una l¡nea nos dir  "en blanco" si est  vac¡a y si esta funci¢n 
+est  activada, si no, no hablar  nada.
+
+	En realidad, avisar  "en blanco" siempre que se verbalice cualquier 
+cadena de m s de dos espacios.
+
+
+	- 20.3 VERBALIZACION DE CARACTERES GRAFICOS
+
+	A veces, la verbalizaci¢n de los caracteres gr ficos y caracteres de 
+control puede ser molesta para un buen funcionamiento. Las nuevas versiones 
+del Braille Hablado y en especial el Braille Hablado Plus verbalizan la tabla 
+ASCII completa por lo que puede ser conveniente en determinados programas 
+desactivar la verbalizaci¢n de estos caracteres.
+
+	Esta funci¢n se activa y desactiva con hotkey-' (hotkey-ap¢strofe) y por 
+defecto est  activada. Si se desactiva no se mandar n al Braille Hablado 
+caracteres por debajo del 32 ASCII ni por encima del 168 ASCII.
+
+	- 20.4 MODO DE REVISION DE LINEAS
+
+	Cuando nos desplazamos, tanto en revisi¢n como en comunicaci¢n, 
+l¡nea arriba o l¡nea abajo con los cursores, se verbaliza la l¡nea en la que se 
+sit£a el cursor. Este modo de revisi¢n de l¡neas se puede cambiar y podemos 
+hacer que verbalice la palabra, el car cter o la columna (ver COLUMNAS) en la 
+que se sit£a el cursor (o el anunciador), o bien que no verbalice nada.
+
+	Esta funci¢n se cambia con hotkey-6. Los valores posibles son:
+
+		* modo l¡nea: es el que viene por defecto.
+
+		* modo palabra: verbaliza la palabra en la que se sit£a. (Esta
+			opci¢n es interesante cuando no tenemos columnas definidas).
+		
+		* modo car cter: verbaliza el car cter en el que se sit£a.      
+	
+		* modo columna: verbaliza la parte de la l¡nea que corresponde
+			a la columna actual definida. Si no estamos en una columna
+			dir  "no estamos en una columna". Este modo es interesante
+			para  trabajar con columnas en modo comunicaci¢n.
+
+		   * modo ventana: verbaliza la porci¢n de informaci¢n contenida
+			en una ventana desestimando la informaci¢n del resto de las
+			l¡neas que queda excluida de la ventana. Por ventana se
+			entiende un area rectangular enmarcada por caracteres
+			semigr ficos.
+			Esta funci¢n se puede activar desde el teclado de braille
+			hablado pulsando  COR W.
+
+		   * modo silencioso: no verbaliza nada.
+
+	- 20.5 CAMBIO DE LA HOTKEY
+
+	La hotkey es la tecla que acompa¤a en la pulsaci¢n de todos los 
+comandos del modo de comunicaci¢n (aunque tambi‚n valen para revisi¢n). Se 
+puede cambiar pulsando F9 en revisi¢n. La tecla que viene por defecto como 
+hotkey es ALT. Los posibles valores son ALT, CONTROL ¢ ALT + CONTROL.
+
+	En algunos ordenadores podremos utilizar, adem s del ALT que est  a 
+la izquierda de la barra espaciadora, el de la derecha.
+
+	Cuando cambiamos la hotkey, dentro del modo revisi¢n, el cambio no se 
+har  efectivo hasta que no salgamos de revisi¢n.
+
+	El cambiar la hotkey puede ser £til cuando coincida alg£n comando de 
+HABLA con otro del programa que estemos ejecutando.
+
+
+	21. F O R M A T O S  D E  P A N T A L L A
+
+	Con formato de pantalla nos referimos a las marcas,  reas, columnas y 
+colores definidos para una pantalla. HABLA almacena hasta diez (de 0 a 9) 
+formatos de pantalla distintos y por defecto entra en el formato 0. En cada 
+formato podemos tener hasta 10 marcas, 10  reas, 10 columnas y 10 colores 
+(m s adelante se explicar n detalladamente todos ellos). 
+
+	Cada formato de pantalla puede ser identificado con un nombre, para 
+ello, se debe entrar en modo revisi¢n, pulsar CTRL F8 y el braille hablado nos 
+pedir  que introduzcamos un nombre con una longitud posible de hasta 20 
+caracteres, si pulsamos INTRO se queda el mismo nombre que hab¡a. Al 
+cambiar a otro formato de pantalla con Hotkey-7 nos verbalizar  el nombre de 
+la pantalla a la que vamos asignada con un n£mero de 0 a 9. Esta funci¢n 
+permite tener una configuraci¢n de pantalla para cada aplicaci¢n, y podemos 
+tener pantalla "DOS", pantalla "WORDPERFECT", etc. 
+
+	S¢lo tenemos acceso a las marcas,  reas, columnas y colores del 
+formato de pantalla que tengamos en este momento activo. Para cambiar de un 
+formato a otro pulsaremos hotkey-7 e introduciremos un n£mero de 0 a 9. Por 
+tanto, con tan s¢lo dos pulsaciones habremos pasado de una definici¢n de 
+pantalla a otra totalmente distinta, sin necesidad de cargar otra configuraci¢n. 
+Esto es muy £til cuando trabajamos con programas de aplicaci¢n que tienen 
+pantallas distintas, por ejemplo un programa de contabilidad.
+
+	A continuaci¢n vamos a estudiar los componentes de todos los formatos 
+de pantalla (marcas,  reas, columnas y colores).
+
+       - 21.1  M A R C A S
+
+	Las marcas en pantalla se utilizan para registrar posiciones clave en la 
+pantalla a las que mas tarde queramos acceder r pidamente. S¢lo se pueden 
+utilizar en el modo de revisi¢n.
+
+	Para definir una marca situaremos el anunciador en la posici¢n 
+interesada y pulsaremos nQ, donde n es un n£mero entre 0 y 9. Si introducimos 
+Q solamente, estaremos definiendo la marca 0. No hay por qu‚ seguir ning£n 
+orden en la definici¢n de las marcas, podemos empezar por cualquiera. Una 
+vez que se ha definido una marca no se puede borrar, lo £nico que podremos 
+hacer es redefinirla en otra posici¢n de pantalla.
+
+	Para llevar el anunciador a una marca pulsaremos el n£mero de la 
+marca (entre 0 y 9) y Z. Si no pulsamos el n£mero se entiende que es la marca 
+0.
+
+	 - 21.2  A R E A S
+
+	Entendemos por  rea cualquier zona rectangular de la pantalla de uno o 
+m s caracteres de ancho por uno o m s caracteres de alto. As¡, un  rea puede 
+contener un solo car cter, una l¡nea, parte de una l¡nea, una columna, toda la 
+pantalla, etc.
+
+	Como las marcas, podemos tener hasta 10  reas por formato de 
+pantalla. Las  reas se definen en revisi¢n de la siguiente forma:
+
+	- un n£mero de 0 a 9 y % (tanto por ciento, o shift-5) define la posici¢n 
+del anunciador como el  ngulo superior izquierdo del  rea indicada. Si no se 
+indica n£mero se supone el  rea 0.
+
+	- un n£mero de 0 a 9 y & (ampersand, ¢ shift-6) define la posici¢n del 
+anunciador como el  ngulo inferior derecho del  rea indicada. Igualmente, si no 
+se indica el n£mero se supone 0.
+
+	Las  reas se pueden superponer unas a otras sin ning£n problema. El 
+n£mero asignado a cada  rea se utiliza £nicamente para designarla, por lo que 
+da igual el orden en que las definamos.
+
+	Para verbalizar un  rea, tanto en revisi¢n como en comunicaci¢n 
+pulsaremos el mismo comando que para las l¡neas, es decir, hotkey-INTRO 
+m s n£mero de  rea, m s A (en vez de Intro), y nos verbalizar  el  rea elegida. 
+Si no se introduce el n£mero de  rea se supone el  rea 0. Si el  rea 
+seleccionada no est  definida dar  mensaje de error.
+
+	Para llevar el anunciador (s¢lo en revisi¢n) al principio del  rea n 
+pulsaremos nT y para llevarlo al final nB. Si ese  rea no est  definida dar  
+mensaje de error.
+
+	 21.3  C O L U M N A S
+
+	Vamos a entender por columnas  reas rectangulares de pantalla de 25 
+l¡neas de alto y de dos o m s caracteres de ancho. Al igual que las anteriores, 
+podemos definir 10 columnas por formato de pantalla, tambi‚n numeradas del 0 
+al 9.
+	A diferencia de las  reas, las columnas no se pueden superponer, ya 
+que nos dar¡a error en la definici¢n con el mensaje "columna mal definida". En 
+este caso el n£mero y orden asignado a cada columna s¡ puede ser importante, 
+ya que a la hora de movernos entre ellas se tiene en cuenta el n£mero.
+
+	Para definir una columna procederemos de la siguiente manera:
+
+	1 - Entrar en revisi¢n y situar el anunciador en la posici¢n de la pantalla 
+donde queramos que comience esa columna. Evidentemente, la l¡nea de 
+pantalla donde nos encontremos da igual, ya que la altura de las columnas es 
+siempre la de toda la pantalla.
+
+	2 - Pulsar el n£mero de la columna a definir (si no se pulsa ninguno se 
+entiende que es la 0).
+
+	3 - Pulsar "(" (abre par‚ntesis, o shift-8) para definir el principio de 
+columna. Nos lo indica con "principio de columna x definido" (x es el n£mero de 
+la columna).
+
+	4 - Desplazar el anunciador hacia la derecha hasta donde queramos que 
+llegue la columna.
+
+	5 - Pulsar el n£mero de la columna y ")" (cierra par‚ntesis, o shift-9). Nos 
+dir  "final de columna x definido".
+
+	Si da mensaje de error al definir una columna puede ser porque est‚ 
+superpuesta con otra, o porque el final est‚ antes que el principio. 
+
+	Puede ocurrir que no recordemos d¢nde tenemos las columnas 
+definidas y se nos planteen problemas se solapamiento de columnas al definir 
+otras nuevas, en tal caso, lo mejor es borrar todas las columnas del formato de 
+pantalla actual y definirlas de nuevo. Esto lo haremos pulsando "=" (igual, o 
+shift-0). Se pide confirmaci¢n por lo que es necesario pulsarlo dos veces para 
+realizar el borrado.
+
+	Para redefinir una columna basta con definir sus nuevos l¡mites otra vez, 
+definiendo primero el izquierdo y luego el derecho (evitando que se solapen con 
+otras columnas).
+
+	Los comandos de verbalizaci¢n y movimiento por columnas son los 
+siguientes:
+	
+	- E: Verbaliza la parte de la l¡nea correspondiente a la columna actual. Si 
+no estamos en una columna da un mensaje de error. Si estamos en 
+comunicaci¢n el comando ser  l¢gicamente hotkey-E. 
+
+	- hotkey-INTRO m s numero de columna, m s C. Verbaliza la columna 
+indicada. En este caso se verbaliza la columna completa, es decir, las partes de 
+las 25 l¡neas que correspondan a esa columna. Este comando tambi‚n es 
+v lido para comunicaci¢n.
+
+	- W: Columna anterior. Se traslada a la columna anterior y verbaliza la 
+parte de l¡nea correspondiente a esa columna. Si estamos en la columna n 
+pasa a la n-1. Si no hay ninguna antes, pasar  a la £ltima columna pero en la 
+l¡nea anterior. Si no estamos en ninguna columna pasa a la columna m s 
+pr¢xima a la izquierda. Si no hay columnas definidas dar  mensaje de error, "no 
+hay columnas definidas".
+
+	- R: Columna siguiente. Se traslada a la columna siguiente y la verbaliza. 
+Si estamos en la columna n pasa a la n+1. Si no estamos en ninguna columna 
+pasa a la columna m s pr¢xima a la derecha. Si no quedan m s columnas a la 
+derecha, pasar  a la primera, pero en la l¡nea siguiente.
+
+	- nE: ir a la columna n (de 0 a 9). Lleva el anunciador al principio de la 
+columna indicada.
+
+	- J: Subir una l¡nea en la columna actual y verbalizar. Si no estamos en 
+una columna da mensaje de error. Si llegamos al l¡mite superior del todo emitir  
+un pitido.
+
+	- M: Bajar una l¡nea en la columna actual y verbalizar. Si no estamos en 
+una columna da mensaje de error. Si intentamos pasar del final emitir  un 
+pitido.
+
+	Por £ltimo, si utilizamos las columnas, puede ser interesante trabajar con 
+el modo de revisi¢n en columnas (hotkey-6) para as¡, utilizar los cursores tanto 
+en comunicaci¢n como en revisi¢n para desplazarnos por las l¡neas, y que nos 
+verbalice la columna en la que se encuentre el cursor.
+
+	 - 21.4  C O L O R E S
+
+	Podemos tener simult neamente hasta 10 combinaciones de color de 
+texto, fondo y parpadeante seleccionadas para verbalizar la pantalla. Esta 
+selecci¢n se realiza pulsando + (m s) en el modo de revisi¢n de pantalla. Se 
+verbalizar  "definir color n£mero" y tendremos que introducir un n£mero entre 0 
+y 9 (si pulsamos INTRO tomar  por defecto 0). A continuaci¢n dir  "color de 
+fondo" y el color que tengamos seleccionado. Por defecto el color de fondo es 
+"todos" que significa que se verbalizar  el texto sea cual sea su color de fondo. 
+Para cambiar este color pulsaremos cualquier tecla (por ejemplo el espaciador), 
+y cuando tengamos el deseado pulsaremos INTRO. Seguidamente, se 
+verbalizar  "color de texto" (que por defecto es "todos" tambi‚n) y pulsaremos 
+espacio hasta que seleccionemos el que queramos y luego INTRO. Por £ltimo 
+dir  "parpadeante" que sus valores posibles son "todos", "si" o "no" y se pulsa 
+INTRO de nuevo. Al final se verbaliza "colores definidos" y tendremos definida 
+una combinaci¢n de colores.
+
+	22. L I N E A S  V I V A S
+
+	Entendemos por l¡neas vivas aquellas que se escriben directamente en 
+la memoria de pantalla sin pasar por las rutinas del BIOS y por tanto que no son 
+interceptadas por HABLA. Es decir, son aquellas l¡neas que se pintan en 
+pantalla y que HABLA no detecta y por tanto no verbaliza. Por esto, existe un 
+sistema de detecci¢n de ‚stas l¡neas que analiza cualquier variaci¢n en las 
+mismas para poder as¡ verbalizarlas cuando cambien.
+
+	El usuario debe definir aquellas l¡neas o partes de l¡neas que desea 
+detectar (por ejemplo, la l¡nea de estado de WordPerfect, l¡nea 25). Las 25 
+l¡neas de pantalla pueden estar simult neamente definidas como l¡neas vivas. 
+Evidentemente, cuantas m s l¡neas tengamos como vivas, m s tardar  en 
+analizar si han variado o no. Por ello s¢lo debemos definir aquellas que nos 
+interese realmente detectar.
+
+	Para definir una l¡nea viva o una porci¢n concreta de ella debemos 
+entrar en revisi¢n y situar el anunciador en la l¡nea de pantalla . A continuaci¢n, 
+pulsamos " (comilla doble, o shift 2) el braille hablado nos pedir  el n£mero de 
+caracteres a comprobar. Este n£mero va de 0 a 80 y siempre debe introducirse 
+el m¡nimo necesario para una mayor velocidad y , a continuaci¢n pulsaremos 
+INTRO. Si introducimos 0 estamos indicando que esa l¡nea ya no es una l¡nea 
+viva. Por tanto, por defecto el n£mero de caracteres a comprobar de todas las 
+l¡neas vivas es cero. Despu‚s de realizar esta operaci¢n nos preguntar  " ¨ 
+verbaliza l¡nea ¢  rea? ". Si pulsamos INTRO estaremos respondiendo que 
+deseamos l¡nea completa, pero si introducimos un n£mero "n" comprendido 
+entre 0 y 9 seguido de una "a" nos verbalizar  el  rea "n" cuando varie la l¡nea. 
+El  rea como es l¢gico debe estar previamente definida.  
+
+	Evidentemente, si nos situamos a mitad de una l¡nea y le decimos que el 
+n£mero de caracteres a comprobar son 80, nos comprobar  tambi‚n parte de la 
+l¡nea siguiente. Por ejemplo, para la l¡nea 25 de WordPerfect basta con que 
+analice los primeros 4 caracteres.
+
+	Una vez definidas las l¡neas es necesario activar el sistema de detecci¢n 
+de l¡neas vivas.
+
+	Inicialmente este sistema est  desactivado. Para cambiarlo de estado 
+pulsaremos hotkey-8 tanto en comunicaci¢n como en revisi¢n. Los estados 
+posibles son los siguientes: 
+
+	* l¡neas vivas desactivadas (valor por defecto),
+	* l¡neas vivas indicadas con pitido,
+	* l¡neas vivas sin pitido,
+	* l¡neas vivas indicadas con pitido y cancelaci¢n del mensaje anterior, 
+	* l¡neas vivas sin pitido y cancelaci¢n del mensaje anterior.
+
+	Las l¡neas vivas se pueden desactivar aunque est‚n definidas, de forma 
+que no se detectar n las variaciones de las mismas. Si se indican con pitido, el 
+Braille Hablado producir  un pitido cada vez que cambie una de ellas y a 
+continuaci¢n se verbalizar  la l¡nea completa.
+
+	Si los cambios de las l¡neas vivas son tan r pidos que no da tiempo a 
+verbalizarlos, puede interesarnos que no est‚ activa la cancelaci¢n del mensaje 
+anterior.
+
+	Es importante tener en cuenta que no debemos tener activadas las 
+l¡neas vivas si estas no est n definidas o si la pantalla o el programa en el que 
+estamos no lo necesitan, as¡ evitaremos retrasos y verbalizaciones 
+innecesarias.
+
+	23. S I S T E M A  D E  D E T E C C I O N 
+D E  S O F T C U R S O R
+
+	HABLA puede funcionar con programas que utilizan cursores de soft. Un 
+cursor de soft, es un cursor virtual que se representa por alg£n atributo (por ej. 
+v¡deo inverso), por alg£n color o por un car cter concreto (por ej. un signo de 
+mayor que). El cursor de soft, a diferencia del cursor del sistema, no puede ser 
+detectado por HABLA de forma directa, ya que normalmente en estos casos el 
+cursor del sistema permanece quieto en una posici¢n de la pantalla y hace que 
+el sintetizador no funcione correctamente. La £nica forma de encontrar este 
+cursor, es averiguar el atributo o car cter que lo identifica y que HABLA lo 
+busque continuamente por la pantalla.
+
+	Por tanto, para trabajar con un softcursor lo primero que debemos hacer 
+es definirlo. Tenemos dos formas de hacer esto, manual o autom ticamente. 
+Para hacerlo de forma manual seguiremos los siguientes pasos:
+
+  - Entrar en revisi¢n, y situar el anunciador sobre el supuesto softcursor.
+
+  - Pulsar F5 y se verbalizar  "cursor de seguimiento definido".
+
+  - Activar el sistema de seguimiento de cursor con Hotkey-9. 
+
+Existen cuatro posibilidades de funcionamiento:
+
+		* Seguimiento de cursor por atributo. Se sigue el atributo del
+			  car cter que antes hemos definido. Esta es la m s frecuente,
+			  ya que la mayor¡a de las veces el softcursor es un v¡deo 
+			  inverso.
+
+		* Seguimiento de cursor por car cter. Se sigue el car cter
+			 definido,  pero no los atributos.
+
+		* Seguimiento de cursor por atributo y car cter. Se buscan 
+			 ambas  cosas.
+
+		* Seguimiento resaltado. Se seguir  autom ticamente cualquier 
+		  resaltado que se "mueva" en pantalla. Esta funci¢n es
+			 interesante para trabajar en men£s que utilizan una l¡nea en
+			 invertido para  indicar la opci¢n seleccionada.
+
+		* Seguimiento inteligente. Incluye el seguimiento resaltado y el
+		  seguimiento del cursor al mismo tiempo. Es decir, si se mueve
+		  el  cursor del sistema se seguir , pero si el cursor est  quieto o
+		  no visible, se seguir  cualquier resltado que se mueva por 
+			 pantalla.  Esta opci¢n es muy comoda para no tener que estar
+		  cambiando constantemente el tipo de seguimiento.
+
+	Por ejemplo en los programas EDIT o WORKS en los que en los men£s 
+se utilizan softcursor resaltado y el cursor normal cuando se pide un dato o se 
+teclea un texto, el seguimiento inteligente seguir  al softcursor cuando estemos 
+en los men£s y al cursor normal cuando estemos editando un texto, sin 
+necesidad de cambiar la forma de seguimiento.
+
+	Por eso podemos tener seleccionado el seguimiento inteligente aunque 
+estemos en un programa que no utilice softcursor, ya que seguir  al cursor del 
+sistema (por ejemplo en MS-DOS o WordPerfect). Aunque si tenemos la 
+certeza de que no utiliza softcursor, siempre ser  mejor tener el seguimiento 
+desactivado para ahorrar tiempo a HABLA y evitar posibles errores.
+
+	Ya que el softcursor inteligente es la quinta opci¢n de seguimiento, para 
+activarlo debemos dar cinco veces a hotkey-9, y al ser esta opci¢n muy £til para 
+trabajar, se ha introducido hotkey-S para cambiar entre seguimiento inteligente 
+y seguimiento desactivado con mayor rapidez.
+
+	Es importante se¤alar, que tanto el seguimiento resaltado como el 
+inteligente funcionan independientemente de las formas de seguimiento 
+anteriores (atributo, car cter y atributo y car cter) y que no les afecta el  rea de 
+seguimiento definida con F4 en revisi¢n.
+
+		* Seguimiento de cursor desactivado. Desactivar el sistema de
+			  seguimiento de softcursor. Este es el modo por defecto y con
+			  el que se sigue el cursor del sistema y no el de soft. 
+
+	- Por £ltimo, puede ocurrir que una vez puesto en marcha el sistema de 
+seguimiento, verbalice siempre la misma l¡nea como si el softcursor 
+estuviera quieto. Esto puede ocurrir si HABLA localiza, antes de la 
+posici¢n donde se encuentra realmente el softcursor, un car cter con las 
+mismas caracter¡sticas con la que lo hemos definido. Para subsanar este 
+problema, debemos definir la posici¢n de comienzo de la b£squeda un 
+poco m s avanzada en pantalla. Para ello situaremos el anunciador en 
+la posici¢n deseada y pulsaremos F4.
+
+	Tal y como haciamos en la definici¢n de l¡neas vivas, tambi‚n aqu¡ 
+podemos restringir la b£squeda de softcursor a un  rea determinada de la 
+pantalla, por ello al pulsar F4 en modo revisi¢n, el braille hablado nos pedir  
+que introduzcamos  rea de seguimiento. El  rea habr  sido definido 
+previamente y designado con un n£mero comprendido entre 0 y 9. Si no se 
+pulsa F4, o el  rea no fue definida previamente, la b£squeda se realizar  por 
+toda la pantalla.
+
+	La definici¢n autom tica es m s sencilla, pero en casos concretos puede 
+fallar y necesitaremos recurrir a la definici¢n manual. Consiste en comprobar si 
+ha variado algo en pantalla despu‚s de mover el softcursor. Para ello 
+pulsaremos en comunicaci¢n hotkey-­ (hotkey-abrir admiraci¢n o hotkey m s la 
+tecla que hay a la izquierda de retroceso) y nos dir  "pulse una tecla", entonces 
+deberemos pulsar una tecla que haga al softcursor buscado moverse 
+(normalmente ser  flecha arriba o flecha abajo). Si algo var¡a en pantalla 
+HABLA lo detectar  y fijar  ese car cter como el cursor de seguimiento y 
+verbalizar  "cursor de seguimiento encontrado". Si no var¡a nada dar  mensaje 
+de error. Puede ocurrir que cambie algo m s en pantalla aparte del cursor 
+buscado y si se encuentra antes del cursor, como la b£squeda se hace desde 
+principio de pantalla en adelante, ser  identificado err¢neamente como cursor 
+de soft. Para evitarlo deberemos fijar la posici¢n de comienzo de seguimiento 
+m s adelante en pantalla (en revisi¢n con F4).
+
+	Es importante tener en cuenta que el sistema de seguimiento no debe 
+activarse nunca si no se est  trabajando con un softcursor o si ‚ste no se ha 
+definido correctamente, ya que HABLA puede seguir cualquier otro car cter o 
+intentar seguir uno que no se encuentre en pantalla y entonces dar  el mensaje 
+"cursor no encontrado".
+
+
+
+
+
+	24. G R A B A C I O N  Y  R E C U P E R A C I O N
+D E  F I C H E R O S  D E  C O N F I G U R A C I O N
+
+	En diversas ocasiones puede ser interesante trabajar con unas 
+caracter¡sticas determinadas de HABLA para una aplicaci¢n concreta. Estas 
+caracter¡sticas, con el fin de no tener que establecerlas cada vez que se 
+precise, pueden ser almacenadas en un fichero de configuraci¢n que al 
+ejecutarse nos configure HABLA autom ticamente.
+
+	Para grabar o recuperar un fichero de configuraci¢n existen dos 
+procedimientos:
+
+	1.- A nivel de Sistema Operativo MS-DOS.
+	2.- Entrando en modo Revisi¢n dentro de una aplicaci¢n.
+
+       1.- Para g r a b a r un fichero de configuraci¢n, evidentemente HABLA debe 
+estar cargado y debemos ejecutar el comando:
+
+	HABLA g nombre 
+
+	donde "nombre" es el nombre del fichero en el que queremos que quede 
+registrada la configuraci¢n actual. El nombre del fichero puede indicarse con 
+path (camino) absoluto o relativo, y no tiene que seguir ning£n formato 
+predefinido. Si el fichero ya existe, entonces, se sobrescribir  la configuraci¢n 
+sobre ‚l. Por ejemplo:
+
+	HABLA G DATOS\MODELO.HAB
+
+	grabar¡a la configuraci¢n actual en el fichero MODELO.HAB de nuestro 
+subdirectorio DATOS. Cuando grabamos una configuraci¢n HABLA lo indica 
+con "configuraci¢n grabada".
+
+	La r e c u p e r a c i ¢ n de una configuraci¢n sigue el mismo sistema que 
+la grabaci¢n pero se indica con "r". Por ejemplo:
+
+	HABLA R ..\CONFI.CFG
+
+	recupera la configuraci¢n almacenada en el fichero CONFI.CFG del 
+directorio "padre".
+
+	La recuperaci¢n se puede realizar, a diferencia de la grabaci¢n, tanto en 
+la carga inicial del programa como en las posteriores. Cuando recuperamos una 
+configuraci¢n HABLA lo indica con "configuraci¢n recuperada".
+
+       2.- Para g r a b a r un fichero de configuraci¢n, una vez establecidas las 
+caracter¡sticas apropiadas relativas al entorno de trabajo, se debe entrar en 
+modo revisi¢n y pulsar 
+
+		    CONTROL F10
+
+HABLA responder : "grabar configuraci¢n, introduzca nombre. Donde "nombre" 
+es el nombre del fichero en el que queremos que quede registrada la 
+configuraci¢n actual. El nombre del fichero puede indicarse con path (camino) 
+absoluto o relativo, y no tiene que seguir ning£n formato predefinido. Si el 
+fichero ya existe, entonces, se sobrescribir  la configuraci¢n sobre ‚l. 
+
+       Para r e c u p e r a r un configuraci¢n espec¡fica, se debe entrar en modo 
+revisi¢n y pulsar 
+
+		      CONTROL F9
+
+HABLA responder : "recuperar configuraci¢n, introduzca nombre. Como en el 
+caso anterior se debe introducir el nombre de fichero a recuperar con el path 
+(camino) completo.
+
+	Se puede averiguar el nombre del fichero de configuraci¢n que tenemos 
+actualmente cargado pulsando F6 en el modo de revisi¢n de pantalla. Si no se 
+ha cargado ninguno verbalizar  "por defecto".
+	
+	Los datos salvados en la configuraci¢n son:
+	      - Par metros de voz (velocidad, tono y volumen)
+		- Modo v¡deo l¡nea/palabra.
+		- Modo teclado palabra/car cter.
+		- Indicaci¢n de may£sculas si/no.
+		- Indicaci¢n de espacios si/no.
+		- Indicaci¢n de l¡neas en blanco si/no.
+		- Modo revisi¢n (l¡nea, palabra, car cter, columna o silencioso).
+		- L¡nea de estado.
+		- L¡neas silenciadas.
+		- Tecla hotkey.
+		- Pantalla actual.
+		- Areas de pantalla definidas.
+		- Columnas definidas.
+		- Marcas definidas.
+		- Tiempo de espera.
+		- L¡neas vivas definidas.
+		- Gesti¢n de softcursor.
+		- Teclado externo activado/desactivado.
+		- Verbalizaci¢n de caracteres gr ficos si/no.
+		- Colores seleccionados para la verbalizaci¢n de pantalla.
+
+	25. U T I L I Z A C I O N  D E L  B R A I L L E  
+H A B L A D O  C O M O  T E C L A D O  E X T E R N O
+
+	El Braille Hablado se puede utilizar como teclado externo 
+simult neamente con el teclado del ordenador. Permite realizar cualquiera de la 
+funciones que tenga el teclado, incluyendo las combinaciones de las teclas de 
+funci¢n, tecla ALT o CONTROL. Tambi‚n se ha tratado de que la mayor¡a de 
+los comandos sean lo m s familiares posible al usuario del Braille Hablado.
+
+	Esta funci¢n abre las puertas del manejo de ordenadores para usuarios 
+que desconocen la mecanograf¡a o que no pueden trabajar con un teclado 
+est ndar.
+
+	Por defecto, nada m s cargar HABLA, podemos utilizar el teclado del 
+Braille Hablado. Si pulsamos hotkey-0 verbalizar  "teclado externo 
+desactivado", y esta funci¢n quedar  deshabilitada. Si deseamos volver a 
+activarlo pulsaremos de nuevo hotkey-0. Siempre que se vaya a trabajar con el 
+teclado del ordenador £nicamente, es conveniente, para evitar posibles errores 
+involuntarios, desactivar el teclado del Braille Hablado.
+
+	La escritura debe realizarse en braille computerizado, exactamente igual 
+que cuando trabajamos con Braille Hablado en un fichero computerizado. Por 
+tanto, los n£meros no ir n precedidos de s¡mbolo de n£mero y se escribir n con 
+el punto 6. A continuaci¢n se presenta una tabla de correspondencia entre 
+funciones del teclado y comandos equivalentes en el Braille Hablado.
+
+TECLADO ORDENADOR                      TECLADO BRAILLE HABLADO
+
+Escape  COR-E
+Intro   COR-(4,6)
+Retroceso       COR-B
+INSertar        COR-I
+SUPrimir        COR-D
+F1 a F10        COR-1 a COR-0
+May£scula temporal      COR-U
+Fijar may£sculas        COR-U COR-U
+Desbloqueo may£sculas   COR-Q
+Acentuadas      COR-(2,5,6) m s vocal (a,e,i,o,u)
+Acentuadas grave        COR-(2,3,5) m s vocal (a,e,i,o,u)
+Acentuadas con circunflejo      COR-(2,3,5,6) m s vocal (a,e,i,o,u)
+Prefijo para di‚resis   COR-(2,6) m s vocal (a,e,i,o,u)
+¥       COR-(2,5,6) m s n
+¨       COR-(2,3,5,6) m s ?
+Prefijo hotkey  COR-G
+Prefijo CONTROL COR-X
+Prefijo ALT     COR-(3,5)
+Inicio (Home)   COR-(2,3)
+Fin (End)       COR-(5,6)
+RePag (PgUp)    COR-(1,2,3)
+AvPag (PgDn)    COR-(4,5,6)
+Flecha izquierda        COR-(3)
+Flecha derecha  COR-(6)
+Flecha arriba   COR-(1)
+Flecha abajo    COR-(4)
+Verbalizar l¡nea actual COR-(1,4) ¢ COR-G m s K
+Verbalizar palabra actual       COR-(2,5) ¢ COR-G m s D
+Verbalizar car cter actual      COR-(3,6) ¢ COR-G m s C
+Verbalizar frase actual COR-F ¢ COR-G m s F
+CTRL+flecha izquierda(palabra ant.)     COR-2
+CTRL+flecha derecha(palabra sig.)       COR-5
+Entrar en revisi¢n      COR-R
+Desactivar/activar la voz       COR-H ¢ COR-G m s H
+Callar y listo  COR-J ¢ COR-G m s J
+Tabulador       COR T
+"Lectura"       COR-(3,4,5,6)
+		de l¡nea n: COR (3,4,5,6), n(de 1 a 25), INTRO
+		de  rea  n: COR (3,4,5,6), n(de 0 a 9), A
+		de columna n: COR (3,4,5,6), n(de 0 a 9), C
+Introducci¢n de c¢digo ASCII    COR-K
+
+	Al introducir este comando nos pedir  un n£mero de 0 a 255 de 3,2 ¢ 1 
+d¡gito y acabando con COR-E. Si no introducimos ning£n n£mero, toma el 
+£ltimo que introdujimos con esta funci¢n. Tiene gran utilidad por ejemplo para 
+introducir una fila de semigr ficos.
+
+	Para introducir cualquier comando del modo comunicaci¢n pulsaremos 
+el prefijo COR-G m s la letra correspondiente. Por ejemplo, verbalizar posici¢n 
+del cursor ser  COR-G m s P.
+
+	Para introducir una ¥ (may£scula) pulsaremos COR-U m s COR-(2,5,6) 
+m s n.
+	Si, por ejemplo, queremos introducir ALT F7 pulsaremos COR-(3,5) 
+COR-7 (el 7 en computerizado).
+
+	Por lo dem s, el funcionamiento con HABLA utilizando el Braille Hablado 
+como teclado es id‚ntico a utilizar el teclado del ordenador.
+
+
+
+	26. R E S U M E N  D E  C O M A N D O S 
+     D E L  M O D O  C O M U N I C A C I O N
+	
+- Hotkey-A: decir car cter actual indicando si es  may£scula o min£scula.
+
+- Hotkey-C: verbaliza car cter actual. Si se pulsa dos veces realiza la                  
+	 pronunciaci¢n fon‚tica.
+
+- Hotkey-D: verbaliza palabra actual. Si se pulsa dos veces seguidas se 
+	deletrea  la palabra actual.
+
+- Hotkey-E: verbalizar columna actual.
+
+- Hotkey-F: verbaliza la frase actual (delimitada por .:;­!¨?).
+
+- Hotkey-G: indicaci¢n de atributos del car cter actual. Si se pulsa dos veces     
+	    verbalizar  los colores predominantes en pantalla.
+
+- Hotkey-H: activar/desactivar la voz.
+
+- Hotkey-J: desactivar la voz hasta que est‚ listo.
+
+- Hotkey-K: verbaliza la l¡nea actual.
+
+- Hotkey-L: verbalizar la l¡nea de estado.
+
+- Hotkey-N: verbalizar desde el cursor hasta final de pantalla.
+
+- Hotkey-¥: verbalizar ventana actual (porci¢n de l¡nea).
+
+- Hotkey-O: verbalizar desde el cursor hasta final de l¡nea.
+
+- Hotkey-P: verbaliza la posici¢n actual del cursor (fila, columna).
+
+- Hotkey-Q: verbalizar todos los atributos que se encuentran en pantalla y el 
+	texto correspondiente de dichos atributos en orden creciente de               
+	    frecuencia de aparici¢n.
+
+- Hotkey-R: entrar en modo revisi¢n de pantalla.
+
+- Hotkey-S: activar/desactivar seguimiento de softcursor inteligente.
+
+- Hotkey-U: verbalizar desde principio de l¡nea hasta el cursor (exclusive).
+
+- Hotkey-Y: verbalizar desde principio de pantalla hasta el cursor (exclusive).
+
+- Hotkey-1: cambiar el modo comunicaci¢n teclado (palabra/ car cter /                
+		 desactivado).
+
+- Hotkey-2: cambiar el modo comunicaci¢n v¡deo (activado/desactivado).
+
+- Hotkey-3: activar/desactivar la indicaci¢n de may£sculas.
+
+- Hotkey-4: activar/desactivar la indicaci¢n de espacios.
+
+- Hotkey-5: activar/desactivar la indicaci¢n de l¡neas en blanco.
+
+- Hotkey-6: cambiar modo de revisi¢n (l¡nea / palabra / car cter / columna /         
+	 ventana / silencioso ).
+
+- Hotkey-7: definir formato de pantalla actual. Introducir n£mero de 0 a 9.
+
+- Hotkey-8: definir la gesti¢n de l¡neas vivas. Los valores posibles son:
+
+	* l¡neas vivas desactivadas
+	* l¡neas vivas indicadas con pitido.
+	* l¡neas vivas sin pitido.
+	* l¡neas vivas indicadas con pitido y cancelaci¢n del mensaje anterior.
+	* l¡neas vivas sin pitido y cancelaci¢n del mensaje anterior.
+
+- Hotkey-9: definir la gesti¢n de seguimiento de softcursor. Los valores 
+	posibles son:
+
+	* seguimiento de cursor por atributo,
+	* seguimiento de cursor por car cter,
+	* seguimiento de cursor por atributo y car cter,
+	* seguimiento de cursor desactivado.
+
+- Hotkey-0: activar/desactivar teclado externo.
+
+- Hotkey-Barra espaciadora: cancelar el mensaje actual.
+
+- Hotkey - (gui¢n): verbalizar una zona de pantalla de un color concreto.
+
+- Hotkey-. (punto): verbalizaci¢n del c¢digo ASCII del car cter actual.
+
+- Hotkey-' (ap¢strofe): activar/desactivar verbalizaci¢n caracteres gr ficos y        
+		      controles.
+
+- Hotkey-­ (abre admiraci¢n): detecci¢n autom tica de softcursor.
+
+- Hotkey-retroceso: La siguiente pulsaci¢n ser  ignorada por HABLA.
+
+- Hotkey-, (coma): verbalizar el texto de pantalla que tenga el mismo color de     
+		 fondo que la posici¢n actual del cursor o softcursor.
+
+- Hotkey-INTRO: verbaliza la l¡nea, columna o  rea indicada.    
+
+	  * Verbalizar l¡nea n: Hotkey-INTRO,n (de 1 a 25), INTRO
+	
+	  * Verbalizar  rea n: Hotkey-INTRO,n (de 0 a 9), A
+
+	  * Verbalizar columna n: Hotkey-INTRO,n (de 0 a 9), C
+
+- flecha arriba: desplaza el cursor a la l¡nea superior y la verbaliza.
+
+- flecha abajo: desplaza el cursor a la l¡nea inferior y la verbaliza.
+
+- flecha izquierda: desplaza el cursor al car cter de la izquierda y lo verbaliza.
+
+- flecha derecha: desplaza el cursor al car cter de la derecha y lo verbaliza.
+
+- CTRL-flecha izquierda: desplaza el cursor a la palabra de la izquierda y la   
+					      verbaliza.
+
+- CTRL-flecha derecha: desplaza el cursor a la palabra de la derecha y la           
+		     verbaliza.
+
+
+
+	27. R E S U M E N  D E  C O M A N D O S 
+D E L  M O D O  R E V I S I O N
+
+- ESCape o INTRO: salir del modo revisi¢n.
+
+- S ¢ CTRL-izquierda: palabra anterior. 
+
+- D: Hablar palabra actual. 
+
+- F ¢ CTRL-derecha: palabra siguiente. 
+
+- X ¢ flecha izquierda: car cter anterior.
+
+- C: car cter actual. Si pulsamos por segunda vez realiza la pronunciaci¢n         
+     fon‚tica.
+
+- nC: ir a la columna n.
+
+- V ¢ flecha derecha: car cter siguiente.
+
+- A: car cter actual, indicando si es may£scula o min£scula.
+
+- P: verbaliza la posici¢n actual del anunciador (fila, columna).
+
+- Hotkey-P: indica la posici¢n actual del cursor (fila, columna).
+
+- I ¢ flecha arriba: l¡nea anterior.
+
+- K: l¡nea actual.
+
+- nK: ir a la l¡nea n.
+
+- , ¢ flecha abajo: l¡nea siguiente.
+
+- CONTROL-R: frase anterior. Las frases se delimitan por .:;­!¨?.
+
+- CONTROL-F: frase actual.
+
+- CONTROL-V: frase siguiente.
+
+- CONTROL-F3: Activar/desactivar puntuaci¢n en Braille Hablado
+
+- CONTROL-F7: Activar/desactivar pitido al cambiar de l¡nea.
+
+- U: verbalizar desde principio de l¡nea hasta el anunciador (exclusive).
+
+- O: verbalizar desde el anunciador hasta final de l¡nea.
+
+- Y: verbalizar desde principio de pantalla hasta el anunciador (exclusive).
+
+- N: verbalizar desde el anunciador hasta final de pantalla.
+
+- T: ir al principio de la pantalla.
+
+- B: ir al final de la pantalla.
+
+- ReP g: ir al principio de la columna actual.
+
+- AvP g: ir al final de la columna actual.
+
+- Inicio(Home): ir al principio de la l¡nea actual.
+
+- Fin(End): ir al final de la l¡nea actual.
+
+- H: Entrar en modo de Ayuda.
+
+- G: indicaci¢n de atributos del car cter actual. Si se pulsa dos veces 
+	verbalizar   los colores predominantes en pantalla.
+
+- . (punto): verbaliza el c¢digo ASCII del car cter actual.
+
+- L: verbaliza l¡nea de estado.
+
+- ; (punto y coma): unir cursor de sistema con anunciador salir de revisi¢n. 
+
+- : (dos puntos): lleva el anunciador a la posici¢n del sistema.
+
+- / (barra inclinada): B£squeda en pantalla.
+
+- nQ: realizar marca n.
+
+- nZ: ir a la marca n.
+
+- n% (tanto por ciento): Definir principio del  rea n.
+
+- n& (ampersand): Definir final del  rea n.
+
+- nT: ir al principio del  rea n (v‚rtice superior izquierdo). 
+
+- nB: ir al final del  rea n (v‚rtice inferior derecho).
+
+- n(: Definir principio de la columna n.
+
+- n): Definir final de la columna n.
+
+- = (igual): Borrar todas las columnas de la pantalla actual.
+
+- W: Columna anterior.
+
+- E: Verbaliza la columna actual.
+
+- nE: ir a la columna n (de 0 a 9).
+
+- R: Columna siguiente.
+
+- J: Subir una l¡nea en la columna actual y verbalizar.
+
+- M: Bajar una l¡nea en la columna actual y verbalizar.
+
+- " (comilla doble): Definir l¡nea actual como l¡nea viva.
+
+- F4: fijar posici¢n de comienzo de b£squeda de softcursor.
+
+- F5: definir car cter actual como softcursor.
+
+- F6: verbalizar el nombre del fichero de configuraci¢n actual.
+
+- F7: Definir tiempo de espera.
+
+- F8: Definir la l¡nea de estado.
+
+- F9: Cambio de la hotkey.
+
+- F10: Activar/silenciar l¡nea actual.
+
+- ALT-F4: Definir tecla de formulario.
+
+- ALT-F5: Definici¢n de mensajes.
+
+- ALT-F6: Definici¢n de car cter vivo.
+
+- ALT-F7: Acceso a l¡nea 26 de pantalla.
+
+- ALT-F8: Definici¢n de l¡nea de estado secundaria.
+
+- ALT-F10: Grabaci¢n r pida de configuraci¢n actual.
+
+
+
+	28. C O N S E J O S  P R A C T I C O S
+
+	- Si tenemos l¡neas vivas definidas y estamos en una pantalla donde no 
+son necesarias debemos desactivarlas (hotkey-8).
+
+	- Si hemos definido el seguimiento de un softcursor y estamos en un 
+programa que trabaja con el cursor de sistema (por ejemplo en el sistema 
+operativo) debemos desactivar el seguimiento (hotkey-9).
+
+	- Si no utilizamos el teclado externo, debemos desactivarlo (hotkey-0).
+
+	- Los par metros de comunicaci¢n en el Braille Hablado deben ser: 9600 
+baudios, no paridad, half duplex, longitud de dato 8, 1 bit de stop, no protocolo 
+(solamente utilizaremos el protocolo hardware para el modo de lectura 
+autom tica). Debemos trabajar con el modo sintetizador de voz activado 
+(pulsando los seis puntos en el men£ de par metros de voz) y la verbalizaci¢n 
+de los n£meros y de los signos de puntuaci¢n depender  del Braille Hablado.
+
+	- Si en el sistema operativo no verbaliza lo que se pinta en pantalla (el 
+modo de comunicaci¢n v¡deo) puede ser que no tengamos cargado el 
+ANSI.SYS en el fichero CONFIG.SYS.
+
+	- Si al trabajar en el sistema operativo nos molesta la repetici¢n de las 
+verbalizaciones puede ser que tengamos el modo de comunicaci¢n video y el 
+de teclado activados. Una soluci¢n puede ser activar el modo de comunicaci¢n 
+de v¡deo-palabra y desactivar el modo de comunicaci¢n teclado (con hotkey-1 y 
+hotkey-2), aunque si lo dejamos as¡ no verbalizar  nada en los programas en 
+los que no se captura el modo de comunicaci¢n v¡deo (como WordPerfect).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	A N E X O
+
+
+	R E S U M E N  D E  C O M A N D O S
+
+	O R D E N A D O S  A L F A B E T I C A M E N T E
+
+	P O R  F U N C I O N
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	29. RESUMEN DE COMANDOS DEL MODO COMUNICACION
+	ORDENADOS ALFABETICAMENTE POR FUNCION
+Funci¢n                                                                  P gina
+
+ASCII  Verbalizaci¢n del c¢digo ASCII del car cter 
+       actual   11
+		Hotkey (punto)
+AREA   Indicada, verbalizar     17
+		Hotkey INTRO,n donde n va de 0 a 9, A
+ATRIBUTOS del car cter actual   9
+    Pulsado 2 veces verbaliza colores predominantes
+	  Hotkey G
+CARACTER ACTUAL 7
+    Pulsado 2 veces pronuncia fon‚ticamente
+		Hotkey C
+CARACTER ANTERIOR verbalizar    7
+	  Flecha izquierda
+CARACTER SIGUIENTE verbalizar   7
+	  Flecha derecha
+CARACTER ACTUAL may£scula o min£scula   8
+	  Hotkey A
+CARACTERES GRAFICOS Y CONTROLES activar/desactivar      15
+		Hotkey (ap¢strofe)
+COLUMNA   indicada, verbalizar  19
+		Hotkey INTRO, n donde n va de 0 a 9, C
+COLUMNA ACTUAL  19
+	  Hotkey E
+CURSOR DESDE PRINCIPIO DE LINEA HASTA EL verbalizar     8
+		Hotkey U
+CURSOR HASTA FINAL DE PANTALLA verbalizar desde 8
+		Hotkey N
+CURSOR HASTA FINAL DE LINEA verbalizar desde    8
+		Hotkey O
+CURSOR POSICION ACTUAL verbalizar (fila,columna)        8
+		Hotkey P
+ESPACIOS indicaci¢n de, activar/desactivar      14
+		Hotkey 4
+FRASE ACTUAL delimitado por . : ; ­ ! ¨ ? verbalizar    7
+		Hotkey F
+INVALID La siguiente pulsaci¢n ser  ignorada por HABLA  5
+	      Hotkey retroceso
+LINEA   indicada, verbalizar    6
+		Hotkey INTRO, n donde n va de 1 a 25,INTRO
+LINEA ACTUAL   verbalizar       6
+		Hotkey K
+LINEA SIGUIENTE verbalizar      6
+		Flecha abajo
+LINEA ANTERIOR verbalizar       6
+		Flecha arriba
+LINEA DE ESTADO   verbalizar    12
+		Hotkey L
+LINEAS EN BLANCO   activar/desactivar indicaci¢n de     14
+		Hotkey 5
+LINEAS VIVAS   definir la gesti¢n de    20
+		Hotkey 8
+Los valores son:     L¡neas vivas desactivadas
+		     L¡neas vivas indicadas con pitido
+		     L¡neas vivas sin pitido
+		     L¡neas vivas indicadas con pitido y                                
+		      cancelaci¢n del mensaje anterior
+		     L¡neas vivas sin pitido y cancela-
+		      ci¢n del mensaje anterior
+MAYUSCULAS   activar/desactivar indicaci¢n de   9
+		Hotkey 3
+MENSAJE ACTUAL   Cancelar       11
+		Hotkey barra espaciadora
+MODO COMUNICACION  teclado cambiar palabra/car cter/desactivado 4
+		Hotkey 1
+MODO COMUNICACION v¡deo cambiar activado/desactivado    4
+			Hotkey 2
+MODO REVISION   L¡nea/palabra/car cter/columna/
+		  ventana / silencioso  15
+		Hotkey 6
+PALABRA ACTUAL verbalizar       6
+	Pulsado 2 veces se deletrea
+		Hotkey D
+PALABRA SIGUIENTE verbalizar    6
+		CTRL flecha derecha
+PALABRA ANTERIOR verbalizar     6
+		CTRL flecha izquierda
+PANTALLA  Verbalizar desde el principio hasta cursor    8
+		Hotkey Y
+PANTALLA  Verbalizar una zona de un color concreto      9
+		Hotkey gui¢n
+PANTALLA  definir formato de    16
+	Introducir n£mero de 0 a 9
+		Hotkey 7
+REVISION  DE PANTALLA  Entrar en modo   3
+		Hotkey R
+SOFTCURSOR  Detecci¢n autom tica de     23
+		Hotkey abre admiraci¢n
+SOFTCURSOR  Definir la gesti¢n del seguimiento  22
+		Hotkey 9
+	Los valores son:
+		  Seguimiento de cursor por atributo
+			 Seguimiento de cursor por car cter
+		  Seguimiento de cursor por atributo y car cter
+		  Seguimiento de cursor desactivado
+TECLADO EXTERNO  activar/desactivar     26
+		Hotkey 0
+VENTANA ACTUAL Verbalizar porci¢n de l¡nea que se encuentra en una           
+	      ventana   10
+	      Hotkey ¥
+
+VOZ   activar/desactivar        10
+		Hotkey H
+VOZ   desactivar hasta que est‚ listo   10
+		Hotkey J
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	30. RESUMEN DE COMANDOS DEL MODO REVISION
+	ORDENADOS ALFABETICAMENTE POR FUNCION
+
+ANUNCIADOR   verbalizar la posici¢n actual del  8
+			P
+ANUNCIADOR   verbalizar desde principio de l¡nea 
+	     hasta ‚l   8
+			U
+ANUNCIADOR   verbalizar desde ‚l hasta final de 
+	     l¡nea      8
+			O
+ANUNCIADOR   verbalizar desde principio de pantalla 
+	     hasta ‚l   8
+			Y
+ANUNCIADOR   verbalizar desde ‚l hasta final de pantalla        8
+			N
+ANUNCIADOR   unir con cursor y salir de revisi¢n        12
+			PUNTO Y COMA
+ANUNCIADOR   llevar a la posici¢n del cursor del 
+	     sistema    12
+			DOS PUNTOS
+AREA   definir principio del  rea n     17
+			N TANTO POR CIENTO
+AREA   definir final del  rea n 17
+			N AMPERSAND
+AREA   ir a principio de  rea n (v‚rtice superior 
+	     izquierdo) 17
+			NT
+AREA   ir al final del  rea n (v‚rtice inferior 
+	     derecho)   17
+			NB
+ASCII  verbalizar c¢digo ASCII del car cter actual      11
+			PUNTO
+ATRIBUTOS   indicaci¢n de atributos del car cter 
+	     actual     9
+			G
+		Pulsado dos veces verbaliza colores predominantes.
+AYUDA  Entrar en modo de        11
+			H
+BAJAR   una l¡nea en la columna actual y verbalizar     19
+			M
+BORRAR   Todas las columnas de la pantalla actual       18
+			IGUAL
+BUSQUEDA   en pantalla  13
+			BARRA INCLINADA
+CAMBIO   de Hotkey      15
+			F9
+CARACTER   verbaliza c¢digo ASCII del car cter 
+	      actual    11
+			PUNTO
+CARACTER ACTUAL  verbalizar     7
+			C
+		Pulsado dos veces realiza pronunciaci¢n fon‚tica
+CARACTER ACTUALindicaci¢n de may£scula o min£scula      8
+			A
+CARACTER ANTERIOR   verbalizar  7
+			X
+CARACTER SIGUIENTE   verbalizar 7
+				  V
+CARACTER VIVO  definici¢n de    46
+			ALT-F6
+COLUMNA   definir principio de la 
+	   columna n    18
+			N ABRE PARENTESIS
+COLUMNA   definir final de la columna n 18
+			n CERRAR PARENTESIS
+COLUMNA N  ir a columna n definida por usuario  19
+			N E  d¢nde N es un valor entre 0 y 9
+COLUMNA N  ir a columna n de pantalla   7
+			N C  d¢nde N es un valor entre 1 y 80  
+COLUMNA ACTUAL  ir a principio de       8
+			REPAG (subir p gina)
+COLUMNA ACTUAL  ir a final de   8
+			AVPAG (bajar p gina) 
+COLUMNA ACTUAL  verbalizar      7 y 19
+			E
+COLUMNA ANTERIOR   verbalizar   7 y 19
+			W
+COLUMNA SIGUIENTE   verbalizar  7 y 19
+			R  
+CONFIGURACION ACTUAL  verbalizar nombre de fichero de   25
+			F6
+CONFIGURACION ACTUAL  Grabar    25
+		     CONTROL F10
+CONFIGURACION ACTUAL Grabaci¢n r pida   45
+		      ALT-F10
+CONFIGURACION  Recuperar        25
+		     CONTROL F9
+CURSOR   unir con anunciador y salir de revisi¢n        16
+			PUNTO Y COMA
+
+CURSOR   indicar posici¢n actual del    8
+			HOTKEY P
+FORMULARIO  definir tecla de    47
+				  ALT-F4
+FRASE ACTUAL  verbalizar        7
+			CONTROL F
+FRASE ANTERIOR   verbalizar     7
+			CONTROL R
+FRASE SIGUIENTE   verbalizar    7
+			CONTROL V
+HOTKEY  cambio de       15
+			F9
+LINEA  bajar una l¡nea en la columna actual y 
+       verbalizar       8
+			M
+LINEA  subir una l¡nea en la columna actual y 
+       verbalizar       8
+			J
+LINEA ACTUAL  verbalizar        7
+			K
+LINEA ACTUAL  ir a principio de la      8
+			INICIO (HOME)
+LINEA ACTUAL  ir a final de la  8
+			FIN (END)
+LINEA ACTUAL   activar/silenciar        13
+			F10
+LINEA ANTERIOR   verbalizar     7
+			I ¢ FLECHA ARRIBA
+LINEA SIGUIENTE   verbalizar    7
+			COMA ¢ FLECHA ABAJO
+LINEA N   ir a l¡nea n y verbalizar     7
+			N K  d¢nde N es un valor entre 1 y 25
+LINEA DE ESTADO   definir       11
+			F8
+LINEA DE ESTADO SECUNDARIA  definir     47
+				  ALT-F8
+LINEA DE ESTADO   verbalizar    11
+			L
+LINEA VIVA  definir l¡nea actual como   20
+			COMILLA DOBLE
+LINEA 26 DE PANTALLA   acceso a 46
+				  ALT-F7
+MARCA N   realizar marca n      17
+			N Q
+MARCA N   ir a marca n  17
+			N Z
+MENSAJES  definici¢n de 45
+				  ALT-F5
+MODO DE REVISION  salir de      3
+			ESCAPE ¢ INTRO
+PALABRA ACTUAL   verbalizar     6
+			D
+PALABRA ANTERIOR  verbalizar    6
+			S ¢ CTRL + FLECHA IZQUIERDA
+PALABRA SIGUIENTE   verbalizar  6
+			F ¢ CTRL + FLECHA DERECHA
+PANTALLA  ir a principio de     9
+			T
+PANTALLA  ir a final de 9
+			B
+PITIDO activar/desactivar pitido cuando se cambia de l¡nea      5
+				  CONTROL-F7
+PUNTUACION PARA B.HABLADO activar/desactivar    47
+				  CONTROL-F3
+SOFTCURSOR   definir car cter actual como       22
+			F5
+SOFTCURSOR   fijar posici¢n de comienzo de b£squeda 
+	     de 23
+			F4
+SUBIR  una l¡nea en la columna actual y verbalizar      19
+			J
+TIEMPO DE ESPERA   definir      13
+			F7
+UNIR   cursor de sistema con anunciador y salir de 
+       revisi¢n 13
+			PUNTO Y COMA
+
+
+
+
+  LA VERSION PARA CIBER 232P
+
+	HABLA tambi‚n puede utilizarse como software para utilizar el 
+sintetizador de voz CIBER 232 P. Adem s de los comandos de HABLA se han 
+a¤adido otros propios para este sintetizador.
+
+   Si entramos en revisi¢n tendremos:
+
+	- CONTROL F1: Caracteres especiales activado/desactivado                       
+	  (el s¡mbolo de d¢lar, tanto por ciento, etc).
+
+	- CONTROL F2: Signos de puntuaci¢n activado/desactivado.
+
+	- CONTROL F3: Ignorar espacios activado/desactivado. Para                      
+	que efect£e pausas en los espacios o los ignore.
+
+	- CONTROL F4: Deletrear n£meros activado/desactivado.
+
+	- CONTROL F5: Diccionario interno activado/desactivado.
+
+
+
+ANEXO A LA VERSION 3.30 
+
+	   MODIFICACIONES Y MEJORAS RESPECTO A LA VERSION 3.01
+
+
+   IMPORTANTE: Lea detenidamente este texto antes de utilizar la nueva 
+versi¢n de HABLA.
+
+
+   1.- Aunque en la versi¢n anterior parec¡a subsanado el problema, los 
+pitidos de aviso de bloqueo may£sculas, bloqueo num‚rico, etc no se 
+escuchaban o se escuchaban muy poco dependiendo de la velocidad del 
+ordenador. Ahora, esto se tiene en cuenta, de forma que se pueden 
+escuchar en cualquier m quina. Tambi‚n se ha cambiado el tipo de pitido, 
+para poder distinguir bien entre ellos. El pitido que se produc¡a en la carga 
+de Habla tambi‚n se ha eliminado.
+
+   2.- Teclado externo para Reflection. 
+
+   A partir de la versi¢n 2.12 de Reflection podemos utilizar tanto el teclado 
+externo del Braille Hablado como el del PC Hablado. Se ha mejorado la 
+gesti¢n del teclado externo para Braille Hablado, que no funcionaba 
+correctamente en algunos casos. Ahora, el teclado puede no funcionar si 
+cargamos el Habla y encendemos luego el Braille Hablado, pero si entramos 
+y salimos de revisi¢n se arregla el problema.
+
+   Tambi‚n se ha a¤adido una combinaci¢n para el teclado externo que es el 
+COR-4,5 que reproduce la pulsaci¢n de la tecla Intro del teclado num‚rico. 
+Con esto podemos validar las pantallas de Reflection.
+
+   Tanto para Braille Hablado como para PC Hablado s¢lo se pueden utilizar 
+COM1 ¢ COM2 (en Ciber hasta COM4).
+
+   3.- Por fin los ficheros de configuraci¢n son compatibles entre estas 5 
+versiones. Ahora se podr n intercambiar los ficheros entre usuarios aunque 
+no utilicen la misma s¡ntesis.
+
+   Los ficheros de configuraci¢n anteriores NO SON COMPATIBLES con 
+esta nueva versi¢n.
+
+   4.- Mejorada la grabaci¢n de ficheros de configuraci¢n.
+
+   Adem s del CONTROL-F10 en revisi¢n y de la "g" en la l¡nea de 
+comandos, se ha a¤adido la funci¢n de "grabaci¢n r pida" con ALT-F10 en 
+revisi¢n. Esta funci¢n permite ahorrar tiempo en la grabaci¢n ya que no nos 
+pide el nombre del fichero a grabar sino que utiliza el del que estemos 
+utilizando. Es decir, si hemos cargado Habla y no hemos recuperado ning£n 
+fichero todav¡a y utilizamos ALT-F10, autom ticamente se crear  el fichero 
+CONFI.HAB en el directorio ra¡z. Si resulta que hemos recuperado alg£n 
+fichero, bien desde revisi¢n, bien desde la l¡nea de comandos con "r", 
+utilizar  el nombre del fichero que pusimos al recuperar. 
+
+   Por ejemplo, si nos interesa tener un s¢lo fichero de configuraci¢n en el 
+directorio Habla, lo recuperaremos con el PATH completo (Habla r 
+C:\habla\confi.hab) de manera que cada vez que queramos actualizarlo, 
+estemos trabajando en cualquier otra unidad o directorio, sobrar  con pulsar 
+ALT-F10 en revisi¢n. Con esta funci¢n podremos evitar tener ficheros de 
+configuraci¢n repartidos por todo el disco.
+
+   Actualmente, los ficheros de configuraci¢n ocupan 4350 Bytes.
+    
+   5.- Servicio de verbalizaci¢n para otras aplicaciones.
+
+   Habla incluye un servicio de interrupci¢n que le permite a cualquier 
+aplicaci¢n hacer una llamada para verbalizar el texto que se desee. Con 
+esto se podr n hacer aplicaciones para cualquier s¡ntesis sin tener en 
+cuenta el tipo de ‚sta ya que es Habla el que se encargar  de verbalizar el 
+mensaje. Los usuarios podr n utilizar esta funci¢n para sus propios 
+programas.
+    
+   Los datos para hacer una llamada y verbalizar un texto son los siguientes:
+
+   Llamada a la Interrupci¢n 0FAH con los par metros siguientes:
+
+	AX = 0000h
+	BX = N§ Bytes del mensaje.
+	DS:DX = Direcci¢n del mensaje a sintetizar.
+
+   La rutina devuelve:
+   
+	AX=1111h mensaje enviado correctamente.
+	AX=????h error de env¡o o Habla no cargado.
+			
+   6.- Gesti¢n de mensajes.
+
+   Se ha a¤adido una gesti¢n de mensajes definibles por el usuario que nos 
+permite definir hasta 10 mensajes (de 0 a 9) que m s tarde se pueden 
+utilizar para ser verbalizados por las l¡neas vivas o por los caracteres vivos 
+(que se explican m s adelante).
+
+   Los mensajes se definen con ALT-F5 en revisi¢n, que nos pide el n£mero 
+de mensaje (de 0 a 9), y a continuaci¢n tecleamos el mensaje en s¡ (de 
+hasta 30 caracteres) y pulsamos Intro. Si damos Intro directamente, sin 
+teclear nada, escucharemos el contenido del mensaje en cuesti¢n.
+
+   A continuaci¢n podemos utilizar el mensaje para ser verbalizado si una 
+l¡nea viva cambia o si un car cter vivo aparece, que se har  de la siguiente 
+manera: al definir una l¡nea viva (o car cter vivo) nos pregunta, "Verbalizar 
+l¡nea,  rea o mensaje", si pulsamos Intro quiere decir verbalizar l¡nea (la 
+l¡nea actual se entiende), si introducimos nA verbalizar  el  rea n (n de 0 a 
+9) y si introducimos nM entonces verbalizar  el mensaje n£mero n.
+
+   Es importante se¤alar que los mensajes son comunes a todos los formatos 
+de pantalla de una misma configuraci¢n. Es decir, aunque cambiemos de 
+pantalla los mensajes ser n los mismos.
+						
+   7.- Nueva gesti¢n de caracteres vivos.
+
+   Se entiende por car cter vivo la detecci¢n de la aparici¢n de un car cter 
+concreto en una posici¢n determinada de la pantalla (por ejemplo el 
+"mu¤equito" de Reflection). Los pasos a seguir para definirlo son los 
+siguientes:
+
+	- Una vez que el mencionado car cter (y/o atributo) est  pintado en 
+pantalla, entraremos en revisi¢n y nos posicionaremos sobre ‚l.
+
+	- Pulsamos ALT F6 y a continuaci¢n nos pedir  el n£mero de car cter 
+a definir (de 0 a 9, ya que hay hasta diez caracteres vivos por formato de 
+pantalla). A continuaci¢n pulsamos Intro. Si lo que quisi‚ramos es borrar la 
+definici¢n de ‚se car cter vivo pulsar¡amos Suprimir (Sup) en vez de Intro.
+
+	- A continuaci¢n nos dir  "Verbalizar l¡nea,  rea o mensaje" y 
+aplicaremos lo propio seg£n el punto anterior.
+
+	- Una vez definido el car cter, debemos poner en marcha el sistema de 
+detecci¢n que va junto al de l¡neas vivas, que como sabemos es con hotkey-
+8 en comunicaci¢n.
+
+   Una ventaja que tienen los caracteres vivos es que nos permitir n detectar 
+la aparici¢n de determinadas ventanas o mensajes que vayan en distintos 
+colores, ya que se detecta tambi‚n la aparici¢n de atributos.
+    
+   8.- Acceso hasta 26 l¡neas de pantalla. 
+
+   Habla por defecto entra con 25 l¡neas aunque podemos cambiar entre 25 
+y 26 y vice-versa pulsando ALT F7 en revisi¢n. Con esto podremos acceder 
+a la famosa l¡nea 26 de Reflection ¢ de otros programas. 
+    
+   9.- L¡nea de estado secundaria.
+
+   Son muchos los programas que nos proporcionan informaci¢n b sica o de 
+"estado" en m s de una l¡nea de pantalla. Por ellos se ha a¤adido una 
+segunda l¡nea de estado (secundaria) que se define con ALT F8 en revisi¢n. 
+Para verbalizarla pulsaremos hotkey-M" en comunicaci¢n. Por defecto, la 
+l¡nea secundaria es la 25.
+
+   10.- A veces la funci¢n de hotkey-retroceso para que la siguiente 
+pulsaci¢n fuera ignorada por Habla y obtener el car cter deseado por 
+teclado, no funcionaba bien. Se ha mejorado la gesti¢n y ahora funciona 
+correctamente.
+  
+   11.- Puntuaci¢n para Braille Hablado.
+
+   Ya se puede activar o desactivar la puntuaci¢n para Braille Hablado desde 
+Habla con CONTROL F3 en revisi¢n. Por consiguiente quedar  guardado 
+en los ficheros de configuraci¢n y no ser  necesario estar continuamente 
+entrando en par metros de voz.
+  
+   12.- Mejorada la verbalizaci¢n de caracteres para CiberVoz.
+
+   Si utilizamos Cibervoz, aunque la verbalizaci¢n de signos de puntuaci¢n y 
+caracteres especiales est‚ desactivada, ahora si leemos de car cter en 
+car cter nos lo verbalizar  aunque sea uno de estos signos. Esto evita estar 
+activando y desactivando estos par metros.
+
+   13.- Tecla de Formulario.
+
+   Ahora utilizando ALT-F4 en revisi¢n podemos definir la tecla Intro, 
+Tabulador o ambas para que se verbalice autom ticamente, una vez 
+pulsadas estas teclas, parte de la l¡nea en la que se situar  el cursor (se 
+verbaliza desde principio de l¡nea hasta el cursor). Con esto si estamos 
+trabajando en aplicaciones que utilizan el Intro o el Tabulador para cambiar 
+de campo, no necesitaremos dar a hotkey- K para 
+averiguar qu‚ hay en la l¡nea actual.
+
+   Por defecto la tecla de formulario es: "Ninguna".
+     
+   14.- Entrada alternativa en Revisi¢n de Pantalla.
+
+   Siempre que pulsamos hotkey-R para entrar en revisi¢n, Habla comprueba 
+una variable del sistema llamada INDOS para ver si podemos "bloquear" el 
+programa y que Habla tome el control. A veces, en determinados programas 
+la variable INDOS est  err¢neamente activada, o incluso el usuario quiere 
+entrar en Revisi¢n a£n corriendo el riesgo de que el equipo se quede 
+"colgado". Para estos casos se ha definido la combinaci¢n hotkey- Suprimir, 
+que entrar  en revisi¢n sin comprobar la INDOS. Por ejemplo si pulsamos 
+esta combinaci¢n aunque la pantalla est‚ haciendo scrolling (a mitad de un 
+DIR), podremos entrar en revisi¢n, aunque aumentar  las probabilidades de 
+que el equipo quede colgado.
+
+   Para los usuarios de teclado externo la combinaci¢n ser  COR-G COR-D.
+
+   15.- Mejorada la introducci¢n de cadenas de texto en revisi¢n:
+   Se ha mejorado la gesti¢n cuando se pide una cadena de texto por teclado
+en revisi¢n para b£squeda de texto, definir mensaje, introducir nombre de
+fichero (grabaci¢n y recuperaci¢n) y definir nombre de pantalla. Ahora se 
+puede ver en pantalla lo que escribimos adem s de poder escucharlo. Tambi‚n 
+se pueden utilizar los comandos de comunicaci¢n como hotkey-k mientras se 
+introduce el texto.
+   
+
+
+
+ 
+
+
+
+ 
+
+ 
+
+HABLA 3.30 Manual de usuario
+
+
+
+
+
+P gina-21-
+
+

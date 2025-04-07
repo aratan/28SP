@@ -1428,11 +1428,47 @@ func main() {
 	fs := http.FileServer(http.Dir("./web"))
 	r.PathPrefix("/").Handler(fs)
 
-	// Iniciar servidor HTTP
+	// Iniciar servidor HTTP/HTTPS
 	go func() {
-		log.Println("Starting HTTP server on :8080")
-		if err := http.ListenAndServe(":8080", r); err != nil {
-			log.Fatalf("HTTP server error: %v", err)
+		// Verificar si los certificados existen
+		_, certErr := os.Stat("cert.pem")
+		_, keyErr := os.Stat("key.pem")
+
+		// Variable para controlar si se inicia el servidor HTTPS
+		httpsEnabled := certErr == nil && keyErr == nil
+
+		if httpsEnabled {
+			// Iniciar servidor HTTPS en una goroutine separada
+			go func() {
+				log.Println(Green + "Starting HTTPS server on :8443" + Reset)
+				if err := http.ListenAndServeTLS(":8443", "cert.pem", "key.pem", r); err != nil {
+					log.Printf(Red+"HTTPS server error: %v"+Reset, err)
+				}
+			}()
+
+			// Crear un router para redirecciones HTTP a HTTPS
+			redirectRouter := http.NewServeMux()
+			redirectRouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+				host := strings.Split(r.Host, ":")[0]
+				target := "https://" + host + ":8443" + r.URL.Path
+				if len(r.URL.RawQuery) > 0 {
+					target += "?" + r.URL.RawQuery
+				}
+				http.Redirect(w, r, target, http.StatusMovedPermanently)
+			})
+
+			// Iniciar servidor HTTP para redirecciones
+			log.Println(Yellow + "Starting HTTP server on :8080 (redirecting to HTTPS)" + Reset)
+			if err := http.ListenAndServe(":8080", redirectRouter); err != nil {
+				log.Fatalf(Red+"HTTP redirect server error: %v"+Reset, err)
+			}
+		} else {
+			// Si no hay certificados, iniciar solo HTTP
+			log.Println(Yellow + "Certificate files not found, starting HTTP server only" + Reset)
+			log.Println("Starting HTTP server on :8080")
+			if err := http.ListenAndServe(":8080", r); err != nil {
+				log.Fatalf(Red+"HTTP server error: %v"+Reset, err)
+			}
 		}
 	}()
 
