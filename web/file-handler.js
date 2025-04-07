@@ -90,69 +90,6 @@ async function getReceivedFiles() {
 }
 
 // Función para actualizar la lista de archivos recibidos en la interfaz
-async function refreshReceivedFiles() {
-  try {
-    const receivedFilesContainer = document.getElementById("receivedFiles");
-    if (!receivedFilesContainer) {
-      console.error("No se encontró el contenedor de archivos recibidos");
-      return;
-    }
-
-    receivedFilesContainer.innerHTML = "";
-
-    const fileMessages = await getReceivedFiles();
-
-    // Siempre mostrar un mensaje cuando no hay archivos
-    if (!fileMessages || fileMessages.length === 0) {
-      receivedFilesContainer.innerHTML =
-        '<p class="text-muted">No hay archivos recibidos</p>';
-      return;
-    }
-
-    fileMessages.forEach((file) => {
-      try {
-        const fileItem = document.createElement("a");
-        fileItem.className = "list-group-item list-group-item-action";
-
-        // Verificar que los datos necesarios existen
-        const fileId = file.ID || "unknown";
-        const fileName = file.FileName || "Archivo sin nombre";
-
-        fileItem.href = `received_files/${fileId}_${fileName}`;
-        fileItem.target = "_blank";
-
-        // Verificar que los datos necesarios existen
-        const timestamp = file.Timestamp
-          ? new Date(file.Timestamp).toLocaleString()
-          : "Fecha desconocida";
-        const username =
-          file.From && file.From.Username
-            ? file.From.Username
-            : "Usuario desconocido";
-
-        fileItem.innerHTML = `
-          <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">${fileName}</h5>
-            <small>${timestamp}</small>
-          </div>
-          <p class="mb-1">Enviado por: ${username}</p>
-        `;
-        receivedFilesContainer.appendChild(fileItem);
-      } catch (itemError) {
-        console.error("Error al procesar archivo:", itemError, file);
-      }
-    });
-  } catch (error) {
-    console.error("Error al actualizar la lista de archivos:", error);
-
-    // Mostrar mensaje de error en la interfaz
-    const receivedFilesContainer = document.getElementById("receivedFiles");
-    if (receivedFilesContainer) {
-      receivedFilesContainer.innerHTML =
-        '<p class="text-danger">Error al cargar los archivos recibidos</p>';
-    }
-  }
-}
 
 // Configurar el formulario de carga de archivos cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", function () {
