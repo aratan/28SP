@@ -105,6 +105,10 @@ type Tablon struct {
 var tablones []Tablon
 var tablonesMutex sync.Mutex
 
+// Variables para el mapeo de nombres de archivo (protección de metadatos)
+var fileNameMapping = make(map[string]string)
+var fileNameMappingMutex sync.Mutex
+
 type UserInfo struct {
 	PeerID   string `json:"peerId"`
 	Username string `json:"username"`
@@ -286,7 +290,7 @@ func createTablonHandler(w http.ResponseWriter, r *http.Request) {
 		ID:        generateMessageID(), // Asegúrate de que esta función esté definida para generar un ID único
 		From:      userInfo,
 		To:        "BROADCAST",
-		Timestamp: time.Now().Format(time.RFC3339),
+		Timestamp: time.Now().Format(time.RFC3339), // Usamos formato estándar por ahora
 		Content:   Content{Title: tablonName, Message: mensaje, Subtitle: "Información del Tablón", Likes: 0, Comments: []Comment{}, Subscribed: false},
 		Action:    "create",
 		TablonID:  generateMessageID(), // Asegúrate de que esta función esté definida o usa un valor adecuado
@@ -457,7 +461,8 @@ func SecureDecrypt(ciphertext, key []byte) ([]byte, error) {
 
 // anonymizeMessage oculta información sensible del mensaje
 func anonymizeMessage(msg Message) Message {
-	// Crear una copia para no modificar el original
+	// Usar la función mejorada de protección de metadatos
+	// que siempre anonimiza, añade padding y obfusca marcas de tiempo
 	anonymized := msg
 
 	// Ocultar información del remitente si es necesario
@@ -473,6 +478,36 @@ func anonymizeMessage(msg Message) Message {
 		if anonymized.From.PeerID != "" {
 			anonymized.From.PeerID = fmt.Sprintf("hidden_%x", hash[4:8])
 		}
+	}
+
+	// Reducir la precisión de la marca de tiempo para dificultar la correlación
+	if anonymized.Timestamp != "" {
+		// Parsear la marca de tiempo
+		timestamp, err := time.Parse(time.RFC3339, anonymized.Timestamp)
+		if err == nil {
+			// Reducir la precisión a intervalos de 5 minutos
+			minutes := timestamp.Minute()
+			roundedMinutes := (minutes / 5) * 5
+
+			// Crear una nueva hora con minutos redondeados y segundos a cero
+			roundedTime := time.Date(
+				timestamp.Year(), timestamp.Month(), timestamp.Day(),
+				timestamp.Hour(), roundedMinutes, 0, 0,
+				timestamp.Location(),
+			)
+
+			// Formatear la hora según RFC3339
+			anonymized.Timestamp = roundedTime.Format(time.RFC3339)
+		}
+	}
+
+	// Añadir padding al mensaje si tiene contenido
+	if anonymized.Content.Message != "" {
+		// Añadir un comentario HTML oculto como padding
+		randomBytes := make([]byte, 20)
+		rand.Read(randomBytes)
+		paddingStr := fmt.Sprintf("<!-- %x -->", randomBytes)
+		anonymized.Content.Message = anonymized.Content.Message + paddingStr
 	}
 
 	return anonymized
@@ -651,7 +686,7 @@ func anonymizeMessageFix(msg Message) Message {
 }
 
 // Variable para controlar si se usan saltos para pruebas
-var disableRoutingHops = true
+var disableRoutingHops = false // Habilitamos el enrutamiento de cebolla para mejorar la protección contra análisis de metadatos
 
 // generateRandomRoutesFix generates random routes for onion routing
 func generateRandomRoutesFix(minHops, maxHops int) []string {
@@ -1564,7 +1599,32 @@ func handleP2PMessages(ctx context.Context) {
 				log.Printf("Error creating directory for received files: %v", err)
 				continue
 			}
-			outputPath := filepath.Join(receivedDir, fmt.Sprintf("%s_%s", msg.ID, msg.FileName))
+
+			// Ocultar metadatos en el nombre del archivo
+			obfuscatedName := msg.FileName
+			if len(msg.FileName) > 0 {
+				// Generar un ID aleatorio para el archivo
+				randomBytes := make([]byte, 8)
+				rand.Read(randomBytes)
+				randomID := fmt.Sprintf("%x", randomBytes)
+
+				// Extraer la extensión del archivo original
+				parts := strings.Split(msg.FileName, ".")
+				extension := ""
+				if len(parts) > 1 {
+					extension = "." + parts[len(parts)-1]
+				}
+
+				// Crear un nuevo nombre que no revele el original
+				obfuscatedName = fmt.Sprintf("file_%s%s", randomID, extension)
+
+				// Guardar un mapeo del nombre original al obfuscado para referencia interna
+				fileNameMappingMutex.Lock()
+				fileNameMapping[obfuscatedName] = msg.FileName
+				fileNameMappingMutex.Unlock()
+			}
+
+			outputPath := filepath.Join(receivedDir, fmt.Sprintf("%s_%s", msg.ID, obfuscatedName))
 			err = decodeBase64ToFile(msg.BinaryData, outputPath)
 			if err != nil {
 				log.Printf("Error saving received file: %v", err)
