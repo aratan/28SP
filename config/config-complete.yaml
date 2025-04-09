@@ -1,0 +1,12 @@
+# Configuración básica
+topicName: "p2p-network"
+encryptionKey: "node1-encryption-key-12345678901234567890123456789012"
+logLevel: "debug"
+maxMessageSize: 10
+
+# Direcciones de escucha
+listenAddresses:
+  - /ip4/0.0.0.0/tcp/4001
+webListenAddress: 0.0.0.0:8080
+
+# ... (más configuración)

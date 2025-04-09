@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+  node1:
+    image: p2p-app
+    container_name: p2p-node1
+    ports:
+      - "8081:8080"
+    environment:
+      - NODE_ID=node1
+    networks:
+      - p2p-network
+
+  node2:
+    image: p2p-app
+    container_name: p2p-node2
+    ports:
+      - "8082:8080"
+    environment:
+      - NODE_ID=node2
+    networks:
+      - p2p-network
+
+  node3:
+    image: p2p-app
+    container_name: p2p-node3
+    ports:
+      - "8083:8080"
+    environment:
+      - NODE_ID=node3
+    networks:
+      - p2p-network
+
+  node4:
+    image: p2p-app
+    container_name: p2p-node4
+    ports:
+      - "8084:8080"
+    environment:
+      - NODE_ID=node4
+    networks:
+      - p2p-network
+
+  node5:
+    image: p2p-app
+    container_name: p2p-node5
+    ports:
+      - "8085:8080"
+    environment:
+      - NODE_ID=node5
+    networks:
+      - p2p-network
+
+networks:
+  p2p-network:
+    driver: bridge

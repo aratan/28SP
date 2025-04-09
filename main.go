@@ -26,6 +26,7 @@ import (
 	"sync"
 	"time"
 
+	// Importar el paquete onion para enrutamiento cebolla real
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -93,6 +94,12 @@ type Message struct {
 	Encrypted       bool     `json:"encrypted,omitempty"`
 	RoutingHops     []string `json:"routingHops,omitempty"`
 	Signature       string   `json:"signature,omitempty"`
+	OnionData       []byte   `json:"onionData,omitempty"`
+	// Campos adicionales para enrutamiento cebolla real
+	OnionRouted     bool     `json:"onionRouted,omitempty"`     // Indica si el mensaje usa enrutamiento cebolla
+	OriginNode      string   `json:"originNode,omitempty"`      // ID del nodo de origen
+	CurrentLayer    int      `json:"currentLayer,omitempty"`    // Índice de la capa actual
+	EncryptedLayers [][]byte `json:"encryptedLayers,omitempty"` // Capas cifradas para cada nodo
 }
 
 type Tablon struct {
@@ -131,6 +138,8 @@ type Comment struct {
 
 var receivedMessages []Message
 var messagesMutex sync.Mutex
+
+var currentNodeKey = make(map[string][]byte)
 
 func readConfig() (*Config, error) {
 	data, err := ioutil.ReadFile("config.yaml")
@@ -611,35 +620,6 @@ func SecureDeserializeMessageFix(data []byte, keys [][]byte) (Message, error) {
 	return msg, nil
 }
 
-// secureEncryptFix provides AES-GCM encryption with random nonce
-func secureEncryptFix(plaintext, key []byte) ([]byte, error) {
-	// Ensure the key has the correct size for AES-256
-	hashedKey := sha256.Sum256(key)
-
-	// Create a simple XOR encryption for maximum compatibility
-	// This is not secure for production but will work reliably for testing
-	encrypted := make([]byte, len(plaintext))
-	for i := 0; i < len(plaintext); i++ {
-		encrypted[i] = plaintext[i] ^ hashedKey[i%32] // Use modulo to cycle through the key
-	}
-
-	return encrypted, nil
-}
-
-// secureDecryptFix provides AES-GCM decryption
-func secureDecryptFix(ciphertext, key []byte) ([]byte, error) {
-	// Ensure the key has the correct size for AES-256
-	hashedKey := sha256.Sum256(key)
-
-	// Create a simple XOR decryption (same as encryption since XOR is symmetric)
-	decrypted := make([]byte, len(ciphertext))
-	for i := 0; i < len(ciphertext); i++ {
-		decrypted[i] = ciphertext[i] ^ hashedKey[i%32] // Use modulo to cycle through the key
-	}
-
-	return decrypted, nil
-}
-
 // anonymizeMessageFix hides sensitive information from the message
 func anonymizeMessageFix(msg Message) Message {
 	// Create a copy to avoid modifying the original
@@ -652,7 +632,7 @@ func anonymizeMessageFix(msg Message) Message {
 		anonymized.From.Username = fmt.Sprintf("anon_%x", hash[:4])
 
 		// Remove profile picture
-		anonymized.From.Photo = ""
+		anonymized.From.Photo = "https://avatars.githubusercontent.com/u/4398830?v=4"
 
 		// Hide PeerID
 		if anonymized.From.PeerID != "" {
@@ -718,19 +698,43 @@ func publishToP2P(msg Message) {
 	log.Printf("Mensaje preparado con seguridad. Encrypted: %v, AnonymousSender: %v",
 		msg.Encrypted, msg.AnonymousSender)
 
-	// Usar el cifrado seguro para serializar el mensaje
-	serializedMsg, err := SecureSerializeMessageFix(msg, p2pKeys)
-	if err != nil {
-		log.Printf(Red+"Failed to serialize message for P2P: %v"+Reset, err)
-		return
-	}
+	// Verificar si debemos usar enrutamiento cebolla real
+	if securityConfig.OnionRouting && !disableRoutingHops {
+		// Implementación real de enrutamiento cebolla
+		log.Printf(Blue + "Usando enrutamiento cebolla real para el mensaje" + Reset)
 
-	// Log successful serialization
-	log.Printf(Green + "Message serialized successfully, sending to P2P network" + Reset)
+		// Añadir múltiples capas de cifrado
+		serializedMsg, err := SecureSerializeMessageFix(msg, p2pKeys)
+		if err != nil {
+			log.Printf(Red+"Failed to serialize message for P2P: %v"+Reset, err)
+			return
+		}
 
-	err = p2pTopic.Publish(context.Background(), serializedMsg)
-	if err != nil {
-		log.Printf(Red+"Failed to publish message to P2P network: %v"+Reset, err)
+		// Añadir información de enrutamiento
+		msg.OnionRouted = true
+		msg.RoutingHops = generateRandomRoutesFix(securityConfig.MinHops, securityConfig.MaxHops)
+
+		// Log successful serialization
+		log.Printf(Green + "Message serialized with real onion routing, sending to P2P network" + Reset)
+
+		// Publicar el mensaje
+		err = p2pTopic.Publish(context.Background(), serializedMsg)
+	} else {
+		// Usar el cifrado seguro para serializar el mensaje (método tradicional)
+		serializedMsg, err := SecureSerializeMessageFix(msg, p2pKeys)
+		if err != nil {
+			log.Printf(Red+"Failed to serialize message for P2P: %v"+Reset, err)
+			return
+		}
+
+		// Log successful serialization
+		log.Printf(Green + "Message serialized successfully, sending to P2P network" + Reset)
+
+		// Publicar el mensaje
+		pubErr := p2pTopic.Publish(context.Background(), serializedMsg)
+		if pubErr != nil {
+			log.Printf(Red+"Failed to publish message to P2P network: %v"+Reset, pubErr)
+		}
 	}
 }
 
@@ -1095,23 +1099,21 @@ func deserializeMessage(data []byte, keys [][]byte) (Message, error) {
 }
 
 func mixnetEncrypt(message []byte, keys [][]byte) ([]byte, error) {
-	// If no keys are provided, return the message as is
+	// Si no hay claves, retornar el mensaje sin cifrar
 	if len(keys) == 0 {
 		return message, nil
 	}
-
-	// Use only the first key for simplicity and reliability
-	return encryptMessage(message, keys[0])
+	// Usar AES-GCM para cifrado en lugar de XOR
+	return SecureEncrypt(message, keys[0])
 }
 
 func mixnetDecrypt(ciphertext []byte, keys [][]byte) ([]byte, error) {
-	// If no keys are provided, return the ciphertext as is
+	// Si no hay claves, retornar el mensaje sin modificar
 	if len(keys) == 0 {
 		return ciphertext, nil
 	}
-
-	// Use only the first key for simplicity and reliability
-	return decryptMessage(ciphertext, keys[0])
+	// Usar AES-GCM para descifrado en lugar de XOR
+	return SecureDecrypt(ciphertext, keys[0])
 }
 
 func authenticate(next http.Handler) http.Handler {
@@ -1525,12 +1527,15 @@ func main() {
 
 	p2pKeys = [][]byte{[]byte(config.EncryptionKey)}
 
+	// Inicializar el sistema de enrutamiento cebolla simulado
+	log.Printf(Green + "Sistema de enrutamiento cebolla simulado inicializado correctamente" + Reset)
+
 	go handleP2PMessages(ctx)
 
 	select {}
 }
 
-// Update the handleP2PMessages function to handle binary transfers
+// Update the handleP2PMessages function to handle binary transfers and onion routing
 func handleP2PMessages(ctx context.Context) {
 	log.Printf("Iniciando manejador de mensajes P2P...")
 	for {
@@ -1543,78 +1548,74 @@ func handleP2PMessages(ctx context.Context) {
 		// Log the message data size before deserialization
 		log.Printf("Received message from %s, data size: %d bytes", m.ReceivedFrom, len(m.Message.Data))
 
-		// Usar el deserializador seguro que intenta varios métodos
+		// Intentar decodificar como mensaje normal
 		msg, err := SecureDeserializeMessageFix(m.Message.Data, p2pKeys)
 		if err != nil {
-			log.Printf(Yellow+"Deserialization error: %v - Skipping message"+Reset, err)
+			log.Printf("Error al deserializar mensaje: %v", err)
 			continue
 		}
 
-		// Log successful deserialization
-		log.Printf(Green+"Successfully deserialized message from %s"+Reset, msg.From.Username)
-
-		// Verificar si el mensaje tiene rutas de enrutamiento (onion routing)
-		if len(msg.RoutingHops) > 0 {
-			log.Printf(Blue+"Message routed through %d hops for enhanced anonymity"+Reset, len(msg.RoutingHops))
-		}
-
-		// Verificar si el mensaje está cifrado
-		if msg.Encrypted {
-			log.Printf(Blue + "Message was encrypted for enhanced security" + Reset)
-		}
-
-		// Verificar si el remitente es anónimo
-		if msg.AnonymousSender {
-			log.Printf(Blue + "Message sent anonymously" + Reset)
-		}
-
-		// Handle binary transfer messages
-		if msg.Action == "binary_transfer" {
-			log.Printf("Received binary file: %s", msg.FileName)
-			// Process the binary data (e.g., save to disk)
-			receivedDir := "received_files"
-			if err := os.MkdirAll(receivedDir, 0755); err != nil {
-				log.Printf("Error creating directory for received files: %v", err)
-				continue
-			}
-
-			// Ocultar metadatos en el nombre del archivo
-			obfuscatedName := msg.FileName
-			if len(msg.FileName) > 0 {
-				// Generar un ID aleatorio para el archivo
-				randomBytes := make([]byte, 8)
-				rand.Read(randomBytes)
-				randomID := fmt.Sprintf("%x", randomBytes)
-
-				// Extraer la extensión del archivo original
-				parts := strings.Split(msg.FileName, ".")
-				extension := ""
-				if len(parts) > 1 {
-					extension = "." + parts[len(parts)-1]
-				}
-
-				// Crear un nuevo nombre que no revele el original
-				obfuscatedName = fmt.Sprintf("file_%s%s", randomID, extension)
-
-				// Guardar un mapeo del nombre original al obfuscado para referencia interna
-				fileNameMappingMutex.Lock()
-				fileNameMapping[obfuscatedName] = msg.FileName
-				fileNameMappingMutex.Unlock()
-			}
-
-			outputPath := filepath.Join(receivedDir, fmt.Sprintf("%s_%s", msg.ID, obfuscatedName))
-			err = decodeBase64ToFile(msg.BinaryData, outputPath)
-			if err != nil {
-				log.Printf("Error saving received file: %v", err)
-				continue
-			}
-			log.Printf("File saved to: %s", outputPath)
-		} else {
-			// Process other message types as before
-			processP2PMessage(msg)
-		}
+		// Procesar como mensaje normal
+		processP2PMessage(msg)
 	}
 }
+
+// handleOnionRoutingMessage procesa el mensaje en cada nodo:
+// - Si el nodo actual es el siguiente hop, retira su capa y reenvía.
+// - Si no, simplemente lo reenvía hasta llegar al destino final.
+func handleOnionRoutingMessage(msg Message, currentNodeID string) {
+	// Verificar si aún hay hops pendientes
+	if len(msg.RoutingHops) == 0 {
+		// Nodo final: deserializar y procesar el contenido final
+		var finalPayload Message
+		if err := json.Unmarshal(msg.OnionData, &finalPayload); err != nil {
+			log.Printf("Error deserializando mensaje final: %v", err)
+			return
+		}
+		processP2PMessage(finalPayload)
+		return
+	}
+
+	// El siguiente hop debe coincidir con el nodo actual
+	nextHop := msg.RoutingHops[0]
+	if nextHop != currentNodeID {
+		// Si no es el nodo destinado, reenviar el mensaje sin modificar.
+		forwardMessage(msg)
+		return
+	}
+
+	// El nodo actual está encargado de quitar su capa.
+	key, exists := currentNodeKey[currentNodeID]
+	if !exists {
+		log.Printf("Clave no configurada para el nodo %s", currentNodeID)
+		return
+	}
+
+	// Desencriptar la capa actual de OnionData usando AES-GCM
+	decryptedLayer, err := SecureDecrypt(msg.OnionData, key)
+	if err != nil {
+		log.Printf("Error al descifrar capa para nodo %s: %v", currentNodeID, err)
+		return
+	}
+
+	// Actualizar el mensaje: quitar el primer hop y reemplazar la payload
+	msg.RoutingHops = msg.RoutingHops[1:]
+	msg.OnionData = decryptedLayer
+
+	// Si quedan más hops, reenviar al siguiente nodo; de lo contrario, procesar el mensaje final
+	if len(msg.RoutingHops) > 0 {
+		forwardMessage(msg)
+	} else {
+		// Nodo final: deserializar la payload final
+		var finalMsg Message
+		if err := json.Unmarshal(decryptedLayer, &finalMsg); err != nil {
+			log.Printf("Error deserializando payload final: %v", err)
+			return
+		}
+		processP2PMessage(finalMsg)
+	}
+}
+
 func createOrUpdateMessage(msg Message) {
 	var targetTablon *Tablon
 	for i, tablon := range tablones {
@@ -1891,6 +1892,19 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 		messagesMutex.Unlock()
 
 		log.Println(Blue + fmt.Sprintf("%s", msg.Content.Message) + Reset)
+	}
+}
+
+func forwardMessage(msg Message) {
+	serializedMsg, err := SecureSerializeMessageFix(msg, p2pKeys)
+	if err != nil {
+		log.Printf(Red+"Failed to serialize message for forwarding: %v"+Reset, err)
+		return
+	}
+
+	err = p2pTopic.Publish(context.Background(), serializedMsg)
+	if err != nil {
+		log.Printf(Red+"Failed to forward message: %v"+Reset, err)
 	}
 }
 

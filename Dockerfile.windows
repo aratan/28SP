@@ -1,0 +1,21 @@
+# Usar la imagen oficial de Go para Windows
+FROM golang:1.19-windowsservercore
+
+# Establecer el directorio de trabajo
+WORKDIR C:\\app
+
+# Copiar archivos de código fuente
+COPY . .
+
+# Descargar dependencias
+RUN go mod download
+
+# Compilar la aplicación
+RUN go build -o p2p-app.exe .
+
+# Exponer puertos
+EXPOSE 8080
+EXPOSE 4001
+
+# Comando para ejecutar la aplicación
+CMD ["C:\\app\\p2p-app.exe"]

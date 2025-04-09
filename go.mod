@@ -2,7 +2,7 @@ module chatipfs
 
 go 1.22.0
 
-toolchain go1.23.0
+toolchain go1.24.2
 
 require (
 	github.com/gorilla/mux v1.8.1
@@ -11,6 +11,8 @@ require (
 	github.com/libp2p/go-libp2p-pubsub v0.11.0
 	gopkg.in/yaml.v2 v2.4.0
 )
+
+require github.com/wlynxg/anet v0.0.3 // indirect
 
 //-require github.com/wlynxg/anet v0.0.3 // indirect
 

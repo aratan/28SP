@@ -1,0 +1,26 @@
+FROM golang:1.22-bullseye
+
+WORKDIR /app
+
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y git gcc
+
+# Copiar go.mod y go.sum
+COPY go.mod go.sum ./
+
+# Descargar dependencias
+RUN go mod download
+
+# Copiar solo el archivo principal
+COPY main.go ./
+COPY config-node1.yaml ./config.yaml
+
+# Compilar la aplicación
+RUN go build -o p2p-app main.go
+
+# Exponer puertos
+EXPOSE 8080
+EXPOSE 4001
+
+# Comando para ejecutar la aplicación
+CMD ["/app/p2p-app"]

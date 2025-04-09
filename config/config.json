@@ -1,0 +1,5 @@
+{
+  "ListenAddresses": ["/ip4/0.0.0.0/tcp/4001"],
+  "WebListenAddress": "0.0.0.0:8080",
+  "NodeID": "node1"
+}

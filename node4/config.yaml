@@ -1,0 +1,26 @@
+topicName: "p2p-network"
+encryptionKey: "node4-encryption-key-12345678901234567890123456789012"
+logLevel: "debug"
+maxMessageSize: 10
+mdns:
+  enabled: true
+  serviceTag: "p2p-app"
+users:
+  - username: "Node4"
+    password: "password4"
+    photo: "https://example.com/avatar4.png"
+security:
+  endToEndEncryption: true
+  encryptionKey: "node4-encryption-key-12345678901234567890123456789012"
+  keyRotation: true
+  keyRotationInterval: 3600
+  onionRouting: true
+  minHops: 2
+  maxHops: 4
+  anonymousMessages: true
+  anonymitySetSize: 5
+  trafficMixing: true
+  trafficMixingInterval: 60
+  dummyMessages: true
+  dummyMessageInterval: 300
+  messageTTL: 3600

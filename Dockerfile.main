@@ -1,0 +1,27 @@
+FROM golang:1.22-alpine
+
+WORKDIR /app
+
+# Instalar dependencias del sistema
+RUN apk add --no-cache git gcc musl-dev
+
+# Copiar go.mod y go.sum
+COPY go.mod go.sum ./
+
+# Descargar dependencias
+RUN go mod download
+
+# Copiar solo los archivos principales
+COPY main.go ./
+COPY flood_protection.go ./
+COPY config-node1.yaml ./config.yaml
+
+# Compilar la aplicación
+RUN go build -o p2p-app main.go flood_protection.go
+
+# Exponer puertos
+EXPOSE 8080
+EXPOSE 4001
+
+# Comando para ejecutar la aplicación
+CMD ["/app/p2p-app"]

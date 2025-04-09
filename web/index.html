@@ -118,6 +118,9 @@
 
         <!-- Lista de Tablones -->
         <div id="tablonesList"></div>
+        <div id="messageContainer">
+            <!-- Aquí se mostrarán los mensajes -->
+        </div>
         <p id="pagos-content">
             <button onclick="pagos('0x61B9453987d7c40a2B7f10908e382C715e224577', '1','0.00012','Donativo')"
                 class="btn btn-sm btn-primary">
@@ -151,6 +154,28 @@
     <script src="./pagos.js"></script>
     <script src="./file-handler.js"></script>
     <script src="./main.js"></script>
+    <script>
+        function renderMessage(message) {
+            const messageContainer = document.getElementById("messageContainer");
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("message");
+
+            // Agregar la foto del remitente
+            const photoElement = document.createElement("img");
+            photoElement.src = message.from.photo || "https://avatars.githubusercontent.com/u/4398830?v=4"; // Foto por defecto si no hay foto
+            photoElement.alt = "Foto del remitente";
+            photoElement.classList.add("message-photo");
+
+            // Agregar el contenido del mensaje
+            const contentElement = document.createElement("p");
+            contentElement.textContent = message.content;
+
+            // Añadir los elementos al contenedor del mensaje
+            messageElement.appendChild(photoElement);
+            messageElement.appendChild(contentElement);
+            messageContainer.appendChild(messageElement);
+        }
+    </script>
 </body>
 
 </html>

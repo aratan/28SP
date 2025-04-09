@@ -1,0 +1,29 @@
+FROM golang:1.22-alpine
+
+WORKDIR /app
+
+# Instalar dependencias del sistema
+RUN apk add --no-cache git gcc musl-dev
+
+# Copiar go.mod y go.sum
+COPY go.mod go.sum ./
+
+# Descargar dependencias
+RUN go mod download
+
+# Copiar solo el archivo principal y la configuración
+COPY main.go ./
+COPY config-node1.yaml ./config.yaml
+
+# Crear un archivo de configuración con una dirección de escucha explícita
+RUN echo '{"ListenAddress": ["/ip4/0.0.0.0/tcp/4001"], "Users": [{"Username": "node1", "Password": "password"}]}' > config.json
+
+# Compilar la aplicación
+RUN go build -o p2p-app main.go
+
+# Exponer puertos
+EXPOSE 8080
+EXPOSE 4001
+
+# Comando para ejecutar la aplicación con argumentos explícitos
+CMD ["/app/p2p-app", "-listen", "/ip4/0.0.0.0/tcp/4001"]
