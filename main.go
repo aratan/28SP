@@ -540,28 +540,28 @@ func SecureMessageFix(msg *Message, config SecurityConfig) {
 
 // SecureSerializeMessageFix serializes and encrypts a message with multiple layers
 func SecureSerializeMessageFix(msg Message, keys [][]byte) ([]byte, error) {
-	// Hide sensitive information before serializing
+	// Ocultar información sensible antes de serializar
 	msg = anonymizeMessageFix(msg)
 
-	// Serialize the message to JSON
+	// Serializar el mensaje a JSON
 	msgBytes, err := json.Marshal(msg)
 	if err != nil {
-		return nil, fmt.Errorf("error serializing: %v", err)
+		return nil, fmt.Errorf("error al serializar: %v", err)
 	}
 
-	// If no keys, use simple base64 encoding
+	// Si no hay claves, usar codificación Base64 simple
 	if len(keys) == 0 {
 		encoded := make([]byte, base64.StdEncoding.EncodedLen(len(msgBytes)))
 		base64.StdEncoding.Encode(encoded, msgBytes)
 		return encoded, nil
 	}
 
-	// Apply multiple layers of encryption (onion routing)
+	// Aplicar múltiples capas de cifrado (enrutamiento cebolla) usando AES-GCM
 	ciphertext := msgBytes
 	for _, key := range keys {
-		ciphertext, err = secureEncryptFix(ciphertext, key)
+		ciphertext, err = SecureEncrypt(ciphertext, key)
 		if err != nil {
-			return nil, fmt.Errorf("error in encryption layer: %v", err)
+			return nil, fmt.Errorf("error en la capa de cifrado: %v", err)
 		}
 	}
 
@@ -577,7 +577,7 @@ func SecureDeserializeMessageImpl(data []byte, keys [][]byte) (Message, error) {
 
 // SecureDeserializeMessageFix decrypts and deserializes a message
 func SecureDeserializeMessageFix(data []byte, keys [][]byte) (Message, error) {
-	// If no keys, try to decode base64
+	// Si no hay claves, intentar decodificar base64
 	if len(keys) == 0 {
 		decoded := make([]byte, base64.StdEncoding.DecodedLen(len(data)))
 		n, err := base64.StdEncoding.Decode(decoded, data)
@@ -587,50 +587,28 @@ func SecureDeserializeMessageFix(data []byte, keys [][]byte) (Message, error) {
 				return msg, nil
 			}
 		}
-		// If that fails, try to deserialize directly
 		var msg Message
 		if err := json.Unmarshal(data, &msg); err == nil {
 			return msg, nil
 		}
-		return Message{}, fmt.Errorf("could not deserialize the message")
+		return Message{}, fmt.Errorf("no se pudo deserializar el mensaje")
 	}
 
-	// Apply multiple layers of decryption in reverse order
+	// Aplicar múltiples capas de descifrado en orden inverso usando AES-GCM real
 	plaintext := data
-	var lastErr error
-
-	// Try to decrypt with all possible key combinations
-	// This is important for censorship resistance and anonymity
 	for i := len(keys) - 1; i >= 0; i-- {
-		decrypted, err := secureDecryptFix(plaintext, keys[i])
+		var err error
+		plaintext, err = SecureDecrypt(plaintext, keys[i])
 		if err != nil {
-			lastErr = err
-			continue
+			return Message{}, fmt.Errorf("error en descifrado de la capa %d: %v", i, err)
 		}
-
-		// Try to deserialize
-		var msg Message
-		if err := json.Unmarshal(decrypted, &msg); err == nil {
-			log.Printf(Green + "Message successfully decrypted" + Reset)
-			return msg, nil
-		}
-
-		// If it couldn't be deserialized, it might need more decryption layers
-		plaintext = decrypted
 	}
 
-	// If we get here, try to deserialize the last plaintext
 	var msg Message
-	if err := json.Unmarshal(plaintext, &msg); err == nil {
-		return msg, nil
+	if err := json.Unmarshal(plaintext, &msg); err != nil {
+		return Message{}, fmt.Errorf("error al deserializar mensaje: %v", err)
 	}
-
-	// Last resort: try to deserialize directly
-	if err := json.Unmarshal(data, &msg); err == nil {
-		return msg, nil
-	}
-
-	return Message{}, fmt.Errorf("could not decrypt or deserialize: %v", lastErr)
+	return msg, nil
 }
 
 // secureEncryptFix provides AES-GCM encryption with random nonce
@@ -1530,7 +1508,7 @@ func main() {
 
 	go discoverPeers(ctx, h, config.TopicName)
 
-	ps, err := pubsub.NewGossipSub(ctx, h, pubsub.WithMaxMessageSize(config.MaxMessageSize))
+	ps, err := pubsub.NewGossipSub(ctx, h, pubsub.WithMaxMessageSize(int(config.MaxMessageSize)*1048576))
 	if err != nil {
 		log.Fatalf(Red+"Failed to create pubsub: %v"+Reset, err)
 	}

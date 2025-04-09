@@ -2,9 +2,9 @@ topicName: "applesauce"
 # ¡¡USA TU PROPIA CLAVE GENERADA AQUÍ!!
 encryptionKey: "e4a2b1f0c8d7e6a5b4f3c2d1e0a9b8f7e4a2b1f0c8d7e6a5b4f3c2d1e0a9b8f7"
 logLevel: "info"
-listenAddress: "/ip4/0.0.0.0/tcp/9000"
+listenAddress: "/ip4/0.0.0.0/tcp/0"
 webServerAddr: ":8080" # Puerto HTTP estándar
-maxMessageSize: 1048576
+maxMessageSize: 4
 retryInterval: 2000
 logFile: "app.log"
 mdns:
