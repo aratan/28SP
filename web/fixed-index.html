@@ -11,254 +11,8 @@
     <title>P2P Message Board</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <style>
-        /* Estilos mejorados */
-        :root {
-            --primary-color: #3a6df0;
-            --primary-dark: #2952c8;
-            --primary-light: #5a8afa;
-            --secondary-color: #4cc9f0;
-            --success-color: #4ade80;
-            --warning-color: #fbbf24;
-            --danger-color: #f87171;
-            --dark-color: #1f2937;
-            --light-color: #f5f7fb;
-            --white-color: #ffffff;
-            --gray-100: #f8f9fa;
-            --gray-200: #e9ecef;
-            --gray-300: #dee2e6;
-            --gray-400: #ced4da;
-            --gray-500: #adb5bd;
-            --gray-600: #6c757d;
-            --gray-700: #495057;
-            --gray-800: #343a40;
-            --gray-900: #212529;
-            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-            --border-radius: 0.5rem;
-            --border-radius-sm: 0.25rem;
-            --border-radius-lg: 1rem;
-        }
-
-        /* Base Styles */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--light-color);
-            color: var(--gray-700);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            color: var(--gray-800);
-            font-weight: 600;
-        }
-
-        /* Encabezado */
-        h1.text-center {
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-            font-weight: 700;
-            font-size: 2.25rem;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Tarjetas */
-        .card {
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            border: none;
-            margin-bottom: 1.5rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .card-body {
-            padding: 1.5rem;
-        }
-
-        .card-title {
-            color: var(--primary-color);
-            font-weight: 600;
-            margin-bottom: 1.25rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        /* Formularios */
-        .form-control {
-            border-radius: var(--border-radius);
-            border: 1px solid var(--gray-300);
-            padding: 0.75rem 1rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary-light);
-            box-shadow: 0 0 0 0.25rem rgba(58, 109, 240, 0.25);
-        }
-
-        .form-select {
-            border-radius: var(--border-radius);
-            border: 1px solid var(--gray-300);
-            padding: 0.75rem 1rem;
-            background-color: white;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .form-select:focus {
-            border-color: var(--primary-light);
-            box-shadow: 0 0 0 0.25rem rgba(58, 109, 240, 0.25);
-        }
-
-        .form-check-input:checked {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        /* Botones */
-        .btn {
-            border-radius: var(--border-radius);
-            padding: 0.75rem 1.5rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-primary:hover, .btn-primary:focus {
-            background-color: var(--primary-dark);
-            border-color: var(--primary-dark);
-        }
-
-        .btn-secondary {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
-        }
-
-        .btn-secondary:hover, .btn-secondary:focus {
-            background-color: #3ab7dc;
-            border-color: #3ab7dc;
-        }
-
-        .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-        }
-
-        /* Listas */
-        .list-group-item {
-            border-radius: var(--border-radius);
-            margin-bottom: 0.5rem;
-            border: 1px solid var(--gray-200);
-            transition: background-color 0.3s ease;
-        }
-
-        .list-group-item:hover {
-            background-color: var(--gray-100);
-        }
-
-        /* Paginación */
-        .pagination {
-            margin-top: 1.5rem;
-        }
-
-        .page-link {
-            color: var(--primary-color);
-            border: none;
-            padding: 0.5rem 0.75rem;
-            margin: 0 0.25rem;
-            border-radius: var(--border-radius);
-            transition: all 0.3s ease;
-        }
-
-        .page-link:hover {
-            background-color: var(--primary-light);
-            color: white;
-        }
-
-        .page-item.active .page-link {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        /* Reproductor de video */
-        .video-container {
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--shadow);
-        }
-
-        .video-player {
-            width: 100%;
-            display: block;
-        }
-
-        /* Tablones */
-        #tablonesList .card {
-            margin-bottom: 1.5rem;
-        }
-
-        #tablonesList .card-header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 1rem 1.5rem;
-        }
-
-        #tablonesList .card-title {
-            color: white;
-            margin-bottom: 0;
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        #tablonesList .card-body {
-            padding: 1.5rem;
-        }
-
-        /* Animaciones */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        /* Estilos para dispositivos móviles */
-        @media (max-width: 768px) {
-            .btn {
-                padding: 0.625rem 1.25rem;
-            }
-            
-            .card-body {
-                padding: 1.25rem;
-            }
-        }
-    </style>
+    <link href="styles.css" rel="stylesheet">
+    <link href="professional-styles.css" rel="stylesheet">
 </head>
 
 <body>
@@ -272,7 +26,8 @@
                     <div class="mb-3">
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
-                            <input type="text" class="form-control" id="username" placeholder="Nombre de usuario" required>
+                            <input type="text" class="form-control" id="username" placeholder="Nombre de usuario"
+                                required>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -288,124 +43,102 @@
                         <input type="text" class="form-control" id="photo" placeholder="URL de la foto (opcional)"
                             value="prueba">
                     </div>
-                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-sign-in-alt me-2"></i>Iniciar sesión</button>
+                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-sign-in-alt me-2"></i>Iniciar
+                        sesión</button>
                 </form>
             </div>
         </div>
 
         <!-- Buscador -->
         <div class="mb-4">
-            <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-search"></i></span>
-                <input type="text" class="form-control" id="searchInput" placeholder="Buscar grupo por nombre...">
-            </div>
+            <input type="text" class="form-control" id="searchInput" placeholder="Buscar grupo por nombre...">
         </div>
 
         <!-- Control de actualización automática -->
-        <div class="card mb-4 fade-in">
-            <div class="card-body">
-                <h5 class="card-title"><i class="fas fa-sync-alt me-2"></i>Actualización</h5>
-                <div class="form-check form-switch mb-3">
-                    <input class="form-check-input" type="checkbox" id="autoRefreshToggle" checked>
-                    <label class="form-check-label" for="autoRefreshToggle">Actualización automática</label>
-                </div>
+        <div class="form-check form-switch mb-4">
+            <input class="form-check-input" type="checkbox" id="autoRefreshToggle" checked>
+            <label class="form-check-label" for="autoRefreshToggle">Actualización automática</label>
+        </div>
 
-                <!-- Selector de intervalo de actualización -->
-                <div>
-                    <label for="refreshInterval" class="form-label">Intervalo de actualización</label>
-                    <select class="form-select" id="refreshInterval">
-                        <option value="15">15 segundos</option>
-                        <option value="30" selected>30 segundos</option>
-                        <option value="60">1 minuto</option>
-                        <option value="120">2 minutos</option>
-                    </select>
-                </div>
-            </div>
+        <!-- Selector de intervalo de actualización -->
+        <div class="mb-4">
+
+            <select class="form-select" id="refreshInterval">
+                <option value="15">15 segundos</option>
+                <option value="30" selected>30 segundos</option>
+                <option value="60">1 minuto</option>
+                <option value="120">2 minutos</option>
+            </select>
         </div>
 
         <!-- Crear Tablón -->
-        <div class="card mb-4 fade-in">
+        <div class="card mb-4">
             <div class="card-body">
-                <h5 class="card-title"><i class="fas fa-users me-2"></i>Crear Nuevo Grupo</h5>
+                <h5 class="card-title">Crear Nuevo Grupo</h5>
 
                 <div class="video-container">
                     <video id="videoPlayer" class="video-player" controls preload="auto">
                         <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
                         Tu navegador no soporta la reproducción de video.
                     </video>
+
                 </div>
 
                 <form id="createTablonForm">
                     <div class="mb-3">
-                        <label for="tablonName" class="form-label">Nombre del Grupo</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-users"></i></span>
-                            <input type="text" class="form-control" id="tablonName" placeholder="Nombre del Grupo" required>
-                        </div>
+                        <input type="text" class="form-control" id="tablonName" placeholder="Nombre del Tablón"
+                            required>
                     </div>
                     <div class="mb-3">
-                        <label for="tablonMessage" class="form-label">Mensaje inicial</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-comment"></i></span>
-                            <input type="text" class="form-control" id="tablonMessage" placeholder="Mensaje inicial" required>
-                        </div>
+                        <input type="text" class="form-control" id="tablonMessage" placeholder="Mensaje inicial"
+                            required>
                     </div>
                     <div class="mb-3">
-                        <label for="tablonGeo" class="form-label">Ubicación (opcional)</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                            <input type="text" class="form-control" id="tablonGeo" placeholder="Ubicación (opcional)">
-                        </div>
+                        <input type="text" class="form-control" id="tablonGeo" placeholder="Ubicación (opcional)">
                     </div>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Crear Grupo</button>
+                    <button type="submit" class="btn btn-primary">Crear Grupo</button>
                 </form>
             </div>
         </div>
 
         <!-- Enviar Archivos -->
-        <div class="card mb-4 fade-in">
+        <div class="card mb-4">
             <div class="card-body">
-                <h5 class="card-title"><i class="fas fa-file-upload me-2"></i>Enviar Archivo</h5>
+                <h5 class="card-title">Enviar Archivo</h5>
                 <form id="fileUploadForm" enctype="multipart/form-data">
                     <div class="mb-3">
-                        <label for="fileInput" class="form-label">Selecciona un archivo</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-file"></i></span>
-                            <input type="file" class="form-control" id="fileInput" required>
-                        </div>
+                        <input type="file" class="form-control" id="fileInput" required>
                     </div>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane me-2"></i>Enviar Archivo</button>
+                    <button type="submit" class="btn btn-primary">Enviar Archivo</button>
                 </form>
             </div>
         </div>
 
-        <!-- Lista de Archivos Recibidos -->
-        <div class="card mb-4 fade-in">
-            <div class="card-body">
-                <h5 class="card-title"><i class="fas fa-file-download me-2"></i>Archivos Recibidos</h5>
-                <div id="receivedFiles" class="list-group">
-                    <!-- Los archivos recibidos se mostrarán aquí -->
-                </div>
-                <button onclick="refreshReceivedFiles()" class="btn btn-secondary mt-3"><i class="fas fa-sync-alt me-2"></i>Actualizar Lista</button>
-            </div>
-        </div>
+
 
         <!-- Lista de Tablones -->
         <div id="tablonesList"></div>
         <p id="pagos-content">
             <button onclick="pagos('0x61B9453987d7c40a2B7f10908e382C715e224577', '1','0.00012','Donativo')"
                 class="btn btn-sm btn-primary">
-                <i class="fas fa-credit-card me-2"></i>
-                Realizar Donación
+                <i class="fas fa-credit-card"></i>
+                Pagar
             </button>
+
+
         </p>
         <div id="mispagos"></div>
 
         <!-- Aquí se mostrarán los datos recibidos -->
         <div id="recibeData" class="mt-4"></div>
-        <div id="slidingTextContainer" class="card p-3">
-            <button id="fetchDataButton" class="btn btn-primary"><i class="fas fa-sync-alt me-2"></i>Cargar Datos desde API</button>
+        <div id="slidingTextContainer">
+            <button onclick="fetchRecibe()" class="btn btn-primary">Cargar Datos desde API</button>
         </div>
+    </div>
+
+    <!-- Contenedor oculto para archivos recibidos -->
+    <div id="receivedFiles" class="list-group d-none">
+        <!-- Los archivos recibidos se mostrarán aquí si es necesario -->
     </div>
 
     <!-- Paginación -->
@@ -418,293 +151,6 @@
     <script src="./pagos.js"></script>
     <script src="./file-handler.js"></script>
     <script src="./main.js"></script>
-    
-    <!-- Script para manejar fetchRecibe de forma segura -->
-    <script>
-        // Función segura para obtener datos de la API
-        async function safeFetchRecibe() {
-            try {
-                // Verificar si hay token
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    console.log('No hay token disponible. Inicia sesión primero.');
-                    return;
-                }
-                
-                // Seleccionar el contenedor
-                const slidingTextContainer = document.getElementById("slidingTextContainer");
-                if (!slidingTextContainer) {
-                    console.error('No se encontró el contenedor slidingTextContainer');
-                    return;
-                }
-                
-                // Mostrar indicador de carga
-                slidingTextContainer.innerHTML = '<div class="text-center p-3"><i class="fas fa-spinner fa-spin me-2"></i> Cargando datos...</div>';
-                
-                try {
-                    const response = await fetch("/api/recibe", {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": token,
-                        },
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
-                    }
-                    
-                    // Leer el texto de la respuesta
-                    const text = await response.text();
-                    if (!text || text.trim() === '') {
-                        slidingTextContainer.innerHTML = '<div class="alert alert-info">No hay datos disponibles</div>';
-                        return;
-                    }
-                    
-                    // Intentar parsear el JSON
-                    let data;
-                    try {
-                        data = JSON.parse(text);
-                    } catch (parseError) {
-                        console.error('Error al parsear JSON:', parseError, 'Texto recibido:', text);
-                        slidingTextContainer.innerHTML = '<div class="alert alert-danger">Error al procesar los datos recibidos</div>';
-                        return;
-                    }
-                    
-                    // Verificar que data es un array
-                    if (!data || !Array.isArray(data) || data.length === 0) {
-                        slidingTextContainer.innerHTML = '<div class="alert alert-info">No hay datos disponibles</div>';
-                        return;
-                    }
-                    
-                    console.log("Datos recibidos:", data);
-                    
-                    // Limpiar el contenedor
-                    slidingTextContainer.innerHTML = '';
-                    
-                    // Añadir el botón de nuevo
-                    const fetchButton = document.createElement('button');
-                    fetchButton.className = 'btn btn-primary mb-3';
-                    fetchButton.innerHTML = '<i class="fas fa-sync-alt me-2"></i>Actualizar Datos';
-                    fetchButton.addEventListener('click', safeFetchRecibe);
-                    slidingTextContainer.appendChild(fetchButton);
-
-                    // Generar dinámicamente los items con texto deslizante
-                    data.forEach((item) => {
-                        try {
-                            // Verificar que item y sus propiedades existen
-                            if (!item || !item.Content) {
-                                console.warn('Item inválido:', item);
-                                return;
-                            }
-                            
-                            const title = item.Content && item.Content.Title ? item.Content.Title : 'Sin título';
-                            const message = item.Content && item.Content.Message ? item.Content.Message : 'Sin mensaje';
-                            
-                            const slidingText = document.createElement('div');
-                            slidingText.className = 'card mb-3';
-                            slidingText.innerHTML = `
-                                <div class="card-body">
-                                    <h5 class="card-title">${title}</h5>
-                                    <p class="card-text">${message}</p>
-                                </div>
-                            `;
-                            slidingTextContainer.appendChild(slidingText);
-                        } catch (itemError) {
-                            console.error('Error al procesar item:', itemError, item);
-                        }
-                    });
-                } catch (fetchError) {
-                    console.error("Error al obtener datos:", fetchError);
-                    slidingTextContainer.innerHTML = `
-                        <div class="alert alert-danger">Error al obtener datos: ${fetchError.message}</div>
-                        <button id="fetchDataButton" class="btn btn-primary mt-3"><i class="fas fa-sync-alt me-2"></i>Intentar de nuevo</button>
-                    `;
-                    document.getElementById('fetchDataButton').addEventListener('click', safeFetchRecibe);
-                }
-            } catch (error) {
-                console.error("Error general en fetchRecibe:", error);
-            }
-        }
-
-        // Inicializar cuando el DOM esté listo
-        document.addEventListener("DOMContentLoaded", () => {
-            // Reemplazar la función fetchRecibe original
-            window.fetchRecibe = safeFetchRecibe;
-            
-            // Configurar el botón de carga de datos
-            const fetchButton = document.getElementById('fetchDataButton');
-            if (fetchButton) {
-                fetchButton.addEventListener('click', safeFetchRecibe);
-            }
-        });
-    </script>
-    
-    <!-- Script para mejorar la visualización de los tablones -->
-    <script>
-        // Función para renderizar los tablones de forma más atractiva
-        function renderTablones(tablones) {
-            const tablonesContainer = document.getElementById('tablonesList');
-            tablonesContainer.innerHTML = '';
-            
-            if (!tablones || tablones.length === 0) {
-                tablonesContainer.innerHTML = '<div class="alert alert-info"><i class="fas fa-info-circle me-2"></i>No hay grupos disponibles. ¡Crea el primero!</div>';
-                return;
-            }
-            
-            tablones.forEach(tablon => {
-                const card = document.createElement('div');
-                card.className = 'card mb-4 fade-in';
-                
-                // Get the first message (initial message)
-                const initialMessage = tablon.Messages && tablon.Messages.length > 0 ? tablon.Messages[0] : null;
-                
-                // Format date
-                let timestamp = 'Fecha desconocida';
-                if (initialMessage && initialMessage.Timestamp) {
-                    timestamp = new Date(initialMessage.Timestamp).toLocaleString();
-                }
-                
-                // Get creator
-                let creator = 'Anónimo';
-                if (initialMessage && initialMessage.From && initialMessage.From.Username) {
-                    creator = initialMessage.From.Username;
-                }
-                
-                // Get message
-                let message = 'Sin mensaje';
-                if (initialMessage && initialMessage.Content && initialMessage.Content.Message) {
-                    message = initialMessage.Content.Message;
-                }
-                
-                // Create card header
-                const cardHeader = document.createElement('div');
-                cardHeader.className = 'card-header d-flex justify-content-between align-items-center';
-                cardHeader.innerHTML = `
-                    <h5 class="card-title mb-0">${tablon.Name}</h5>
-                    <span class="badge bg-light text-dark">${tablon.Messages ? tablon.Messages.length : 0} mensajes</span>
-                `;
-                
-                // Create card body
-                const cardBody = document.createElement('div');
-                cardBody.className = 'card-body';
-                
-                // Add meta information
-                const metaInfo = document.createElement('div');
-                metaInfo.className = 'd-flex justify-content-between text-muted mb-3';
-                metaInfo.innerHTML = `
-                    <span><i class="fas fa-user me-1"></i> ${creator}</span>
-                    <span><i class="fas fa-clock me-1"></i> ${timestamp}</span>
-                    ${tablon.Geo ? `<span><i class="fas fa-map-marker-alt me-1"></i> ${tablon.Geo}</span>` : ''}
-                `;
-                
-                // Add message content
-                const messageContent = document.createElement('div');
-                messageContent.className = 'mb-3';
-                messageContent.textContent = message;
-                
-                // Add action buttons
-                const actionButtons = document.createElement('div');
-                actionButtons.className = 'd-flex gap-2 mb-3';
-                actionButtons.innerHTML = `
-                    <button class="btn btn-sm btn-primary" onclick="handleAddMessage(event, '${tablon.ID}')">
-                        <i class="fas fa-comment me-1"></i> Enviar Mensaje
-                    </button>
-                    <button class="btn btn-sm btn-danger" onclick="handleDeleteTablon('${tablon.ID}')">
-                        <i class="fas fa-trash me-1"></i> Eliminar Tablón
-                    </button>
-                `;
-                
-                // Add messages list if there are more than the initial message
-                let messagesList = '';
-                if (tablon.Messages && tablon.Messages.length > 1) {
-                    messagesList = '<h6 class="mt-4 mb-3"><i class="fas fa-comments me-2"></i>Mensajes</h6>';
-                    
-                    tablon.Messages.slice(1).forEach(msg => {
-                        // Format message date
-                        let msgTimestamp = 'Fecha desconocida';
-                        if (msg.Timestamp) {
-                            msgTimestamp = new Date(msg.Timestamp).toLocaleString();
-                        }
-                        
-                        // Get message author
-                        let author = 'Anónimo';
-                        if (msg.From && msg.From.Username) {
-                            author = msg.From.Username;
-                        }
-                        
-                        // Get message content
-                        let content = 'Sin contenido';
-                        if (msg.Content && msg.Content.Message) {
-                            content = msg.Content.Message;
-                        }
-                        
-                        // Get likes count
-                        let likes = 0;
-                        if (msg.Content && msg.Content.Likes) {
-                            likes = msg.Content.Likes;
-                        }
-                        
-                        messagesList += `
-                            <div class="card mb-2">
-                                <div class="card-body py-2 px-3">
-                                    <div class="d-flex justify-content-between">
-                                        <span class="fw-bold">${author}</span>
-                                        <small class="text-muted">${msgTimestamp}</small>
-                                    </div>
-                                    <p class="mb-2">${content}</p>
-                                    <div class="d-flex justify-content-between">
-                                        <button class="btn btn-sm btn-link text-decoration-none p-0" onclick="handleLikeMessage('${tablon.ID}', '${msg.ID}')">
-                                            <i class="fas fa-thumbs-up me-1"></i> ${likes}
-                                        </button>
-                                        <button class="btn btn-sm btn-link text-decoration-none text-danger p-0" onclick="handleDeleteMessage('${tablon.ID}', '${msg.ID}')">
-                                            <i class="fas fa-trash me-1"></i> Eliminar
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-                
-                // Add message form
-                const messageForm = document.createElement('form');
-                messageForm.className = 'mt-3';
-                messageForm.innerHTML = `
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Nuevo mensaje" required>
-                        <button class="btn btn-outline-primary" type="submit">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                `;
-                messageForm.onsubmit = function(e) {
-                    e.preventDefault();
-                    handleAddMessage(e, tablon.ID);
-                };
-                
-                // Append all elements to card body
-                cardBody.appendChild(metaInfo);
-                cardBody.appendChild(messageContent);
-                cardBody.appendChild(actionButtons);
-                cardBody.innerHTML += messagesList;
-                cardBody.appendChild(messageForm);
-                
-                // Append header and body to card
-                card.appendChild(cardHeader);
-                card.appendChild(cardBody);
-                
-                // Add card to container
-                tablonesContainer.appendChild(card);
-            });
-        }
-        
-        // Reemplazar la función original cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', function() {
-            // Reemplazar la función renderTablones original
-            window.renderTablones = renderTablones;
-        });
-    </script>
 </body>
 
 </html>
