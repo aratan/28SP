@@ -1,0 +1,63 @@
+# Configuración de la aplicación P2P
+topicName: "p2p-secure-chat"
+logLevel: "info"
+listenAddress: "/ip4/0.0.0.0/tcp/0"
+webServerAddr: ":8443"
+maxMessageSize: 10
+retryInterval: 2000
+logFile: "app.log"
+
+# Configuración de mDNS
+mdns:
+  enabled: true
+  serviceTag: "p2p-secure-chat"
+
+# Configuración de SSL
+useSSL: true
+certFile: "cert.pem"
+keyFile: "key.pem"
+
+# Configuración de seguridad
+security:
+  # Cifrado de extremo a extremo
+  endToEndEncryption: true
+  encryptionKey: "e4a2b1f0c8d7e6a5b4f3c2d1e0a9b8f7e4a2b1f0c8d7e6a5b4f3c2d1e0a9b8f7"
+  
+  # Rotación de claves
+  keyRotation: true
+  keyRotationInterval: 43200  # 12 horas en segundos
+  
+  # Enrutamiento cebolla
+  onionRouting: true
+  minHops: 2
+  maxHops: 4
+  
+  # Mensajes anónimos
+  anonymousMessages: true
+  anonymitySetSize: 10
+  
+  # Mezcla de tráfico
+  trafficMixing: true
+  trafficMixingInterval: 500  # milisegundos
+  
+  # Mensajes de relleno
+  dummyMessages: true
+  dummyMessageInterval: 1000  # milisegundos
+  
+  # Tiempo de vida de los mensajes
+  messageTTL: 3600  # 1 hora en segundos
+  
+  # Protección contra inundación
+  floodProtection: true
+  messageRateLimit: 60  # mensajes por minuto
+  
+  # Caché de mensajes
+  messageCacheSize: 1000
+  messageCacheExpiry: 300  # 5 minutos en segundos
+
+# Usuarios (opcional)
+users:
+  - username: "admin"
+    password: "admin123"
+  - username: "user"
+    password: "user123"

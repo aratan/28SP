@@ -1527,8 +1527,14 @@ func main() {
 
 	p2pKeys = [][]byte{[]byte(config.EncryptionKey)}
 
-	// Inicializar el sistema de enrutamiento cebolla simulado
-	log.Printf(Green + "Sistema de enrutamiento cebolla simulado inicializado correctamente" + Reset)
+	// Inicializar el sistema de enrutamiento cebolla real
+	log.Printf(Green + "Inicializando sistema de enrutamiento cebolla real..." + Reset)
+	if err := initRealOnionRouting(ctx); err != nil {
+		log.Printf(Red+"Error al inicializar enrutamiento cebolla real: %v"+Reset, err)
+		log.Printf(Yellow + "Fallback a enrutamiento cebolla simulado" + Reset)
+	} else {
+		log.Printf(Green + "Sistema de enrutamiento cebolla real inicializado correctamente" + Reset)
+	}
 
 	go handleP2PMessages(ctx)
 
