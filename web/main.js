@@ -1056,6 +1056,20 @@ async function fetchRecibe() {
 }
 
 /**
+ * Exponer funciones necesarias al ámbito global para los atributos onclick en HTML
+ */
+// Guardar una referencia al objeto window antes de que se aplique el modo estricto
+const globalThis = window;
+
+// Exponer las funciones necesarias al ámbito global
+globalThis.handleDeleteTablon = handleDeleteTablon;
+globalThis.handleDeleteMessage = handleDeleteMessage;
+globalThis.handleLikeMessage = handleLikeMessage;
+globalThis.handleAddMessage = handleAddMessage;
+globalThis.fetchRecibe = fetchRecibe;
+globalThis.refreshTablones = refreshTablones;
+
+/**
  * Configuración de event listeners y inicialización
  */
 document.addEventListener("DOMContentLoaded", () => {
