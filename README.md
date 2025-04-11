@@ -141,3 +141,7 @@ openssl x509 -req -days 365 -in csr.pem -signkey key.pem -out cert.pem
 generara:          cert.pem
 
 tcp.port == 8443 && ip.addr == 127.0.0.1
+
+
+go build -o p2p-app-secure.exe main.go onion_activator.go
+.\p2p-app-secure.exe -config security_config.yaml
