@@ -1,0 +1,3 @@
+Este es un archivo de prueba para enviar a través de la aplicación P2P.
+Contiene información de prueba para verificar la funcionalidad de envío y recepción de archivos.
+La aplicación debería guardar este archivo en la carpeta received_files.

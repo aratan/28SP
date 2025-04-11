@@ -11,11 +11,7 @@ import (
 )
 
 // Variables globales para el topic de control
-var (
-	// Topic de control para mensajes de gestión de la red
-	ControlTopic *pubsub.Topic
-	ControlSub   *pubsub.Subscription
-)
+// Nota: Las variables globales para el topic de control ahora están definidas en shared.go
 
 // Inicializar el topic de control
 func InitControlTopic(ctx context.Context, ps *pubsub.PubSub) error {

@@ -2,37 +2,14 @@ package onion
 
 import (
 	"crypto/rsa"
-	"sync"
 	"time"
 )
 
 // Variables globales para el enrutamiento cebolla
-var (
-	// Clave privada de este nodo
-	NodePrivateKey *rsa.PrivateKey
-
-	// ID de este nodo (derivado de la clave pública)
-	NodeID string
-
-	// Mapa de nodos conocidos (ID -> clave pública)
-	KnownNodes      = make(map[string]*rsa.PublicKey)
-	KnownNodesMutex sync.RWMutex
-
-	// Mapa de rutas conocidas (destino -> [nodos intermedios])
-	KnownRoutes      = make(map[string][]string)
-	KnownRoutesMutex sync.RWMutex
-
-	// Deshabilitar el enrutamiento de cebolla simulado
-	DisableRoutingHops = false
-)
+// Nota: Las variables globales ahora están definidas en shared.go
 
 // Tipos de mensajes de control
-const (
-	MsgTypeNodeAnnouncement = "node_announcement"
-	MsgTypeKeyExchange      = "key_exchange"
-	MsgTypeRouteUpdate      = "route_update"
-	MsgTypeNetworkStatus    = "network_status"
-)
+// Nota: Las constantes de tipos de mensajes ahora están definidas en shared.go
 
 // Estructura para representar un nodo en la red
 type OnionNode struct {
@@ -42,12 +19,7 @@ type OnionNode struct {
 }
 
 // Estructura para representar una capa de enrutamiento cebolla
-type OnionLayer struct {
-	NextHop     string `json:"nextHop"`     // ID del siguiente nodo o "final"
-	FinalDest   string `json:"finalDest"`   // ID del destino final
-	LayerIndex  int    `json:"layerIndex"`  // Índice de la capa actual
-	PayloadType string `json:"payloadType"` // Tipo de carga útil: "message" o "layer"
-}
+// Nota: La estructura OnionLayer ahora está definida en shared.go
 
 // Estructura para representar un mensaje de enrutamiento cebolla
 type OnionMessage struct {

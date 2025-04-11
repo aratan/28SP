@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func main() {
+func generateCert() {
 	// Generar clave privada
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {

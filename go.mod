@@ -1,4 +1,4 @@
-module chatipfs
+module github.com/aratan/api-p2p-front
 
 go 1.22.0
 
