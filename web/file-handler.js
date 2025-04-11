@@ -90,6 +90,109 @@ async function getReceivedFiles() {
 }
 
 // Función para actualizar la lista de archivos recibidos en la interfaz
+async function refreshReceivedFiles() {
+  const receivedFilesContainer = document.getElementById("receivedFiles");
+  if (!receivedFilesContainer) {
+    console.error("No se encontró el contenedor de archivos recibidos");
+    return;
+  }
+
+  // Mostrar indicador de carga
+  receivedFilesContainer.innerHTML =
+    '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando archivos...</div>';
+
+  try {
+    const files = await getReceivedFiles();
+
+    if (!files || files.length === 0) {
+      receivedFilesContainer.innerHTML =
+        '<div class="alert alert-info">No hay archivos recibidos</div>';
+      return;
+    }
+
+    // Crear el acordeón para la lista desplegable
+    const accordionId = "filesAccordion";
+    let accordionHTML = `<div class="accordion" id="${accordionId}">`;
+
+    // Agrupar archivos por fecha (usando el día)
+    const filesByDate = {};
+    files.forEach((file) => {
+      const date = new Date(file.Timestamp || Date.now());
+      const dateKey = date.toLocaleDateString();
+
+      if (!filesByDate[dateKey]) {
+        filesByDate[dateKey] = [];
+      }
+      filesByDate[dateKey].push(file);
+    });
+
+    // Crear un elemento de acordeón para cada fecha
+    Object.keys(filesByDate).forEach((dateKey, index) => {
+      const dateFiles = filesByDate[dateKey];
+      const headingId = `heading${index}`;
+      const collapseId = `collapse${index}`;
+
+      accordionHTML += `
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="${headingId}">
+            <button class="accordion-button ${
+              index === 0 ? "" : "collapsed"
+            }" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#${collapseId}" aria-expanded="${
+        index === 0 ? "true" : "false"
+      }" aria-controls="${collapseId}">
+              <i class="fas fa-calendar-day me-2"></i> ${dateKey} <span class="badge bg-primary ms-2">${
+        dateFiles.length
+      }</span>
+            </button>
+          </h2>
+          <div id="${collapseId}" class="accordion-collapse collapse ${
+        index === 0 ? "show" : ""
+      }"
+               aria-labelledby="${headingId}" data-bs-parent="#${accordionId}">
+            <div class="accordion-body p-0">
+              <ul class="list-group list-group-flush">
+      `;
+
+      // Agregar cada archivo a la lista
+      dateFiles.forEach((file) => {
+        const fileName = file.FileName || "Archivo sin nombre";
+        const fileTime = file.Timestamp
+          ? new Date(file.Timestamp).toLocaleTimeString()
+          : "Hora desconocida";
+        const fileId = file.ID || "unknown";
+
+        accordionHTML += `
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <i class="fas fa-file me-2"></i>
+              <span>${fileName}</span>
+              <small class="text-muted ms-2">${fileTime}</small>
+            </div>
+            <div>
+              <a href="/received_files/${fileId}_${fileName}" class="btn btn-sm btn-outline-primary" download>
+                <i class="fas fa-download"></i>
+              </a>
+            </div>
+          </li>
+        `;
+      });
+
+      accordionHTML += `
+              </ul>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    accordionHTML += "</div>";
+    receivedFilesContainer.innerHTML = accordionHTML;
+  } catch (error) {
+    console.error("Error al actualizar la lista de archivos:", error);
+    receivedFilesContainer.innerHTML = `<div class="alert alert-danger">Error al cargar archivos: ${error.message}</div>`;
+  }
+}
 
 // Configurar el formulario de carga de archivos cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", function () {
