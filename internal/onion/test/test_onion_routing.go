@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"chatipfs/internal/onion"
+	"github.com/aratan/api-p2p-front/internal/onion"
 )
 
 func TestOnionRouting() {
@@ -34,7 +34,7 @@ func TestOnionRouting() {
 	}
 
 	// Seleccionar una ruta aleatoria
-	route, err := onion.SelectRandomRoute()
+	route, err := onion.SelectRandomRoute(1, 3)
 	if err != nil {
 		log.Fatalf("Error al seleccionar ruta: %v", err)
 	}
