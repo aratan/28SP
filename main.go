@@ -28,6 +28,7 @@ import (
 
 	// Importar el paquete onion para enrutamiento cebolla real
 	"github.com/dgrijalva/jwt-go"
+	"github.com/aratan/api-p2p-front/internal/onion"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/libp2p/go-libp2p"
@@ -172,6 +173,47 @@ func decodeBase64ToFile(base64String, outputPath string) error {
 	return ioutil.WriteFile(outputPath, data, 0644)
 }
 
+// Enhanced function to encode and encrypt file
+func encodeAndEncryptFile(filePath string, key []byte) (string, error) {
+	// Read the file data
+	data, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return "", err
+	}
+	
+	// Encrypt the file data
+	encryptedData, err := SecureEncrypt(data, key)
+	if err != nil {
+		return "", err
+	}
+	
+	// Encode encrypted data to base64 for transmission
+	return base64.StdEncoding.EncodeToString(encryptedData), nil
+}
+
+// Enhanced function to decrypt and decode file
+func decryptAndDecodeFile(base64String string, key []byte, outputPath string) error {
+	// Decode base64 string
+	encryptedData, err := base64.StdEncoding.DecodeString(base64String)
+	if err != nil {
+		return err
+	}
+	
+	// Decrypt the data
+	decryptedData, err := SecureDecrypt(encryptedData, key)
+	if err != nil {
+		return err
+	}
+	
+	// Write decrypted data to file
+	return ioutil.WriteFile(outputPath, decryptedData, 0644)
+}
+
+// protectFileName protects file names by anonymizing them
+func protectFileName(originalName string) string {
+	return EnhancedFileNameMapping(originalName)
+}
+
 // Handler for sending binary data
 func sendBinaryHandler(w http.ResponseWriter, r *http.Request) {
 	file, header, err := r.FormFile("file")
@@ -197,42 +239,58 @@ func sendBinaryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Encode the file to base64
-	base64Data, err := encodeFileToBase64(tempFile.Name())
+	// Generate a unique filename for the mapping
+	uniqueName := fmt.Sprintf("file_%d_%s", time.Now().UnixNano(), header.Filename)
+	
+	// Protect the filename metadata
+	protectedName := protectFileName(header.Filename)
+	
+	// Store the mapping
+	fileNameMappingMutex.Lock()
+	fileNameMapping[uniqueName] = protectedName
+	fileNameMappingMutex.Unlock()
+
+	// Encrypt the file before encoding
+	encryptedFileData, err := encodeAndEncryptFile(tempFile.Name(), p2pKeys[0])
 	if err != nil {
-		http.Error(w, "Error encoding file to base64", http.StatusInternalServerError)
+		http.Error(w, "Error encrypting the file", http.StatusInternalServerError)
 		return
 	}
 
-	// Obtener información del usuario desde el token JWT
-	claims := getClaimsFromToken(r)
-	var username, peerId, photo string
-	if claims != nil {
-		username = claims["username"].(string)
-		peerId = claims["peerId"].(string)
-		photo = claims["photo"].(string)
-	} else {
-		username = "anonymous"
-		peerId = "unknown"
-		photo = ""
-	}
-
-	// Create a new message with the binary data
 	msg := Message{
-		ID:         generateMessageID(),
-		From:       UserInfo{PeerID: peerId, Username: username, Photo: photo},
-		To:         "BROADCAST", // or specific peer ID
-		Timestamp:  time.Now().Format(time.RFC3339),
-		Action:     "binary_transfer",
-		BinaryData: base64Data,
-		FileName:   header.Filename,
+		ID:        generateMessageID(),
+		From:      UserInfo{PeerID: "your_peer_id", Username: "your_username", Photo: "your_photo_url"},
+		To:        "DESTINATION_PEER_ID",
+		Timestamp: time.Now().Format(time.RFC3339),
+		Content: Content{
+			Title:      "File Transfer",
+			Message:    "File transfer request",
+			Subtitle:   "Secure File Transfer",
+			Likes:      0,
+			Comments:   []Comment{},
+			Subscribed: false,
+		},
+		BinaryData: encryptedFileData, // Store encrypted file data
+		FileName:   uniqueName,        // Store the unique name
+		Encrypted:  true,              // Mark as encrypted
 	}
 
-	// Publish the message to the P2P network
-	go publishToP2P(msg)
+	// Serialize and send the message
+	serializedMsg, err := serializeMessage(msg, p2pKeys)
+	if err != nil {
+		http.Error(w, "Error serializing message", http.StatusInternalServerError)
+		return
+	}
+
+	// Publish the message
+	if err := p2pTopic.Publish(context.Background(), serializedMsg); err != nil {
+		http.Error(w, "Error publishing message", http.StatusInternalServerError)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{"status": "file sent", "messageId": msg.ID})
+	response := map[string]string{"status": "file sent successfully"}
+	json.NewEncoder(w).Encode(response)
 }
 
 // New handler for receiving binary data
@@ -645,6 +703,17 @@ func anonymizeMessageFix(msg Message) Message {
 
 // Variable para controlar si se usan saltos para pruebas
 var disableRoutingHops = false // Habilitamos el enrutamiento de cebolla para mejorar la protección contra análisis de metadatos
+
+// initRealOnionRouting initializes the real onion routing system
+func initRealOnionRouting(ctx context.Context) error {
+	// Initialize the onion routing system
+	if err := onion.InitKeySystem(); err != nil {
+		return fmt.Errorf("failed to initialize onion routing system: %v", err)
+	}
+
+	log.Printf("Sistema de enrutamiento cebolla inicializado. Node ID: %s", onion.NodeID)
+	return nil
+}
 
 // generateRandomRoutesFix generates random routes for onion routing
 func generateRandomRoutesFix(minHops, maxHops int) []string {
@@ -1543,6 +1612,29 @@ func main() {
 	select {}
 }
 
+func processP2PMessage(msg Message) {
+	// Check if this is a binary message that needs decryption
+	if msg.BinaryData != "" && msg.FileName != "" {
+		// Generate a safe filename for the received file
+		receivedFileName := fmt.Sprintf("received_%d_%s", time.Now().UnixNano(), msg.FileName)
+		
+		// Decrypt the file data
+		err := decryptAndDecodeFile(msg.BinaryData, p2pKeys[0], receivedFileName)
+		if err != nil {
+			log.Printf("Error decrypting file: %v", err)
+		} else {
+			log.Printf("File decrypted and saved successfully as %s", receivedFileName)
+		}
+	}
+
+	// Process regular messages
+	messagesMutex.Lock()
+	receivedMessages = append(receivedMessages, msg)
+	messagesMutex.Unlock()
+
+	log.Printf("Processed P2P message from %s", msg.From.Username)
+}
+
 // Update the handleP2PMessages function to handle binary transfers and onion routing
 func handleP2PMessages(ctx context.Context) {
 	log.Printf("Iniciando manejador de mensajes P2P...")
@@ -1567,6 +1659,7 @@ func handleP2PMessages(ctx context.Context) {
 		processP2PMessage(msg)
 	}
 }
+
 
 // handleOnionRoutingMessage procesa el mensaje en cada nodo:
 // - Si el nodo actual es el siguiente hop, retira su capa y reenvía.
@@ -1693,79 +1786,6 @@ func updateMessageLikes(tablonID, messageID string, likes int) {
 }
 
 // Función para procesar mensajes P2P normales
-func processP2PMessage(msg Message) {
-	tablonesMutex.Lock()
-	defer tablonesMutex.Unlock()
-
-	// Log successful deserialization
-	log.Printf("Successfully deserialized message from %s", msg.From.Username)
-
-	// Handle binary transfer messages
-	if msg.Action == "binary_transfer" {
-		log.Printf("Received binary file: %s", msg.FileName)
-		// Process the binary data (e.g., save to disk)
-		receivedDir := "received_files"
-		if err := os.MkdirAll(receivedDir, 0755); err != nil {
-			log.Printf("Error creating directory for received files: %v", err)
-			return
-		}
-		outputPath := filepath.Join(receivedDir, fmt.Sprintf("%s_%s", msg.ID, msg.FileName))
-		err := decodeBase64ToFile(msg.BinaryData, outputPath)
-		if err != nil {
-			log.Printf("Error saving received file: %v", err)
-			return
-		}
-		log.Printf("File saved to: %s", outputPath)
-
-		// Add to received messages list
-		messagesMutex.Lock()
-		received := false
-		for _, m := range receivedMessages {
-			if m.ID == msg.ID {
-				received = true
-				break
-			}
-		}
-		if !received {
-			// Create a simplified message for the received file
-			receiveMessage := msg
-			receiveMessage.Content.Message = "Archivo recibido: " + msg.FileName
-			receiveMessage.Content.Title = "Transferencia de archivo"
-			receiveMessage.Content.Subtitle = "Archivo guardado en: " + outputPath
-			receiveMessage.Timestamp = time.Now().Format(time.RFC3339)
-			receiveMessage.Content.Likes = 0
-			receiveMessage.Content.Comments = []Comment{}
-
-			// Clear binary data to save memory
-			receiveMessage.BinaryData = ""
-
-			receivedMessages = append(receivedMessages, receiveMessage)
-		}
-		messagesMutex.Unlock()
-	} else {
-		// Handle other message types
-		switch msg.Action {
-		case "create":
-			// Crear o actualizar mensaje
-			log.Printf("Creating tablon: %s", msg.Content.Title)
-			createOrUpdateMessage(msg)
-		case "delete":
-			// Eliminar mensaje o tablón
-			if msg.TablonID == "" {
-				log.Printf("Deleting tablon: %s", msg.ID)
-				deleteTablon(msg.ID)
-			} else {
-				log.Printf("Deleting message: %s from tablon: %s", msg.ID, msg.TablonID)
-				deleteMessage(msg.TablonID, msg.ID)
-			}
-		case "like":
-			// Actualizar likes
-			log.Printf("Liking message: %s in tablon: %s", msg.ID, msg.TablonID)
-			updateMessageLikes(msg.TablonID, msg.ID, msg.Content.Likes)
-		}
-	}
-}
-
 func setupMDNS(ctx context.Context, h host.Host, serviceTag string) error {
 	service := mdns.NewMdnsService(h, serviceTag, &mdnsNotifee{h: h})
 	return service.Start()
@@ -1922,6 +1942,11 @@ func printMessagesFrom(ctx context.Context, sub *pubsub.Subscription, keys [][]b
 		log.Printf(Green+"Successfully deserialized message from %s"+Reset, msg.From.Username)
 
 		// Verificar si el mensaje tiene rutas de enrutamiento (onion routing)
+	if securityConfig.OnionRouting && len(msg.RoutingHops) > 0 {
+		log.Printf("Procesando mensaje con enrutamiento cebolla real")
+		handleOnionRoutingMessage(msg, onion.NodeID)
+		return
+	}
 		if len(msg.RoutingHops) > 0 {
 			log.Printf(Blue+"Message routed through %d hops for enhanced anonymity"+Reset, len(msg.RoutingHops))
 		}

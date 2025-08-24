@@ -70,36 +70,67 @@ func AddMessagePadding(message string, minPadding, maxPadding int) string {
 	return message + paddingStr
 }
 
-// AnonymizeMessageMetadata mejora la anonimización de metadatos en los mensajes
-func AnonymizeMessageMetadata(msg Message) Message {
-	// Crear una copia para no modificar el original
+// EnhancedAnonymizeMessageMetadata mejora la anonimización de metadatos en los mensajes
+func EnhancedAnonymizeMessageMetadata(msg Message) Message {
+	// Create a copy to avoid modifying the original
 	anonymized := msg
 
-	// Ocultar información del remitente
+	// Hide sender information
 	if anonymized.From.Username != "" {
-		// Generar un alias para el nombre de usuario
-		// Siempre anonimizar, no solo cuando AnonymousSender es true
+		// Generate an alias for the username
 		hash := sha256Sum([]byte(anonymized.From.Username))
 		anonymized.From.Username = fmt.Sprintf("anon_%x", hash[:4])
 
-		// Eliminar foto de perfil
+		// Remove profile picture
 		anonymized.From.Photo = ""
 
-		// Ocultar PeerID
+		// Hide PeerID
 		if anonymized.From.PeerID != "" {
 			anonymized.From.PeerID = fmt.Sprintf("hidden_%x", hash[4:8])
 		}
 	}
 
-	// Usar marca de tiempo obfuscada
+	// Use obfuscated timestamp
 	anonymized.Timestamp = GenerateObfuscatedTimestamp()
 
-	// Si el mensaje tiene contenido, añadir padding
+	// If the message has content, add padding
 	if anonymized.Content.Message != "" {
 		anonymized.Content.Message = AddMessagePadding(anonymized.Content.Message, 10, 100)
 	}
 
+	// Add random delay to message processing to prevent timing analysis
+	delay, _ := rand.Int(rand.Reader, big.NewInt(1000)) // 0-1000ms delay
+	time.Sleep(time.Duration(delay.Int64()) * time.Millisecond)
+
 	return anonymized
+}
+
+// EnhancedFileNameMapping provides better file name anonymization
+func EnhancedFileNameMapping(originalName string) string {
+	// Generate a random ID for the file
+	randomBytes := make([]byte, 16)
+	rand.Read(randomBytes)
+	randomID := fmt.Sprintf("%x", randomBytes)
+
+	// Extract file extension
+	parts := strings.Split(originalName, ".")
+	extension := ""
+	if len(parts) > 1 {
+		// Only keep common, non-revealing extensions
+		allowedExtensions := map[string]bool{
+			"txt": true, "doc": true, "pdf": true, "jpg": true,
+			"png": true, "gif": true, "mp3": true, "mp4": true,
+			"zip": true, "rar": true, "dat": true,
+		}
+		
+		ext := strings.ToLower(parts[len(parts)-1])
+		if allowedExtensions[ext] {
+			extension = "." + ext
+		}
+	}
+
+	// Create a new name that doesn't reveal the original
+	return fmt.Sprintf("shared_%s%s", randomID[:8], extension)
 }
 
 // Función auxiliar para calcular SHA-256
